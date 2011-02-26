@@ -4,8 +4,18 @@
 
 package dreamlivingroom;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 
 /**
  * The application's main frame.
@@ -19,6 +29,7 @@ public class DreamLivingRoomView extends FrameView {
 
         this.getFrame().setTitle("DreamLivingRoom");
     }
+    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -31,40 +42,167 @@ public class DreamLivingRoomView extends FrameView {
 
         mainPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextPane1 = new javax.swing.JTextPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextPane2 = new javax.swing.JTextPane();
+        jButton1 = new javax.swing.JButton();
 
         mainPanel.setName("mainPanel"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setName("jTextArea1"); // NOI18N
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextPane1.setName("jTextPane1"); // NOI18N
+        jScrollPane1.setViewportView(jTextPane1);
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTextPane2.setName("jTextPane2"); // NOI18N
+        jScrollPane2.setViewportView(jTextPane2);
+
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(dreamlivingroom.DreamLivingRoomApp.class).getContext().getActionMap(DreamLivingRoomView.class, this);
+        jButton1.setAction(actionMap.get("quit")); // NOI18N
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(dreamlivingroom.DreamLivingRoomApp.class).getContext().getResourceMap(DreamLivingRoomView.class);
+        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(273, 273, 273)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(306, 306, 306)
+                        .addComponent(jButton1)))
+                .addContainerGap(371, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(53, 53, 53)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addGap(117, 117, 117)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58)
+                .addComponent(jButton1)
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
         setComponent(mainPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+class MyPanel extends JPanel {
+ RedSquare redSquare = new RedSquare();
+
+    public MyPanel() {
+
+        setBorder(BorderFactory.createLineBorder(Color.black));
+
+        addMouseListener(new MouseAdapter(){
+            public void mousePressed(MouseEvent e){
+                moveSquare(e.getX(),e.getY());
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter(){
+            public void mouseDragged(MouseEvent e){
+                moveSquare(e.getX(),e.getY());
+            }
+        });
+
+    }
+
+    private void moveSquare(int x, int y){
+
+        // Current square state, stored as final variables
+        // to avoid repeat invocations of the same methods.
+        final int CURR_X = redSquare.getX();
+        final int CURR_Y = redSquare.getY();
+        final int CURR_W = redSquare.getWidth();
+        final int CURR_H = redSquare.getHeight();
+        final int OFFSET = 1;
+
+        if ((CURR_X!=x) || (CURR_Y!=y)) {
+
+            // The square is moving, repaint background
+            // over the old square location.
+            repaint(CURR_X,CURR_Y,CURR_W+OFFSET,CURR_H+OFFSET);
+
+            // Update coordinates.
+            redSquare.setX(x);
+            redSquare.setY(y);
+
+            // Repaint the square at the new location.
+            repaint(redSquare.getX(), redSquare.getY(),
+                    redSquare.getWidth()+OFFSET,
+                    redSquare.getHeight()+OFFSET);
+        }
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(250,200);
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawString("This is my custom Panel!",10,20);
+
+        redSquare.paintSquare(g);
+    }
+}
+
+class RedSquare{
+
+    private int xPos = 50;
+    private int yPos = 50;
+    private int width = 20;
+    private int height = 20;
+
+    public void setX(int xPos){
+        this.xPos = xPos;
+    }
+
+    public int getX(){
+        return xPos;
+    }
+
+    public void setY(int yPos){
+        this.yPos = yPos;
+    }
+
+    public int getY(){
+        return yPos;
+    }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public void paintSquare(Graphics g){
+        g.setColor(Color.RED);
+        g.fillRect(xPos,yPos,width,height);
+        g.setColor(Color.BLACK);
+        g.drawRect(xPos,yPos,width,height);
+    }
+}
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextPane jTextPane2;
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 

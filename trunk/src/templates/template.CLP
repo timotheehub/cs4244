@@ -12,12 +12,13 @@
 ; ; Maybe we need to specified the allowed values for each of the attributes.
 (deftemplate furniture
     (slot id (type INTEGER))
+    (slot function (type SYMBOL))
     (slot name (type SYMBOL))
     (slot color (type SYMBOL))
-    (slot category (type SYMBOL))
-    (slot length (type INTEGER))
-    (slot width (type INTEGER))
-    (slot height (type INTEGER))
+    (multislot theme (type SYMBOL))
+    (slot length (type INTEGER) (default NIL))
+    (slot width (type INTEGER) (default NIL))
+    (slot height (type INTEGER) (default NIL))
 )
 
 ; ; The space the furniture occupies.

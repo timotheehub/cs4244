@@ -19,12 +19,30 @@ import ClipsInteraction.Question;
  * @author Standard
  */
 public class MainFrame extends javax.swing.JFrame {
-
+    private int roomLength;
+    private int roomWidth;
     /** Creates new form QuestionFrame */
     public MainFrame() {
         initComponents();
-        initQuestionPanel();
-        runClips();
+        initSizePanel();
+        //initQuestionPanel();
+        //runClips();
+    }
+    
+    int getRoomLength() {
+        return roomLength;
+    }
+    
+    int getRoomWidth() {
+        return roomWidth;
+    }
+    
+    void setRoomLength(int l) {
+        roomLength = l;
+    }
+    
+    void setRoomWidth(int w) {
+        roomWidth = w;
     }
 
     /** This method is called from within the constructor to
@@ -63,11 +81,33 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
 
-    private void initQuestionPanel()
+    void initSizePanel()
     {
+        mainPanel = new SizePanel(this);
+        mainPanel.setSize(600,400);
+        add(mainPanel);
+        this.setSize(mainPanel.getWidth()+20,mainPanel.getHeight()+40);
+        this.repaint();
+    }
+    
+    void initWindowDoorPanel()
+    {
+        mainPanel.setVisible(false);
+        mainPanel = new WindowDoorPanel(this);
+        mainPanel.setSize(600,400);
+        add(mainPanel);
+        //this.setSize(mainPanel.getSize());
+        this.repaint();
+    }
+    
+    void initQuestionPanel()
+    {
+        mainPanel.setVisible(false);
         mainPanel = new QuestionPanel();
         mainPanel.setSize(300,400);
         add(mainPanel);
+        repaint();
+        runClips();
     }
 
     private void runClips()

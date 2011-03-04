@@ -15,16 +15,16 @@ import java.awt.event.*;
 
 public class Main extends JPanel{
 
-    JTextArea lengthPanel;
-    JTextArea widthPanel;
+    JTextField lengthPanel;
+    JTextField widthPanel;
     //JDesktopPane desk;
     JPanel layout;
 
     public Main() {
         //desk = new JDesktopPane();
         layout = new JPanel();
-        lengthPanel = new JTextArea(1,20);
-        widthPanel = new JTextArea(1,20);
+        lengthPanel = new JTextField(20);
+        widthPanel = new JTextField(20);
         JButton lengthButton = new JButton("Click Me Double Times");
         lengthButton.setVerticalTextPosition(AbstractButton.CENTER);
         lengthButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
@@ -39,7 +39,7 @@ public class Main extends JPanel{
         JFrame f = new JFrame("DreamLivingRoom");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.getContentPane().add(new Main());
-        f.setSize(600,600);
+        f.setSize(600,300);
         f.setVisible(true);
         
     }
@@ -52,6 +52,7 @@ public class Main extends JPanel{
                 layout.setBounds(60, 60, length, width);
                 layout.setBorder(BorderFactory.createLineBorder(Color.black));
                 add(layout);
+                repaint();
             }
         }
     }

@@ -12,9 +12,10 @@
 package dreamlivingroom;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -28,36 +29,58 @@ import javax.imageio.ImageIO;
  */
 public class WindowDoorPanel extends javax.swing.JPanel {
 
-    private Image windowImage;
-    private Image doorImage;
-    int windowX=10, windowY=100, doorX=10, doorY=150;
+    private Image[] windowImages;
+    private Image[] doorImages;
+    int[] windowX, windowY, doorX, doorY;
     int mouseX, mouseY;
-    char selected;
+    int selected;
     int roomLength, roomWidth;
+    MainFrame frame;
 
     /** Creates new form WindowDoorPanel */
-    public WindowDoorPanel(MainFrame frame) {
+    public WindowDoorPanel(MainFrame f) {
+        frame = f;
         roomLength = frame.getRoomLength();
         roomWidth = frame.getRoomWidth();
+        windowImages = new Image[5];
+        doorImages = new Image[5];
+        windowX = new int[5];
+        windowY = new int[5];
+        doorX = new int[5];
+        doorY = new int[5];
+        for(int i = 0; i<5;i++) {
+            windowX[i] = 10;
+            windowY[i] = 100;
+            doorX[i] = 10;
+            doorY[i] = 150;
+        }
         initComponents();
         textLabel.setText("Please drag the window and door to proper positions.");
+        submitButton.setText("Submit");
+        submitButton.addActionListener(new ButtonListener());
         try{
-            windowImage = ImageIO.read(new File("window.jpg"));
-            doorImage = ImageIO.read(new File("door.jpg"));
+            for(int i = 0; i< 5; i++) {
+                windowImages[i] = ImageIO.read(new File("window.jpg"));
+                doorImages[i] = ImageIO.read(new File("door.jpg"));
+            }
         } catch(IOException ex) {
             System.out.println("Unable to fetch image");
             System.exit(0);
         }
         
         MediaTracker mt = new MediaTracker(this);
-        mt.addImage(windowImage,1);
-        mt.addImage(doorImage,1);
+        for(int i=0;i<5; i++) {
+            mt.addImage(windowImages[i],1);
+            mt.addImage(doorImages[i],1); 
+        }
+        
         try {
             mt.waitForAll();
         } catch(Exception e) {
             System.out.println("Exception while loading image.");
             System.exit(0);
         }
+        
         addMouseListener(new MyMouseListener());
         addMouseMotionListener(new MyMouseMotionListener());
     }
@@ -66,12 +89,25 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         public void mousePressed(MouseEvent e) {
             mouseX = e.getX();
             mouseY = e.getY();
-            if(within(windowX,windowY,40,40,mouseX,mouseY))
-                selected='w';
-            else if(within(doorX,doorY,40,40,mouseX,mouseY))
-                selected='d';
-            else
-                selected=0;
+            for (int i = 0; i < 5; i++) {
+                if (within(windowX[i], windowY[i], 40, 40, mouseX, mouseY)) {
+                    selected = i;
+                    break;
+                } else if (within(doorX[i], doorY[i], 40, 40, mouseX, mouseY)) {
+                    selected = 10+i;
+                    break;
+                } else {
+                    selected = -1;
+                }
+            }
+        }
+    }
+    
+    class ButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if(e.getActionCommand().equals("Submit")) {
+                frame.initQuestionPanel();
+            }
         }
     }
     
@@ -83,13 +119,18 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         public void mouseDragged(MouseEvent e) {
             int tempX = e.getX();
             int tempY = e.getY();
-            if(selected=='w'){
-                windowX = windowX +tempX-mouseX;
-                windowY = windowY + tempY-mouseY;
+
+            if(selected<0)
+            {
+                ;
             }
-            else if(selected=='d') {
-                doorX = doorX+tempX-mouseX;
-                doorY = doorY+tempY-mouseY;
+            else if(selected<10){
+                windowX[selected] = windowX[selected] +tempX-mouseX;
+                windowY[selected] = windowY[selected] + tempY-mouseY;
+            }
+            else if(selected>=10) {
+                doorX[selected-10] = doorX[selected-10]+tempX-mouseX;
+                doorY[selected-10] = doorY[selected-10]+tempY-mouseY;
             }
             mouseX = tempX;
             mouseY = tempY;
@@ -113,8 +154,10 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         System.out.println(plotLength + " " + plotWidth);
         g.drawRect(60,60,plotLength,plotWidth);
         
-        g.drawImage(windowImage, windowX,windowY,40,40, this);
-        g.drawImage(doorImage, doorX, doorY,40,40, this);
+        for(int i=0;i<5;i++){
+            g.drawImage(windowImages[i], windowX[i],windowY[i],40,40, this);
+            g.drawImage(doorImages[i], doorX[i], doorY[i],40,40, this);
+        }
         
     }
     
@@ -131,9 +174,13 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         textLabel = new javax.swing.JLabel();
+        submitButton = new javax.swing.JButton();
 
         textLabel.setText("jLabel1");
         textLabel.setName("textLabel"); // NOI18N
+
+        submitButton.setText("jButton1");
+        submitButton.setName("submitButton"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -143,18 +190,25 @@ public class WindowDoorPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(textLabel)
                 .addContainerGap(356, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(317, Short.MAX_VALUE)
+                .addComponent(submitButton)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(textLabel)
-                .addContainerGap(275, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 241, Short.MAX_VALUE)
+                .addComponent(submitButton)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton submitButton;
     private javax.swing.JLabel textLabel;
     // End of variables declaration//GEN-END:variables
 

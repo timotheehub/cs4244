@@ -12,8 +12,10 @@
 package dreamlivingroom;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -36,6 +38,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     int selected;
     int roomLength, roomWidth;
     MainFrame frame;
+    Rectangle layout;
 
     /** Creates new form WindowDoorPanel */
     public WindowDoorPanel(MainFrame f) {
@@ -140,9 +143,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         
     }
     
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    void createLayout() {
         int plotableLength = this.getWidth() - 70;
         int plotableWidth = this.getHeight() - 70;
         System.out.println(plotableLength+" "+plotableWidth);
@@ -152,7 +153,15 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         int plotLength = (int) (roomLength/ratio);
         int plotWidth = (int) (roomWidth/ratio);
         System.out.println(plotLength + " " + plotWidth);
-        g.drawRect(60,60,plotLength,plotWidth);
+        layout = new Rectangle(60,60,plotLength,plotWidth);
+    }
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        createLayout();
+        Graphics2D g2D = (Graphics2D) g;
+        g2D.draw(layout);
         
         for(int i=0;i<5;i++){
             g.drawImage(windowImages[i], windowX[i],windowY[i],40,40, this);

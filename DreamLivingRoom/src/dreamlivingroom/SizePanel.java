@@ -48,7 +48,7 @@ public class SizePanel extends JPanel{
             if (e.getActionCommand().equals("Update")) {
                 String inputLength = lengthPanel.getText();
                 String inputWidth = widthPanel.getText();
-                if(inputLength.matches("^-?\\d+(\\.\\d+)?$") && inputWidth.matches("^-?\\d+(\\.\\d+)?$")){
+                if(inputLength.matches("^-?\\d{1,5}(\\.\\d+)?$") && inputWidth.matches("^-?\\d{1,5}(\\.\\d+)?$")){
                     int length = (int)(Double.parseDouble(inputLength)*1000);
                     int width= (int)(Double.parseDouble(inputWidth)*1000);
                     int plotableLength = 600 - 40;
@@ -68,10 +68,13 @@ public class SizePanel extends JPanel{
             else if(e.getActionCommand().equals("Submit")) {
                 String inputLength = lengthPanel.getText();
                 String inputWidth = widthPanel.getText();
-                if(inputLength.matches("^-?\\d+(\\.\\d+)?$") && inputWidth.matches("^-?\\d+(\\.\\d+)?$")){
+                if(inputLength.matches("^-?\\d{1,5}(\\.\\d+)?$") && inputWidth.matches("^-?\\d{1,5}(\\.\\d+)?$")){
                     container.setRoomLength((int)(Double.parseDouble(lengthPanel.getText()))*1000);
                     container.setRoomWidth((int)(Double.parseDouble(widthPanel.getText()))*1000);
                     container.initWindowDoorPanel();
+                }
+                else{
+                    System.out.println("Only 5 digits is allowed.");
                 }
             }
         }

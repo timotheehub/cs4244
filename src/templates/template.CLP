@@ -144,7 +144,7 @@
  (furniture (id CT0015) (function coffee-table) (name ROCKALL-coffee-table) (color black) (theme modern cozy) (length 1200)( width 700) (height 330))
  (furniture (id CT0016) (function coffee-table) (name AVOLA-coffee-table) (color brown) (theme cozy nature warm) (length 900)( width 900) (height 250))
  (furniture (id CT0017) (function coffee-table) (name LACK-coffee-table) (color black) (theme cozy) (length 900)( width 550) (height 450))
- (furniture (id CT0018) (function coffee-table) (name STRIND-coffee-table) (color black) (theme modern ozy) (length 750)( width 750) (height 450))
+ (furniture (id CT0018) (function coffee-table) (name STRIND-coffee-table) (color black) (theme modern cozy) (length 750)( width 750) (height 450))
 
  (furniture (id CB0001) (function cupboard) (name IKEA-STOCKHOLM-BENCH) (color black) (theme modern cozy) (length 1650) (width 1650) (height 1000))
  (furniture (id CB0002) (function cupboard) (name BATON-BUFFET) (color black) (theme cozy nature) (length 1200) (width 420) (height 830))
@@ -220,7 +220,46 @@
  (furniture (id TL0009) (function tablelamp) (name BRASA-table-lamp) (color black) (theme modern cozy) (length 470) (width 470) (height 260))
  (furniture (id TL0010) (function tablelamp) (name LAMPAN-table-lamp) (color red) (theme cozy warm) (length 190) (width 190) (height 290))
  (furniture (id TL0011) (function tablelamp) (name LJUSAS-SALBO-table-lamp) (color beige) (theme cozy nature warm) (length 140) (width 140) (height 610))
- )
+ (theme (theme nature))
+)
 
+;;Total furniture 143
+;;Cozy furniture 142
+;;Modern furniture 77
+;;Warm furniture 96
+;;Nature furniture 93
+;;;;;;;;;;;Remove all the furniture that is not suitable with modern;;;;;;;;;;
+(defrule modern-selection
+	(theme (theme modern))
+	;;Use $?theme as theme is multifield and I am using subset property to find out which furniture don't have (modern)
+	?notmodern <- (furniture (theme $?theme&:(not (subsetp (create$ modern) $?theme))))
+=>
+	(retract ?notmodern)
+)
 
+;;;;;;;;;;;Remove all the furniture that is not suitable with warm;;;;;;;;;;
+(defrule warm-selection
+	(theme (theme warm))
+	;;Use $?theme as theme is multifield and I am using subset property to find out which furniture don't have (warm)
+	?notwarm <- (furniture (theme $?theme&:(not (subsetp (create$ warm) $?theme))))
+=>
+	(retract ?notwarm)
+)
 
+;;;;;;;;;;;Remove all the furniture that is not suitable with cozy;;;;;;;;;;
+(defrule cozy-selection
+	(theme (theme cozy))
+	;;Use $?theme as theme is multifield and I am using subset property to find out which furniture don't have (cozy)
+	?notcozy <- (furniture (theme $?theme&:(not (subsetp (create$ cozy) $?theme))))
+=>
+	(retract ?notcozy)
+)
+
+;;;;;;;;;;;Remove all the furniture that is not suitable with nature;;;;;;;;;;
+(defrule nature-selection
+	(theme (theme nature))
+	;;Use $?theme as theme is multifield and I am using subset property to find out which furniture don't have (nature)
+	?notnature <- (furniture (theme $?theme&:(not (subsetp (create$ nature) $?theme))))
+=>
+	(retract ?notnature)
+)

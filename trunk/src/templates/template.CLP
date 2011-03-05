@@ -220,7 +220,6 @@
  (furniture (id TL0009) (function tablelamp) (name BRASA-table-lamp) (color black) (theme modern cozy) (length 470) (width 470) (height 260))
  (furniture (id TL0010) (function tablelamp) (name LAMPAN-table-lamp) (color red) (theme cozy warm) (length 190) (width 190) (height 290))
  (furniture (id TL0011) (function tablelamp) (name LJUSAS-SALBO-table-lamp) (color beige) (theme cozy nature warm) (length 140) (width 140) (height 610))
- (theme (theme nature))
 )
 
 ;;Total furniture 143

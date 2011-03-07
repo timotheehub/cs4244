@@ -6,7 +6,6 @@
 package ClipsInteraction;
 
 import CLIPSJNI.*;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -29,6 +28,11 @@ public class ClipsEngine {
         clipsEnvironment.run();
     }
 
+    public void resetEnvironment()
+    {
+        clipsEnvironment.reset();
+    }
+
     public Question getQuestion()
     {
         Question clipsResult = new Question();
@@ -44,6 +48,8 @@ public class ClipsEngine {
              clipsResult.setText(factAddressValue.getFactSlot("text").toString());
              clipsResult.setQuestionId(factAddressValue.
                      getFactSlot("question-id").toString());
+             clipsResult.setQuestionType(factAddressValue.
+                     getFactSlot("question-type").toString());
              List<PrimitiveValue> listValue = ((MultifieldValue) factAddressValue.getFactSlot("valid-answers")).listValue();
              
              for (PrimitiveValue pValue : listValue)
@@ -53,5 +59,17 @@ public class ClipsEngine {
         }
 
         return clipsResult;
+    }
+
+    public void setAnswer(Answer answer)
+    {
+        clipsEnvironment.assertString("(answer (question-id "
+                + answer.getQuestionId() + ") (name "
+                + answer.getName() + ") (value "
+                + answer.getValue() + "))");
+        System.out.println("(answer (question-id "
+                + answer.getQuestionId() + ") (name "
+                + answer.getName() + ") (value "
+                + answer.getValue() + "))");
     }
 }

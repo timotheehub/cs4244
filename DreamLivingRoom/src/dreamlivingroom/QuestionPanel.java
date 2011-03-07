@@ -11,6 +11,8 @@
 
 package dreamlivingroom;
 
+import ClipsInteraction.Answer;
+import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
 import javax.swing.JRadioButton;
 
@@ -20,9 +22,16 @@ import javax.swing.JRadioButton;
  */
 public class QuestionPanel extends javax.swing.JPanel {
 
+    Question currentQuestion;
+    ClipsEngine clips;
+    MainFrame container;
+
     /** Creates new form QuestionPanel */
-    public QuestionPanel() {
+    public QuestionPanel(MainFrame mainFrame) {
+        container = mainFrame;
+        this.clips = container.getClips();
         initComponents();
+        currentQuestion = null;
     }
 
     /** This method is called from within the constructor to
@@ -38,8 +47,13 @@ public class QuestionPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
-        jButton1.setText("OK");
+        jButton1.setText("Submit");
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("jLabel1");
         jLabel1.setName("jLabel1"); // NOI18N
@@ -51,26 +65,40 @@ public class QuestionPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel1))
+                        .addGap(119, 119, 119)
+                        .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jButton1)))
-                .addContainerGap(286, Short.MAX_VALUE))
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(122, 122, 122)
+                .addGap(180, 180, 180)
                 .addComponent(jButton1)
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if ((currentQuestion != null) && (buttonGroup1.getSelection() != null))
+        {
+            Answer answer = new Answer(currentQuestion.getQuestionId(),
+                    currentQuestion.getQuestionType(),
+                    buttonGroup1.getSelection().getActionCommand());
+            clips.setAnswer(answer);
+            container.RunClips();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     public void setQuestion(Question question)
     {
+        // Assign question
+        currentQuestion = question;
+        
         // Display question
         jLabel1.setText(question.getText());
 
@@ -80,6 +108,7 @@ public class QuestionPanel extends javax.swing.JPanel {
             System.out.println(question.getValidAnswers().get(i));
             JRadioButton button =
                     new JRadioButton(question.getValidAnswers().get(i),false);
+            button.setActionCommand(question.getValidAnswers().get(i));
             button.setSize(200,20);
             button.setLocation(50, 50+25*i);
             button.setVisible(true);

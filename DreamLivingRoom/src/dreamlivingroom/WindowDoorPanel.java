@@ -11,6 +11,9 @@
 
 package dreamlivingroom;
 
+import ClipsInteraction.Answer;
+import ClipsInteraction.ClipsEngine;
+import ClipsInteraction.Question;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -37,14 +40,19 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     int mouseX, mouseY;
     int selected;
     int roomLength, roomWidth;
-    MainFrame frame;
+    MainFrame container;
     Rectangle layout;
 
+    Question currentQuestion;
+    ClipsEngine clips;
+
     /** Creates new form WindowDoorPanel */
-    public WindowDoorPanel(MainFrame f) {
-        frame = f;
-        roomLength = frame.getRoomLength();
-        roomWidth = frame.getRoomWidth();
+    public WindowDoorPanel(MainFrame mainFrame) {
+        container = mainFrame;
+        this.clips = container.getClips();
+        currentQuestion = null;
+        roomLength = 10; // temp values
+        roomWidth = 10;
         windowImages = new Image[5];
         doorImages = new Image[5];
         windowX = new int[5];
@@ -87,6 +95,12 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         addMouseListener(new MyMouseListener());
         addMouseMotionListener(new MyMouseMotionListener());
     }
+
+    public void setQuestion(Question question)
+    {
+        currentQuestion = question;
+        textLabel.setText(question.getText());
+    }
     
     class MyMouseListener extends MouseAdapter {
         public void mousePressed(MouseEvent e) {
@@ -109,7 +123,23 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if(e.getActionCommand().equals("Submit")) {
-                frame.initQuestionPanel();
+              //  frame.initQuestionPanel();
+                if ((currentQuestion != null))
+                {
+                    Answer answer = new Answer(currentQuestion.getQuestionId(),
+                        "window-x", Integer.toString(windowX[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "window-y", Integer.toString(windowY[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-x", Integer.toString(doorX[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-y", Integer.toString(doorY[0]));
+                    clips.setAnswer(answer);
+                    container.RunClips();
+                }
             }
         }
     }

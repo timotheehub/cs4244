@@ -9,6 +9,9 @@ package dreamlivingroom;
  *
  * @author ZandyJack
  */
+import ClipsInteraction.Answer;
+import ClipsInteraction.ClipsEngine;
+import ClipsInteraction.Question;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -17,16 +20,20 @@ public class SizePanel extends JPanel{
 
     JTextField lengthPanel;
     JTextField widthPanel;
-    //JDesktopPane desk;
     JPanel layout;
     MainFrame container;
 
-    public SizePanel(MainFrame frame) {
-        //desk = new JDesktopPane();
+    Question currentQuestion;
+    ClipsEngine clips;
+
+    public SizePanel(MainFrame mainFrame) {
+        container = mainFrame;
+        this.clips = container.getClips();
+        currentQuestion = null;
         layout = new JPanel();
         lengthPanel = new JTextField(10);
         widthPanel = new JTextField(10);
-        container = frame;
+        //container = frame;
         JButton lengthButton = new JButton("Update");
         lengthButton.setVerticalTextPosition(AbstractButton.CENTER);
         lengthButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
@@ -41,6 +48,11 @@ public class SizePanel extends JPanel{
         add(widthPanel);
         add(lengthButton);
         add(submitButton);
+    }
+
+    public void setQuestion(Question question)
+    {
+        currentQuestion = question;
     }
 
     class ButtonListener implements ActionListener {
@@ -68,10 +80,18 @@ public class SizePanel extends JPanel{
             else if(e.getActionCommand().equals("Submit")) {
                 String inputLength = lengthPanel.getText();
                 String inputWidth = widthPanel.getText();
-                if(inputLength.matches("^-?\\d{1,5}(\\.\\d+)?$") && inputWidth.matches("^-?\\d{1,5}(\\.\\d+)?$")){
-                    container.setRoomLength((int)(Double.parseDouble(lengthPanel.getText()))*1000);
-                    container.setRoomWidth((int)(Double.parseDouble(widthPanel.getText()))*1000);
-                    container.initWindowDoorPanel();
+                if(inputLength.matches("^-?\\d{1,5}(\\.\\d+)?$") && inputWidth.matches("^-?\\d{1,5}(\\.\\d+)?$")
+                        && currentQuestion != null){
+                   // container.setRoomLength((int)(Double.parseDouble(lengthPanel.getText()))*1000);
+                  //  container.setRoomWidth((int)(Double.parseDouble(widthPanel.getText()))*1000);
+                  //  container.initWindowDoorPanel();
+                    Answer answer = new Answer(currentQuestion.getQuestionId(),
+                    "room-width", Integer.toString((int)Double.parseDouble(inputWidth)*1000));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                    "room-length", Integer.toString((int)Double.parseDouble(inputLength)*1000));
+                    clips.setAnswer(answer);
+                    container.RunClips();
                 }
                 else{
                     System.out.println("Only 5 digits is allowed.");

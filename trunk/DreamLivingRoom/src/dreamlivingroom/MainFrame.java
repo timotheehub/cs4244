@@ -21,12 +21,14 @@ import ClipsInteraction.Question;
 public class MainFrame extends javax.swing.JFrame {
     private int roomLength;
     private int roomWidth;
+    private ClipsEngine clips;
+
+
     /** Creates new form QuestionFrame */
     public MainFrame() {
         initComponents();
-        initSizePanel();
-        //initQuestionPanel();
-        //runClips();
+        mainPanel = null;
+        clips = new ClipsEngine("CS4244.clp");
     }
     
     int getRoomLength() {
@@ -35,6 +37,10 @@ public class MainFrame extends javax.swing.JFrame {
     
     int getRoomWidth() {
         return roomWidth;
+    }
+
+    public ClipsEngine getClips() {
+        return clips;
     }
     
     void setRoomLength(int l) {
@@ -76,13 +82,19 @@ public class MainFrame extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                MainFrame mainFrame = new MainFrame();
+                mainFrame.setVisible(true);
+                mainFrame.RunClips();
             }
         });
     }
 
-    void initSizePanel()
+    private void initSizePanel()
     {
+        if (mainPanel != null)
+        {
+            mainPanel.setVisible(false);
+        }
         mainPanel = new SizePanel(this);
         mainPanel.setSize(600,400);
         add(mainPanel);
@@ -90,32 +102,56 @@ public class MainFrame extends javax.swing.JFrame {
         this.repaint();
     }
     
-    void initWindowDoorPanel()
+    private void initWindowDoorPanel()
     {
-        mainPanel.setVisible(false);
+        if (mainPanel != null)
+        {
+            mainPanel.setVisible(false);
+        }
         mainPanel = new WindowDoorPanel(this);
         mainPanel.setSize(600,400);
         add(mainPanel);
-        //this.setSize(mainPanel.getSize());
         this.repaint();
     }
     
-    void initQuestionPanel()
+    private void initQuestionPanel()
     {
-        mainPanel.setVisible(false);
-        mainPanel = new QuestionPanel();
+        if (mainPanel != null)
+        {
+            mainPanel.setVisible(false);
+        }
+        mainPanel = new QuestionPanel(this);
         mainPanel.setSize(300,400);
         add(mainPanel);
         repaint();
-        runClips();
     }
 
-    private void runClips()
+    public void RunClips()
     {
-        ClipsEngine clips = new ClipsEngine("CS4244.clp");
+        Question question;
         clips.runEnvironment();
-        Question question = clips.getQuestion();
-        ((QuestionPanel)mainPanel).setQuestion(question);
+        question = clips.getQuestion();
+        System.out.println(question.getQuestionType());
+
+        if (question.getQuestionType().equals("list"))
+        {
+            initQuestionPanel();
+            ((QuestionPanel)mainPanel).setQuestion(question);
+        }
+        else if (question.getQuestionType().equals("size"))
+        {
+            initSizePanel();
+            ((SizePanel)mainPanel).setQuestion(question);
+        }
+        else if (question.getQuestionType().equals("window-door"))
+        {
+            initWindowDoorPanel();
+            ((WindowDoorPanel)mainPanel).setQuestion(question);
+        }
+        else if (question.getQuestionType().equals(""))
+        {
+            System.out.println("Exit here!");
+        }
     }
 
     private javax.swing.JPanel mainPanel;

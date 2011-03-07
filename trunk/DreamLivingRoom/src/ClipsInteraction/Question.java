@@ -14,18 +14,24 @@ import java.util.List;
  */
 public class Question {
     private String questionId;
+    private String questionType;
     private String text;
     private List<String> validAnswers;
 
     public Question()
     {
         questionId = "";
+        questionType = "";
         text = "";
         validAnswers = new ArrayList<String>();
     }
 
     public String getQuestionId() {
         return questionId;
+    }
+
+    public String getQuestionType() {
+        return questionType;
     }
 
     public String getText() {
@@ -40,9 +46,24 @@ public class Question {
         this.questionId = questionId;
     }
 
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
+    }
+
     public void setText(String text) {
         // remove the quotes
         this.text = text.substring(1, text.length() - 1);
+        if (this.text.length() > 50)
+        {
+            StringBuffer sBuffer = new java.lang.StringBuffer(text).insert(0,"<html>");
+            sBuffer = sBuffer.insert(sBuffer.length() - 1, "<html>");
+            int i = sBuffer.indexOf(" ", 50);
+            if ( i >= 50 )
+            {
+                sBuffer = sBuffer.insert(i, "<br>");
+            }
+            this.text = sBuffer.toString();
+        }
     }
 
     public void setValidAnswers(List<String> validAnswers) {

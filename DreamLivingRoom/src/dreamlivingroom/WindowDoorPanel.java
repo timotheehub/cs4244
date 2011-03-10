@@ -69,6 +69,9 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         textLabel.setText("Please drag the window and door to proper positions.");
         submitButton.setText("Submit");
         submitButton.addActionListener(new ButtonListener());
+        
+        backButton.setText("Back");
+        backButton.addActionListener(new ButtonListener());
         try{
             for(int i = 0; i< 5; i++) {
                 windowImages[i] = ImageIO.read(new File("window.jpg"));
@@ -140,6 +143,8 @@ public class WindowDoorPanel extends javax.swing.JPanel {
                     clips.setAnswer(answer);
                     container.RunClips();
                 }
+            } else if (e.getActionCommand().equals("Back")) {
+                
             }
         }
     }
@@ -214,12 +219,16 @@ public class WindowDoorPanel extends javax.swing.JPanel {
 
         textLabel = new javax.swing.JLabel();
         submitButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
 
         textLabel.setText("jLabel1");
         textLabel.setName("textLabel"); // NOI18N
 
         submitButton.setText("jButton1");
         submitButton.setName("submitButton"); // NOI18N
+
+        backButton.setText("jButton1");
+        backButton.setName("backButton"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -231,6 +240,10 @@ public class WindowDoorPanel extends javax.swing.JPanel {
                 .addContainerGap(356, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(317, Short.MAX_VALUE)
+                .addComponent(backButton)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(317, Short.MAX_VALUE)
                 .addComponent(submitButton)
                 .addContainerGap())
         );
@@ -239,14 +252,17 @@ public class WindowDoorPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(textLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 241, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
                 .addComponent(submitButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backButton)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backButton;
     private javax.swing.JButton submitButton;
     private javax.swing.JLabel textLabel;
     // End of variables declaration//GEN-END:variables

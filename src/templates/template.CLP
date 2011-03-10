@@ -262,3 +262,19 @@
 =>
 	(retract ?notnature)
 )
+
+;;;Size rules;;;;;
+;;;Simple rule: Take a furniture, compare its size with room size. If the furniture is larger, retract it from facts.;;;;;
+(defrule eliminate-wrong-size-furniture
+	(theme)
+	;;;Workable when room size is larger than 0;;;;
+	(test (> ?*length* 0))
+	(test (> ?*width* 0))
+	?largefurniture <- (furniture (length ?l) (width ?w))
+	;;roomarea = (* ?*length* ?*width*)
+	;;furniturearea = (* ?l ?w)
+	;;if roomarea is smaller than the furniturearea, remove the furniture from the facts
+	(test (<= (* ?*length* ?*width*) (* ?l ?w)))
+=>
+	(retract ?largefurniture)
+)

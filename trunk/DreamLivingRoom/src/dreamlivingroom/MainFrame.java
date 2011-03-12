@@ -13,14 +13,14 @@ package dreamlivingroom;
 
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
+import ClipsInteraction.RoomSize;
 
 /**
  *
  * @author Standard
  */
 public class MainFrame extends javax.swing.JFrame {
-    private int roomLength;
-    private int roomWidth;
+    private RoomSize roomSize;
     private ClipsEngine clips;
 
 
@@ -28,27 +28,20 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         mainPanel = null;
+        roomSize = new RoomSize();
         clips = new ClipsEngine("CS4244.clp");
     }
     
     int getRoomLength() {
-        return roomLength;
+        return roomSize.length;
     }
     
     int getRoomWidth() {
-        return roomWidth;
+        return roomSize.width;
     }
 
     public ClipsEngine getClips() {
         return clips;
-    }
-    
-    void setRoomLength(int l) {
-        roomLength = l;
-    }
-    
-    void setRoomWidth(int w) {
-        roomWidth = w;
     }
 
     /** This method is called from within the constructor to
@@ -131,9 +124,10 @@ public class MainFrame extends javax.swing.JFrame {
         Question question;
         clips.runEnvironment();
         question = clips.getQuestion();
-        System.out.println(question.getQuestionType());
+        // System.out.println(question.getQuestionType());
 
-        if (question.getQuestionType().equals("list"))
+        if ((question.getQuestionType().equals("list"))
+            || (question.getQuestionType().equals("preference")))
         {
             initQuestionPanel();
             ((QuestionPanel)mainPanel).setQuestion(question);
@@ -145,12 +139,14 @@ public class MainFrame extends javax.swing.JFrame {
         }
         else if (question.getQuestionType().equals("window-door"))
         {
+            roomSize = clips.getRoomSize();
             initWindowDoorPanel();
             ((WindowDoorPanel)mainPanel).setQuestion(question);
         }
         else if (question.getQuestionType().equals(""))
         {
-            System.out.println("Exit here!");
+            System.out.println("Bye!");
+            System.exit(0);
         }
     }
 

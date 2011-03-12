@@ -15,6 +15,7 @@ import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
 import javax.swing.JRadioButton;
+import java.lang.*;
 
 /**
  *
@@ -86,9 +87,19 @@ public class QuestionPanel extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if ((currentQuestion != null) && (buttonGroup1.getSelection() != null))
         {
+            String sValue;
+            if (currentQuestion.getQuestionType().equals("preference"))
+            {
+                sValue = new StringBuffer(buttonGroup1.getSelection().getActionCommand())
+                    .insert(buttonGroup1.getSelection().getActionCommand().length(), "\"")
+                    .insert(0, "\"").toString();
+            }
+            else
+            {
+                sValue = buttonGroup1.getSelection().getActionCommand();
+            }
             Answer answer = new Answer(currentQuestion.getQuestionId(),
-                    currentQuestion.getQuestionType(),
-                    buttonGroup1.getSelection().getActionCommand());
+                    currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
             container.RunClips();
         }
@@ -105,7 +116,7 @@ public class QuestionPanel extends javax.swing.JPanel {
         // Display valid answers
         for (int i=0; i<question.getValidAnswers().size(); i++)
         {
-            System.out.println(question.getValidAnswers().get(i));
+            //System.out.println(question.getValidAnswers().get(i));
             JRadioButton button =
                     new JRadioButton(question.getValidAnswers().get(i),false);
             button.setActionCommand(question.getValidAnswers().get(i));

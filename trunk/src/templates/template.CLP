@@ -162,7 +162,7 @@
  (furniture (id CB0014) (function cupboard) (name SILENTNIGHT-SOMERTON-SIDEBOARD) (color black) (theme modern cozy nature warm) (length 1000) (width 350) (height 750))
  (furniture (id CB0015) (function cupboard) (name HEMNES-glass-door-cabinet) (color brown) (theme cozy nature warm) (length 900) (width 370) (height 1970))
 
- (furniture (id MS0001) (function MediaSystem) (name PHILIPS-DCM580-DOCKING-ENTERTAINMENT-SYSTEM) (color black) (theme modern cozy) (length 300) (width 300) (height 1022))
+ (furniture (id MS0001) (function media-system) (name PHILIPS-DCM580-DOCKING-ENTERTAINMENT-SYSTEM) (color black) (theme modern cozy) (length 300) (width 300) (height 1022))
  (furniture (id MS0002) (function media-system) (name LG-FBD103-DVD-MICROSYSTEM) (color black) (theme modern cozy) (length 658) (width 262) (height 341))
  (furniture (id MS0003) (function media-system) (name PHILIPS-HTS7140-BLURAY-SOUNDBAR) (color black) (theme modern cozy) (length 1040) (width 390) (height 400))
  (furniture (id MS0004) (function media-system) (name PHILIPS-MCD170-DVD-MICROSYSTEM) (color black) (theme modern cozy) (length 415) (width 209) (height 233))
@@ -278,3 +278,23 @@
 =>
 	(retract ?largefurniture)
 )
+
+(deftemplate question
+   (slot question-id)
+   (slot question-type)
+   (slot text)
+   (multislot valid-answers))
+
+
+;;; Advanced user-selection rules;;;;
+;;; If more than one facts were selected, need to prompt question to user to ask them to select their preference furniture.;;;;
+;;; Every furniture categories will be covered.;;;;;;;
+;;; The value that capture would be the ID of the furniture.;;;;
+(defrule user-select-furniture
+	(furniture (id ?id1) (function ?function)) 
+	(furniture (id ?id2) (function ?function))
+	(test(<> ?id1 ?id2))
+	?question <- (question (question-id ?id))
+	=> (retract ?question)
+	   (assert (question (question-id ?id) (question-type ?question-type) (text "Please select you favorite furniture? ") (valid-answers ?id))))
+  

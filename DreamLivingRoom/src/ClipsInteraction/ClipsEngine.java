@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class ClipsEngine {
 
+
     Environment clipsEnvironment;
 
     public ClipsEngine(String fileName)
@@ -35,30 +36,57 @@ public class ClipsEngine {
 
     public Question getQuestion()
     {
-        Question clipsResult = new Question();
+        Question question = new Question();
         
         String factsRequest = "(find-all-facts ((?f question)) TRUE)";
         MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
 
         int listSize = multifieldValue.listValue().size();
         FactAddressValue factAddressValue;
-        for (int i=0; i<listSize; i++)
+        // Take the first question
+        if (listSize >= 1)
         {
-             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
-             clipsResult.setText(factAddressValue.getFactSlot("text").toString());
-             clipsResult.setQuestionId(factAddressValue.
+             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(0);
+             question.setText(factAddressValue.getFactSlot("text").toString());
+             question.setQuestionId(factAddressValue.
                      getFactSlot("question-id").toString());
-             clipsResult.setQuestionType(factAddressValue.
+             question.setQuestionType(factAddressValue.
                      getFactSlot("question-type").toString());
              List<PrimitiveValue> listValue = ((MultifieldValue) factAddressValue.getFactSlot("valid-answers")).listValue();
              
              for (PrimitiveValue pValue : listValue)
              {
-                clipsResult.addAValidAnswer(pValue.getValue().toString());
+                question.addAValidAnswer(pValue.getValue().toString());
              }
         }
+        System.out.println("(question (question-id "
+                + question.getQuestionId() + ") (question-type "
+                + question.getQuestionType() + ") (text \""
+                + question.getText() + "\"))");
 
-        return clipsResult;
+        return question;
+    }
+
+    public RoomSize getRoomSize()
+    {
+        RoomSize size = new RoomSize();
+
+        String factsRequest = "(find-all-facts ((?f room-size)) TRUE)";
+        MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
+
+        int listSize = multifieldValue.listValue().size();
+        FactAddressValue factAddressValue;
+        // Take the first question
+        if (listSize >= 1)
+        {
+             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(0);
+             size.length = Integer.parseInt(factAddressValue.
+                     getFactSlot("length").toString());
+             size.width = Integer.parseInt(factAddressValue.
+                     getFactSlot("width").toString());
+        }
+
+        return size;
     }
 
     public void setAnswer(Answer answer)

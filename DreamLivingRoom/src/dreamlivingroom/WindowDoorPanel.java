@@ -51,15 +51,15 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         container = mainFrame;
         this.clips = container.getClips();
         currentQuestion = null;
-        roomLength = 10; // temp values
-        roomWidth = 10;
+        roomLength = container.getRoomLength();
+        roomWidth = container.getRoomWidth();
         windowImages = new Image[5];
         doorImages = new Image[5];
         windowX = new int[5];
         windowY = new int[5];
         doorX = new int[5];
         doorY = new int[5];
-        for(int i = 0; i<5;i++) {
+        for(int i = 0; i<5; i++) {
             windowX[i] = 10;
             windowY[i] = 100;
             doorX[i] = 10;
@@ -181,13 +181,13 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     void createLayout() {
         int plotableLength = this.getWidth() - 70;
         int plotableWidth = this.getHeight() - 70;
-        System.out.println(plotableLength+" "+plotableWidth);
-        System.out.println(roomLength +" " + roomWidth);
+        // System.out.println(plotableLength+" "+plotableWidth);
+        // System.out.println(roomLength +" " + roomWidth);
         double ratio = Math.max((double)roomLength/plotableLength, (double)roomWidth/plotableWidth);
-        System.out.println(ratio);
+        // System.out.println(ratio);
         int plotLength = (int) (roomLength/ratio);
         int plotWidth = (int) (roomWidth/ratio);
-        System.out.println(plotLength + " " + plotWidth);
+        // System.out.println(plotLength + " " + plotWidth);
         layout = new Rectangle(60,60,plotLength,plotWidth);
     }
     

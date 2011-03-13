@@ -9,7 +9,7 @@
  * Created on Feb 27, 2011, 9:01:52 PM
  */
 
-package dreamlivingroom;
+package cs4244;
 
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
@@ -119,6 +119,17 @@ public class MainFrame extends javax.swing.JFrame {
         repaint();
     }
 
+     private void initPictureDisplayPanel() {
+          if (mainPanel != null)
+        {
+            mainPanel.setVisible(false);
+        }
+        mainPanel = new PictureDisplayPanel(this);
+        mainPanel.setSize(600,400);
+        add(mainPanel);
+        repaint();
+    }
+     
     public void RunClips()
     {
         Question question;
@@ -143,6 +154,11 @@ public class MainFrame extends javax.swing.JFrame {
             initWindowDoorPanel();
             ((WindowDoorPanel)mainPanel).setQuestion(question);
         }
+        else if (question.getQuestionType().equals("furniture-preference"))
+        {
+            initPictureDisplayPanel();
+            ((PictureDisplayPanel)mainPanel).setQuestion(question);
+        }
         else if (question.getQuestionType().equals(""))
         {
             System.out.println("Bye!");
@@ -151,6 +167,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private javax.swing.JPanel mainPanel;
+
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 

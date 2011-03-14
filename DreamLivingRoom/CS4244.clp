@@ -68,7 +68,8 @@
 (deftemplate MAIN::distance
    (slot category1 (type SYMBOL)) 
    (slot category2 (type SYMBOL))
-   (slot prefer (allowed-values close far)))
+   (slot prefer (allowed-values close far))
+   (multislot range (type FLOAT))
 
 
 ;; Furniture is a template to store the information of
@@ -95,8 +96,10 @@
 ;; Note that since the furniture could have two kinds of
 ;; orientations, thus x2-x1 may not always
 ;; represent the length.
+;; 4 orientations.
 (deftemplate furniture-pos
 (slot fid (type INTEGER))
+(slot orientation (allowed-values 1 2 3 4))
 (slot x1 (type INTEGER))
 (slot y1 (type INTEGER))
 (slot x2 (type INTEGER))
@@ -574,7 +577,27 @@
      (retract ?question))
 
 
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                   POSITIONING rules                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defrule POSITIONING::close
+        ?distance <- (distance (category1 ?c1) (category2 ?c2) (prefer ?p))
+        (room-size (length ?rlength) (width ?rwidth))
+=>
+        (if (= ?p close) then
+            (modify ?distance (range 0.3 0.5))
+         else
+            (modify ?distance (range 0.6 0.8))))
+;; first to position TV
+(defrule POSITIONING::position-TV
+        (furniture  (id ?id) (function TV) (length ?tvlength) (width ?tvwidth) (height ?tvheight))
+        (room-size (length ?rlength) (width ?rwidth))
+        (window (x ?wx) (y ?wy))
+        (door (x ?dx) (y ?dy))
+        (not furniture-pos (id ?other))
+        (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
+        (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
+=>
+        
 
 

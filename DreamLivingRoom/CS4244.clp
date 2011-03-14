@@ -552,28 +552,14 @@
 	(assert (question (question-id (sym-cat ?id1 ?id2)) (question-type furniture-preference) (text "Please select you favorite furniture.") (valid-answers ?id1 ?id2))))
 
 
-;; Furniture preference question template
-(deftemplate MAIN::furniture-preference-question
-   (multislot furniture-for-user (type SYMBOL))
-)
-
-;; The furniture that user has chosen
-(deftemplate MAIN::favorite-furniture
-    (multislot furniture-for-user(type SYMBOL))
-    (slot favorite (type SYMBOL))
-)
-
-
 (defrule SELECTION::answer-user-select-furniture
         (answer (question-id ?id) (value ?v))
         ?question <- (question (question-id ?id) (question-type furniture-preference) (valid-answers ?id1 ?id2))
 =>
     (if (= ?v ?id1) then
         (retract ?id2)
-        (assert (furniture-for-user ?id1) (favorite ?id1))
      else
         (retract ?id1)
-        (assert (furniture-for-user ?id2) (favorite ?id2)))
      (retract ?question))
 
 

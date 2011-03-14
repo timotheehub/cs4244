@@ -298,4 +298,6 @@
 	?question <- (question (question-id ?id))
 	=> (retract ?question)
 	   (assert (question (question-id ?id) (question-type ?function) (text "Please select you favorite furniture? ") (valid-answers ?id))))
+
+
   

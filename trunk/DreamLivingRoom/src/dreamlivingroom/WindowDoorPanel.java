@@ -106,6 +106,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     }
     
     class MyMouseListener extends MouseAdapter {
+        @Override
         public void mousePressed(MouseEvent e) {
             mouseX = e.getX();
             mouseY = e.getY();
@@ -143,8 +144,6 @@ public class WindowDoorPanel extends javax.swing.JPanel {
                     clips.setAnswer(answer);
                     container.RunClips();
                 }
-            } else if (e.getActionCommand().equals("Back")) {
-                
             }
         }
     }

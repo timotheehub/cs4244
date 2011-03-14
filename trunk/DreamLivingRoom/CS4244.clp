@@ -588,16 +588,17 @@
             (modify ?distance (range 0.3 0.5))
          else
             (modify ?distance (range 0.6 0.8))))
-;; first to position TV
+
+;; Position TV first.
 (defrule POSITIONING::position-TV
         (furniture  (id ?id) (function TV) (length ?tvlength) (width ?tvwidth) (height ?tvheight))
         (room-size (length ?rlength) (width ?rwidth))
-        (window (x ?wx) (y ?wy))
-        (door (x ?dx) (y ?dy))
+        (window (x ?wx) (y ?wy) (length ?wl) (orientation ?wo))
+        (door (x ?dx) (y ?dy) (length ?dl) (orientation ?do))
         (not furniture-pos (id ?other))
         (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
         (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
 =>
-        
+        (printout t "test" crlf)) 
 
 

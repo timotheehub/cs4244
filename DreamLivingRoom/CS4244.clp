@@ -54,13 +54,17 @@
 ;; Window template. X and Y are in millimeters.
 (deftemplate MAIN::window
    (slot x (type INTEGER))
-   (slot y (type INTEGER)))
+   (slot y (type INTEGER))
+   (slot length (type INTEGER))
+   (slot orientation (type INTEGER)))
 
 
 ;; Door template. X and Y are in millimeters.
 (deftemplate MAIN::door
    (slot x (type INTEGER))
-   (slot y (type INTEGER)))
+   (slot y (type INTEGER))
+   (slot length (type INTEGER))
+   (slot orientation (type INTEGER)))
 
 
 ;; The preferred distances between different categories of
@@ -69,7 +73,7 @@
    (slot category1 (type SYMBOL)) 
    (slot category2 (type SYMBOL))
    (slot prefer (allowed-values close far))
-   (multislot range (type FLOAT))
+   (multislot range (type FLOAT)))
 
 
 ;; Furniture is a template to store the information of
@@ -570,7 +574,7 @@
         ?distance <- (distance (category1 ?c1) (category2 ?c2) (prefer ?p))
         (room-size (length ?rlength) (width ?rwidth))
 =>
-        (if (= ?p close) then
+        (if (eq ?p close) then
             (modify ?distance (range 0.3 0.5))
          else
             (modify ?distance (range 0.6 0.8))))
@@ -581,7 +585,7 @@
         (room-size (length ?rlength) (width ?rwidth))
         (window (x ?wx) (y ?wy) (length ?wl) (orientation ?wo))
         (door (x ?dx) (y ?dy) (length ?dl) (orientation ?do))
-        (not furniture-pos (id ?other))
+        (not (furniture-pos (fid ?other)))
         (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
         (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
 =>

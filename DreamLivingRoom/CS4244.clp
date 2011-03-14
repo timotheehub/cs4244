@@ -560,7 +560,7 @@
         (retract ?id2)
      else
         (retract ?id1)
-     (retract ?question))
+     (retract ?question)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

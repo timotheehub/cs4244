@@ -265,7 +265,7 @@
 )
 
 ;;;Size rules;;;;;
-;;;Simple rule: Take a furniture, compare its size with room size. If the furniture is larger, retract it from facts.;;;;;
+;;;Simple rule: Take a furniture, compare its size with room size. If the furniture is larger or equal, retract it from facts.;;;;;
 (defrule eliminate-wrong-size-furniture
 	(theme)
 	;;;Workable when room size is larger than 0;;;;

@@ -45,7 +45,7 @@
    (slot theme (allowed-values modern warm nature cozy)))
 
 
-;; Room size template. Length and Width are in millimeters.
+;; Room size template. Length and Width are in units of 10 centimeters.
 (deftemplate MAIN::room-size
    (slot length (type INTEGER))
    (slot width (type INTEGER)))
@@ -53,18 +53,20 @@
 
 ;; Window template. X and Y are in millimeters.
 (deftemplate MAIN::window
-   (slot x (type INTEGER))
-   (slot y (type INTEGER))
-   (slot length (type INTEGER))
-   (slot orientation (type INTEGER)))
+   (slot toleft (type INTEGER))
+   (slot toright (type INTEGER))
+   (slot totop (type INTEGER))
+   (slot tobottom (type INTEGER))
+   (slot orientation (allowed-values left right top bottom)))
 
 
 ;; Door template. X and Y are in millimeters.
 (deftemplate MAIN::door
-   (slot x (type INTEGER))
-   (slot y (type INTEGER))
-   (slot length (type INTEGER))
-   (slot orientation (type INTEGER)))
+   (slot toleft (type INTEGER))
+   (slot toright (type INTEGER))
+   (slot totop (type INTEGER))
+   (slot tobottom (type INTEGER))
+   (slot orientation (allowed-values left right top bottom)))
 
 
 ;; The preferred distances between different categories of
@@ -103,11 +105,11 @@
 ;; 4 orientations.
 (deftemplate furniture-pos
 (slot fid (type INTEGER))
-(slot orientation (allowed-values 1 2 3 4))
-(slot x1 (type INTEGER))
-(slot y1 (type INTEGER))
-(slot x2 (type INTEGER))
-(slot y2 (type INTEGER))
+(slot orientation (allowed-values left right top bottom))
+(slot toleft (type INTEGER))
+(slot toright (type INTEGER))
+(slot totop (type INTEGER))
+(slot tobottom (type INTEGER))
 )
 
 

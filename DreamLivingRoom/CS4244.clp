@@ -291,9 +291,16 @@
 (defrule MAIN::answer-focus-question
    (answer)
    =>
-   (focus QUESTION SELECTION))
+   (focus QUESTION))
 
 
+;; If we know the theme and all the preference question has
+;; been answered then we will ask the selection question
+(defrule MAIN::focus-selection
+   (distance)
+   (not(exists(question (question-type preference))))
+   =>
+   (focus SELECTION))
 
 
 
@@ -318,19 +325,23 @@
 ;; of the door, we retract the question and ask the next
 ;; question
 (defrule QUESTION::answer-window-door
-   (answer (question-id ?id) (name window-l) (value ?wl))
-   (answer (question-id ?id) (name window-r) (value ?wr))
-   (answer (question-id ?id) (name window-t) (value ?wt))
-   (answer (question-id ?id) (name window-b) (value ?wb))
-   (answer (question-id ?id) (name door-l) (value ?dl))
-   (answer (question-id ?id) (name door-r) (value ?dr))
-   (answer (question-id ?id) (name door-t) (value ?dt))
-   (answer (question-id ?id) (name door-b) (value ?db))
+   (answer (question-id ?id) (name window-toleft) (value ?wl))
+   (answer (question-id ?id) (name window-toright) (value ?wr))
+   (answer (question-id ?id) (name window-totop) (value ?wt))
+   (answer (question-id ?id) (name window-tobottom) (value ?wb))
+   (answer (question-id ?id) (name window-orientation) (value ?wo))
+   (answer (question-id ?id) (name door-toleft) (value ?dl))
+   (answer (question-id ?id) (name door-toright) (value ?dr))
+   (answer (question-id ?id) (name door-totop) (value ?dt))
+   (answer (question-id ?id) (name door-tobottom) (value ?db))
+   (answer (question-id ?id) (name door-orientation) (value ?do))
    ?question <- (question (question-id ?id))
 =>
    (retract ?question)
-   (assert (window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb)))
-   (assert (door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db)))
+   (assert (window (toleft ?wl) (toright ?wr) (totop ?wt)
+(tobottom ?wb) (orientation ?wo)))
+   (assert (door (toleft ?dl) (toright ?dr) (totop ?dt)
+(tobottom ?db) (orientation ?do)))
    (assert (question (question-id theme) (question-type list) (text "Please select your favorite theme(s) for the living room design: ") (valid-answers modern cozy nature warm))))
 
 

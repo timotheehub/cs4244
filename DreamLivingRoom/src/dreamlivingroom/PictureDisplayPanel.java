@@ -118,12 +118,12 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if( currentQuestion !=null){
+        if (currentQuestion != null){
             String sValue = "";
-          while(currentQuestion.getQuestionType().equals("furniture-preference"))
-          {
+            if(currentQuestion.getQuestionType().equals("furniture-preference"))
+            {
               sValue = jButton1.getActionCommand();
-          }
+            }
             Answer answer = new Answer(currentQuestion.getQuestionId(),currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
             container.RunClips();
@@ -132,12 +132,12 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         if( currentQuestion !=null){
+         if (currentQuestion != null){
             String sValue = "";
-          while(currentQuestion.getQuestionType().equals("furniture-preference"))
-          {
+            if(currentQuestion.getQuestionType().equals("furniture-preference"))
+            {
               sValue = jButton2.getActionCommand();
-          }
+            }
             Answer answer = new Answer(currentQuestion.getQuestionId(),currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
             container.RunClips();

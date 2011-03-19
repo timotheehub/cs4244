@@ -288,10 +288,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The first focus must be on QUESTION when there is a new
 ;; answer
-(defrule MAIN::answer-focus-question
+(defrule MAIN::focus-question
    (answer)
    =>
-   (focus QUESTION SELECTION))
+   (focus QUESTION))
+
+
+;; If we know the theme and all the preference question has
+;; been answered then we will ask the selection question
+(defrule MAIN::focus-selection
+   (distance)
+   (not(exists(question (question-type preference))))
+   =>
+   (focus SELECTION))
 
 
 
@@ -318,15 +327,23 @@
 ;; of the door, we retract the question and ask the next
 ;; question
 (defrule QUESTION::answer-window-door
-   (answer (question-id ?id) (name window-x) (value ?wx))
-   (answer (question-id ?id) (name window-y) (value ?wy))
-   (answer (question-id ?id) (name door-x) (value ?dx))
-   (answer (question-id ?id) (name door-y) (value ?dy))
+   (answer (question-id ?id) (name window-toleft) (value ?wl))
+   (answer (question-id ?id) (name window-toright) (value ?wr))
+   (answer (question-id ?id) (name window-totop) (value ?wt))
+   (answer (question-id ?id) (name window-tobottom) (value ?wb))
+   (answer (question-id ?id) (name window-orientation) (value ?wo))
+   (answer (question-id ?id) (name door-toleft) (value ?dl))
+   (answer (question-id ?id) (name door-toright) (value ?dr))
+   (answer (question-id ?id) (name door-totop) (value ?dt))
+   (answer (question-id ?id) (name door-tobottom) (value ?db))
+   (answer (question-id ?id) (name door-orientation) (value ?do))
    ?question <- (question (question-id ?id))
 =>
    (retract ?question)
-   (assert (window (x ?wx) (y ?wy)))
-   (assert (door (x ?dx) (y ?dy)))
+   (assert (window (toleft ?wl) (toright ?wr) (totop ?wt)
+(tobottom ?wb) (orientation ?wo)))
+   (assert (door (toleft ?dl) (toright ?dr) (totop ?dt)
+(tobottom ?db) (orientation ?do)))
    (assert (question (question-id theme) (question-type list) (text "Please select your favorite theme(s) for the living room design: ") (valid-answers modern cozy nature warm))))
 
 
@@ -582,15 +599,15 @@
             (modify ?distance (range 0.6 0.8))))
 
 ;; Position TV first.
-(defrule POSITIONING::position-TV
-        (furniture  (id ?id) (function TV) (length ?tvlength) (width ?tvwidth) (height ?tvheight))
-        (room-size (length ?rlength) (width ?rwidth))
-        (window (x ?wx) (y ?wy) (length ?wl) (orientation ?wo))
-        (door (x ?dx) (y ?dy) (length ?dl) (orientation ?do))
-        (not (furniture-pos (fid ?other)))
-        (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
-        (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
-=>
-        (printout t "test" crlf)) 
+;(defrule POSITIONING::position-TV
+;        (furniture  (id ?id) (function TV) (length ?tvlength) (width ?tvwidth) (height ?tvheight))
+;        (room-size (length ?rlength) (width ?rwidth))
+;        (window (x ?wx) (y ?wy) (length ?wl) (orientation ?wo))
+;        (door (x ?dx) (y ?dy) (length ?dl) (orientation ?do))
+;        (not (furniture-pos (fid ?other)))
+;        (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
+;        (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
+;=>
+;        (printout t "test" crlf)) 
 
 

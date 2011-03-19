@@ -53,12 +53,12 @@ public class Question {
     public void setText(String text) {
         // remove the quotes
         this.text = text.substring(1, text.length() - 1);
-        if (this.text.length() > 50)
+        if (this.text.length() > 40)
         {
-            StringBuffer sBuffer = new java.lang.StringBuffer(text).insert(0,"<html>");
+            StringBuffer sBuffer = new java.lang.StringBuffer(this.text).insert(0,"<html>");
             sBuffer = sBuffer.insert(sBuffer.length() - 1, "<html>");
-            int i = sBuffer.indexOf(" ", 50);
-            if ( i >= 50 )
+            int i = sBuffer.indexOf(" ", 40);
+            if ( i >= 40 )
             {
                 sBuffer = sBuffer.insert(i, "<br>");
             }

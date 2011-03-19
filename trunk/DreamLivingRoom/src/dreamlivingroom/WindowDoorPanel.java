@@ -131,16 +131,34 @@ public class WindowDoorPanel extends javax.swing.JPanel {
                 if ((currentQuestion != null))
                 {
                     Answer answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-x", Integer.toString(windowX[0]));
+                        "window-toleft", Integer.toString(windowX[0]));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-y", Integer.toString(windowY[0]));
+                        "window-toright", Integer.toString(windowY[0]));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-x", Integer.toString(doorX[0]));
+                        "window-totop", Integer.toString(windowY[0]));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-y", Integer.toString(doorY[0]));
+                        "window-tobottom", Integer.toString(windowY[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "window-orientation", Integer.toString(windowY[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-toleft", Integer.toString(doorX[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-toright", Integer.toString(doorY[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-totop", Integer.toString(doorY[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-tobottom", Integer.toString(doorY[0]));
+                    clips.setAnswer(answer);
+                    answer = new Answer(currentQuestion.getQuestionId(),
+                        "door-orientation", Integer.toString(doorY[0]));
                     clips.setAnswer(answer);
                     container.RunClips();
                 }

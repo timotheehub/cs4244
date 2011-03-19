@@ -15,6 +15,7 @@
  *
  * @author Wyuh
  */
+package dreamlivingroom;
 
 import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;

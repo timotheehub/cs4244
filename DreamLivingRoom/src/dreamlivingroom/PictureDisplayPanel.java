@@ -9,7 +9,7 @@
  * Created on Mar 13, 2011, 10:59:32 PM
  */
 
-package dreamlivingroom;
+
 
 /**
  *
@@ -24,9 +24,11 @@ import javax.swing.*;
 public class PictureDisplayPanel extends javax.swing.JPanel {
 
     /** Creates new form PictureDisplayPanel */
-     Question currentQuestion;
+    Question currentQuestion;
     ClipsEngine clips;
     MainFrame container;
+    private String imagedir = "database/";
+
    
 
     /** Creates new form QuestionPanel */
@@ -51,8 +53,10 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         {
              s1 = question.getValidAnswers().get(0);
              s2 = question.getValidAnswers().get(1);
-             jButton1 = new JButton(new ImageIcon(s1+ ".jpg"));
-             jButton2 = new JButton(new ImageIcon(s2+ ".jpg"));
+             s1 = s1 + ".jpg";
+             s2 = s2 + ".jpg";
+             jButton1 = new JButton(new ImageIcon(imagedir + s1));
+             jButton2 = new JButton(new ImageIcon(imagedir + s2));
              repaint();
 
         }

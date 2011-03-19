@@ -40,8 +40,11 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     int mouseX, mouseY;
     int selected;
     int roomLength, roomWidth;
+    int plotLength, plotWidth;
     MainFrame container;
     Rectangle layout;
+    int numImages = 1;
+    double ratio;
 
     Question currentQuestion;
     ClipsEngine clips;
@@ -53,13 +56,13 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         currentQuestion = null;
         roomLength = container.getRoomLength();
         roomWidth = container.getRoomWidth();
-        windowImages = new Image[5];
-        doorImages = new Image[5];
-        windowX = new int[5];
-        windowY = new int[5];
-        doorX = new int[5];
-        doorY = new int[5];
-        for(int i = 0; i<5; i++) {
+        windowImages = new Image[numImages];
+        doorImages = new Image[numImages];
+        windowX = new int[numImages];
+        windowY = new int[numImages];
+        doorX = new int[numImages];
+        doorY = new int[numImages];
+        for(int i = 0; i<numImages; i++) {
             windowX[i] = 10;
             windowY[i] = 100;
             doorX[i] = 10;
@@ -73,7 +76,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         backButton.setText("Back");
         backButton.addActionListener(new ButtonListener());
         try{
-            for(int i = 0; i< 5; i++) {
+            for(int i = 0; i< numImages; i++) {
                 windowImages[i] = ImageIO.read(new File("window.jpg"));
                 doorImages[i] = ImageIO.read(new File("door.jpg"));
             }
@@ -83,7 +86,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         }
         
         MediaTracker mt = new MediaTracker(this);
-        for(int i=0;i<5; i++) {
+        for(int i=0;i<numImages; i++) {
             mt.addImage(windowImages[i],1);
             mt.addImage(doorImages[i],1); 
         }
@@ -110,7 +113,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         public void mousePressed(MouseEvent e) {
             mouseX = e.getX();
             mouseY = e.getY();
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < numImages; i++) {
                 if (within(windowX[i], windowY[i], 40, 40, mouseX, mouseY)) {
                     selected = i;
                     break;
@@ -130,36 +133,89 @@ public class WindowDoorPanel extends javax.swing.JPanel {
               //  frame.initQuestionPanel();
                 if ((currentQuestion != null))
                 {
-                    Answer answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-toleft", Integer.toString(windowX[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-toright", Integer.toString(windowY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-totop", Integer.toString(windowY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-tobottom", Integer.toString(windowY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-orientation", Integer.toString(windowY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-toleft", Integer.toString(doorX[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-toright", Integer.toString(doorY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-totop", Integer.toString(doorY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-tobottom", Integer.toString(doorY[0]));
-                    clips.setAnswer(answer);
-                    answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-orientation", Integer.toString(doorY[0]));
-                    clips.setAnswer(answer);
+                    if((!layout.contains(windowX[0],windowY[0]) && layout.contains(windowX[0]+40,windowY[0]+40)) ||
+                            (layout.contains(windowX[0],windowY[0]) && !layout.contains(windowX[0]+40,windowY[0]+40))) {
+                        int toleft = 0;
+                        int toright = 0;
+                        int totop = 0;
+                        int tobottom = 0;
+                        //The left side
+                        if(windowX[0] <= 60) {
+                            toleft = 0;
+                        } else {
+                            toleft = (int)((windowX[0]-60)*ratio);
+                        }
+                        //The right side
+                        if(windowX[0]+40>=plotLength+60) {
+                            toright = 0;
+                        } else{
+                            toright = (int)((plotLength+60-(windowX[0]+40))*ratio);
+                        }
+                        //The top
+                        if(windowY[0] <= 60) {
+                            totop = 0;
+                        } else{
+                            totop = (int)((windowY[0]-60)*ratio);
+                        }
+                        //The bottom
+                        if(windowY[0]+40>=plotWidth+60) {
+                            tobottom = 0;
+                        } else{
+                            tobottom = (int)((plotWidth+60-(windowY[0]+40))*ratio);
+                        }
+                        Answer answer = new Answer(currentQuestion.getQuestionId(),"window-l",Integer.toString(toleft));
+                        clips.setAnswer(answer);
+                        answer = new Answer(currentQuestion.getQuestionId(),"window-r",Integer.toString(toright));
+                        clips.setAnswer(answer);
+                        answer = new Answer(currentQuestion.getQuestionId(),"window-t",Integer.toString(totop));
+                        clips.setAnswer(answer);
+                        answer = new Answer(currentQuestion.getQuestionId(),"window-b",Integer.toString(tobottom));
+                        clips.setAnswer(answer);
+                    } else {
+                        System.out.println("Please place the window image at the proper places.");
+                    }
+                    
+                    if((!layout.contains(doorX[0],doorY[0]) && layout.contains(doorX[0]+40,doorY[0]+40)) ||
+                            (layout.contains(doorX[0],doorY[0]) && !layout.contains(doorX[0]+40,doorY[0]+40))) {
+                        int toleft = 0;
+                        int toright = 0;
+                        int totop = 0;
+                        int tobottom = 0;
+                        //The left side
+                        if(doorX[0] <= 60) {
+                            toleft = 0;
+                        } else {
+                            toleft = (int)((doorX[0]-60)*ratio);
+                        }
+                        //The right side
+                        if(doorX[0]+40>=plotLength+60) {
+                            toright = 0;
+                        } else{
+                            toright = (int)((plotLength+60-(doorX[0]+40))*ratio);
+                        }
+                        //The top
+                        if(doorY[0] <= 60) {
+                            totop = 0;
+                        } else{
+                            totop = (int)((doorY[0]-60)*ratio);
+                        }
+                        //The bottom
+                        if(doorY[0]+40>=plotWidth+60) {
+                            tobottom = 0;
+                        } else{
+                            tobottom = (int)((plotWidth+60-(doorY[0]+40))*ratio);
+                        }
+                        Answer answer = new Answer(currentQuestion.getQuestionId(),"door-l",Integer.toString(toleft));
+                        clips.setAnswer(answer);
+                        answer = new Answer(currentQuestion.getQuestionId(),"door-r",Integer.toString(toright));
+                        clips.setAnswer(answer);
+                        answer = new Answer(currentQuestion.getQuestionId(),"door-t",Integer.toString(totop));
+                        clips.setAnswer(answer);
+                        answer = new Answer(currentQuestion.getQuestionId(),"door-b",Integer.toString(tobottom));
+                        clips.setAnswer(answer);
+                    } else {
+                        System.out.println("Please place the door image at the proper places.");
+                    }
                     container.RunClips();
                 }
             }
@@ -200,10 +256,10 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         int plotableWidth = this.getHeight() - 70;
         // System.out.println(plotableLength+" "+plotableWidth);
         // System.out.println(roomLength +" " + roomWidth);
-        double ratio = Math.max((double)roomLength/plotableLength, (double)roomWidth/plotableWidth);
+        ratio = Math.max((double)roomLength/plotableLength, (double)roomWidth/plotableWidth);
         // System.out.println(ratio);
-        int plotLength = (int) (roomLength/ratio);
-        int plotWidth = (int) (roomWidth/ratio);
+        plotLength = (int) (roomLength/ratio);
+        plotWidth = (int) (roomWidth/ratio);
         // System.out.println(plotLength + " " + plotWidth);
         layout = new Rectangle(60,60,plotLength,plotWidth);
     }
@@ -215,7 +271,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         Graphics2D g2D = (Graphics2D) g;
         g2D.draw(layout);
         
-        for(int i=0;i<5;i++){
+        for(int i=0;i<numImages;i++){
             g.drawImage(windowImages[i], windowX[i],windowY[i],40,40, this);
             g.drawImage(doorImages[i], doorX[i], doorY[i],40,40, this);
         }

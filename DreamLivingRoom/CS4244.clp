@@ -5,6 +5,7 @@
 (defmodule MAIN (export ?ALL)) 
 (defmodule QUESTION (import MAIN ?ALL))
 (defmodule SELECTION (import MAIN ?ALL))
+(defmodule COLOR (import MAIN ?ALL))
 (defmodule POSITIONING (import MAIN ?ALL))
 (defmodule LAYOUT (import MAIN ?ALL))
 
@@ -70,8 +71,12 @@
 (deftemplate MAIN::distance
    (slot category1 (type SYMBOL)) 
    (slot category2 (type SYMBOL))
+<<<<<<< .mine
+   (slot prefer (allowed-values close far)))
+=======
    (slot prefer (allowed-values close far))
    (multislot range (type FLOAT)))
+>>>>>>> .r45
 
 
 ;; Furniture is a template to store the information of
@@ -98,14 +103,20 @@
 ;; Note that since the furniture could have two kinds of
 ;; orientations, thus x2-x1 may not always
 ;; represent the length.
-;; 4 orientations.
 (deftemplate furniture-pos
 (slot fid (type INTEGER))
+<<<<<<< .mine
+(slot x1 (type INTEGER))
+(slot y1 (type INTEGER))
+(slot x2 (type INTEGER))
+(slot y2 (type INTEGER))
+=======
 (slot orientation (allowed-values left right top bottom))
 (slot toleft (type INTEGER))
 (slot toright (type INTEGER))
 (slot totop (type INTEGER))
 (slot tobottom (type INTEGER))
+>>>>>>> .r52
 )
 
 
@@ -139,7 +150,7 @@
 (furniture (id SOFA0002) (function sofa) (name ARILD-3-seater-sofa) (color white) (theme modern cozy nature warm) (length 2070) (width 940) (height 810))
 (furniture (id SOFA0003) (function sofa) (name ARILD-2-seater-sofa) (color black) (theme modern cozy) (length 1560) (width 940) (height 810))
 (furniture (id SOFA0004) (function sofa) (name ARILD-2-seater-sofa) (color white) (theme modern cozy nature warm) (length 1560)(width 940) (height 810))
-(furniture (id SOFA0005) (function sofa) (name EKTORP-2-seater-sofa) (color blue-white-stripes) (theme cozy nature warm) (length 1385)(width 740) (height 800))
+(furniture (id SOFA0005) (function sofa) (name EKTORP-2-seater-sofa) (color blue) (theme cozy nature warm) (length 1385)(width 740) (height 800))
 (furniture (id SOFA0006) (function sofa) (name EKTORP-3-seater-sofa) (color white) (theme modern cozy nature warm) (length 2590)(width 770) (height 730))
 (furniture (id SOFA0007) (function sofa) (name EKTORP-3-seater-sofa) (color black) (theme modern cozy) (length 2590)(width 770) (height 730))
 (furniture (id SOFA0008) (function sofa) (name EKTORP-3-seater-sofa) (color blue) (theme modern cozy nature) (length 2590)(width 770) (height 730))
@@ -148,7 +159,7 @@
 (furniture (id SOFA0011) (function sofa) (name EKTORP-2-seater-sofa) (color black) (theme modern cozy) (length 1080)(width 770) (height 730))
 (furniture (id SOFA0012) (function sofa) (name EKTORP-2-seater-sofa) (color red) (theme cozy warm) (length 1080)(width 770) (height 730))
 (furniture (id SOFA0013) (function sofa) (name EKTORP-2-seater-sofa) (color dark-brown) (theme cozy nature warm) (length 1080)(width 770) (height 730))
-(furniture (id SOFA0014) (function sofa) (name EKTORP-2-seater-sofa) (color flory-white) (theme cozy nature warm) (length 1080)(width 770) (height 730))
+(furniture (id SOFA0014) (function sofa) (name EKTORP-2-seater-sofa) (color flory) (theme cozy nature warm) (length 1080)(width 770) (height 730))
 (furniture (id SOFA0015) (function sofa) (name IKEA-STOCKHOLM-3-seater-sofa) (color black) (theme modern cozy) (length 2120)(width 890) (height 720))
 (furniture (id SOFA0016) (function sofa) (name IKEA-STOCKHOLM-3-seater-sofa) (color white) (theme modern cozy nature warm) (length 2120)(width 890) (height 720))
 (furniture (id SOFA0017) (function sofa) (name KARLSTAD-armchair) (color black) (theme modern cozy) (length 970)(width 940) (height 810))
@@ -167,7 +178,7 @@
 (furniture (id SOFA0030) (function sofa) (name DYNAMIC-PICENO-CHESTERFIELD-2-seater-sofa) (color dark-brown) (theme cozy nature warm) (length 1650)(width 750) (height 890))
 (furniture (id SOFA0031) (function sofa) (name ITALSOFA-CROSIA-3-seater-sofa) (color pink) (theme cozy nature warm) (length 2240)(width 950) (height 850))
 (furniture (id SOFA0032) (function sofa) (name ITALSOFA-VEGA-3-seater-sofa) (color red) (theme cozy nature warm) (length 2250)(width 950) (height 950))
-(furniture (id SOFA0033) (function sofa) (name LORENZO-BRAXTON-3-seater-sofa) (color light-green) (theme cozy nature) (length 2240)(width 950) (height 800))
+(furniture (id SOFA0033) (function sofa) (name LORENZO-BRAXTON-3-seater-sofa) (color green) (theme cozy nature) (length 2240)(width 950) (height 800))
 (furniture (id SOFA0034) (function sofa) (name DYNAMIC-MARCEL-3-seater-sofa) (color green) (theme cozy nature) (length 2180)(width 950) (height 950))
 (furniture (id SOFA0035) (function sofa) (name DYNAMIC-LUCIA-3-seater-sofa) (color brown) (theme cozy nature) (length 2130)(width 820) (height 860))
 (furniture (id SOFA0036) (function sofa) (name DYNAMIC-CARLA-3-seater-sofa) (color red) (theme cozy warm) (length 2130)(width 960) (height 910))
@@ -225,12 +236,12 @@
 (furniture (id MS0007) (function media-system) (name PHILIPS-HTS7540) (color black) (theme modern cozy) (length 1380) (width 358) (height 1199))
 
 (furniture (id PIANO0001) (function piano) (name KAWAI-K15-E) (color black) (theme cozy nature warm) (length 1490) (width 590) (height 1100))
-(furniture (id piano0002) (function piano) (name YAMAHA-YUS1) (color black) (theme modern cozy warm) (length 1520) (width 610) (height 1210))
-(furniture (id piano0003) (function piano) (name YAMAHA-YUS5) (color black) (theme modern cozy warm) (length 1520) (width 650) (height 1310))
-(furniture (id piano0004) (function piano) (name YAMAHA-U1) (color brown) (theme cozy nature warm) (length 1530) (width 610) (height 1210))
-(furniture (id piano0005) (function piano) (name YAMAHA-CFX) (color black) (theme modern cozy nature warm) (length 1530) (width 1530) (height 1210))
-(furniture (id piano0006) (function piano) (name YAMAHA-YDP-V240) (color dark-brown) (theme cozy nature warm) (length 1369) (width 502) (height 852))
-(furniture (id piano0007) (function piano) (name YAMAHA-CVP-409GP) (color black) (theme modern cozy warm) (length 1435) (width 1147) (height 905))
+(furniture (id PIANO0002) (function piano) (name YAMAHA-YUS1) (color black) (theme modern cozy warm) (length 1520) (width 610) (height 1210))
+(furniture (id PIANO0003) (function piano) (name YAMAHA-YUS5) (color black) (theme modern cozy warm) (length 1520) (width 650) (height 1310))
+(furniture (id PIANO0004) (function piano) (name YAMAHA-U1) (color brown) (theme cozy nature warm) (length 1530) (width 610) (height 1210))
+(furniture (id PIANO0005) (function piano) (name YAMAHA-CFX) (color black) (theme modern cozy nature warm) (length 1530) (width 1530) (height 1210))
+(furniture (id PIANO0006) (function piano) (name YAMAHA-YDP-V240) (color dark-brown) (theme cozy nature warm) (length 1369) (width 502) (height 852))
+(furniture (id PIANO0007) (function piano) (name YAMAHA-CVP-409GP) (color black) (theme modern cozy warm) (length 1435) (width 1147) (height 905))
 
 (furniture (id BS0001) (function bookshelf) (name BILLY-Bookcase) (color red) (theme cozy warm) (length 800) (width 280) (height 2020))
 (furniture (id BS0002) (function bookshelf) (name EXPEDIT-Bookcase) (color black) (theme modern cozy nature) (length 1850) (width 390) (height 1850))
@@ -257,8 +268,8 @@
 (furniture (id ST0007) (function small-table) (name IKEA-PS-KARLJOHAN-side-table) (color brown) (theme cozy nature warm) (length 470) (width 470) (height 270))
 (furniture (id ST0008) (function small-table) (name LINDVED-side-table) (color white) (theme cozy nature warm) (length 500) (width 500) (height 500))
 (furniture (id ST0009) (function small-table) (name VEJMON-side-table) (color beige) (theme cozy nature warm) (length 600) (width 600) (height 600))
-(furniture (id ST0010) (function small-table) (name RAMVIK-side-table) (color black-brown) (theme modern cozy) (length 430) (width 450) (height 500))
-(furniture (id ST0011) (function small-table) (name SILENTNIGHT-SOMERTON-side-table) (color black-brown) (theme modern cozy nature warm) (length 500) (width 400) (height 500))
+(furniture (id ST0010) (function small-table) (name RAMVIK-side-table) (color dark-brown) (theme modern cozy) (length 430) (width 450) (height 500))
+(furniture (id ST0011) (function small-table) (name SILENTNIGHT-SOMERTON-side-table) (color dark-brown) (theme modern cozy nature warm) (length 500) (width 400) (height 500))
 (furniture (id ST0012) (function small-table) (name BRADSHAW-side-table) (color brown) (theme cozy nature warm) (length 585) (width 600) (height 450))
 (furniture (id ST0013) (function small-table) (name GERACE-side-table) (color brown) (theme cozy nature warm) (length 450) (width 450) (height 450))
 (furniture (id ST0014) (function small-table) (name LORENZO-HAMPSHIRE-side-table) (color black) (theme modern cozy nature) (length 600) (width 600) (height 600))
@@ -556,7 +567,9 @@
 	(retract ?largefurniture)
 )
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                  Advanced selection rules                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Advanced user-selection rules
 ;; If more than one facts were selected, need to prompt question
 ;; to user to ask them to select their preference furniture.
@@ -568,7 +581,6 @@
 => 
 	(assert (question (question-id (sym-cat ?id1 ?id2)) (question-type furniture-preference) (text "Please select you favorite furniture.") (valid-answers ?id1 ?id2))))
 
-
 (defrule SELECTION::answer-user-select-furniture
         (answer (question-id ?id) (value ?v))
         ?question <- (question (question-id ?id) (question-type furniture-preference) (valid-answers ?id1 ?id2))
@@ -577,9 +589,8 @@
         (retract ?id2)
      else
         (retract ?id1)
-     (retract ?question)))
-
-
+     (retract ?question)))	
+	 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   POSITIONING rules                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -666,7 +677,7 @@
         (bind ?wrank (rank ?tw ?wl ?wr ?wt ?wb))
         (bind ?drank (rank ?td ?dl ?dr ?dt ?db))
         (printout t ?wrank " " ?drank crlf))
-
+	
 (defrule POSITIONING::position-sofa
 	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
 	(room-size (length ?rlength) (width ?rwidth))
@@ -694,3 +705,114 @@
 	(?furniture-length ?furniture-width ?room-length ?room-width)
 	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                   COLORS rules                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; White color generally
+;;; can be used to match with any other colors.
+;;; But in duo color combination
+(defrule COLOR::black-white-selection
+	?black-white <- (furniture (color black|white))
+	=> (retract ?black-white)
+)
+
+(defrule COLOR::blue-white-selection
+	?black-white <- (furniture (color blue|white))
+	=> (retract ?black-white)
+)
+
+(defrule COLOR::red-white-selection
+	?red-white <- (furniture (color red|white))
+	=> (retract ?red-white)
+)
+
+(defrule COLOR::green-white-selection
+	?green-white <- (furniture (color green|white))
+	=> (retract ?green-white)
+)
+
+(defrule COLOR::beige-white-selection
+	?beige-white <- (furniture (color beige|white))
+	=> (retract ?beige-white)
+)
+
+(defrule COLOR::brown-white-selection
+	?brown-white <- (furniture (color brown|white))
+	=> (retract ?brown-white)
+)
+
+(defrule COLOR::dark-brown-white-selection
+	?dark-brown-white <- (furniture (color dark-brown|white))
+	=> (retract ?dark-brown-white)
+)
+
+(defrule COLOR::pink-white-selection
+	?pink-white <- (furniture (color pink|white))
+	=> (retract ?pink-white)
+)
+
+(defrule COLOR::purple-white-selection
+	?purple-white <- (furniture (color purple|white))
+	=> (retract ?purple-white)
+)
+
+(defrule COLOR::flory-white-selection
+	?flory-white <- (furniture (color flory|white))
+	=> (retract ?flory-white)
+)
+(defrule COLOR::yellow-white-selection
+	?yellow-white <- (furniture (color yellow|white))
+	=> (retract ?yellow-white)
+)
+
+(defrule COLOR::grey-white-selection
+	?grey-white <- (furniture (color grey|white))
+	=> (retract ?grey-white)
+)
+
+(defrule COLOR::silver-white-selection
+	?silver-white <- (furniture (color silver|white))
+	=> (retract ?silver-white)
+)
+
+;;; Green can be matched with beige, brown, dark-brown, black,silver
+(defrule COLOR::green-selection
+	?green <- (furniture (color green|beige|brown|dark-brown|black|silver))
+	=> (retract ?green)
+)
+
+;;;flory can be matched with beige, brown, dark-brown, silver,yellow
+(defrule COLOR::flory-selection
+	?flory <- (furniture (color flory|beige|brown|dark-brown|silver|yellow))
+	=> (retract ?flory)
+)
+
+;;; Blue can be matched with black, beige, dark-brown, brown, silver
+(defrule COLOR::blue-selection
+	?blue <- (furniture (color blue|beige|brown|dark-brown|black|silver))
+	=> (retract ?blue)
+)
+
+;;; Red can be matched with beige, brown, dark-brown, silver,black, yellow
+(defrule COLOR::red-selection
+	?red <- (furniture (color red|beige|dark-brown|brown|silver|black|yellow))
+	=> (retract ?red)
+)
+;;;Purple can be matched with beige, brown, dark-brown, silver, black
+(defrule COLOR::purple-selection
+	?purple <- (furniture (color purple|beige|dark-brown|brown|silver|black))
+	=> (retract ?purple)
+)
+
+;;;Pink can be matched with beige, brown, dark-brown, silver, black
+(defrule COLOR::pink-selection
+	?pink <- (furniture (color purple|beige|dark-brown|brown|silver|black))
+	=> (retract ?pink)
+)
+
+;;;Grey can be matched with beige, dark-brown, silver, black, purple, brown
+(defrule COLOR::grey-selection
+	?grey <- (furniture (color grey|beige|dark-brown|brown|silver|black|purple))
+	=> (retract ?grey)
+)
+	

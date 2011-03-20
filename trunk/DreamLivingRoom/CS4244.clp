@@ -9,6 +9,10 @@
 (defmodule POSITIONING (import MAIN ?ALL))
 (defmodule LAYOUT (import MAIN ?ALL))
 
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                      MAIN templates                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -71,12 +75,8 @@
 (deftemplate MAIN::distance
    (slot category1 (type SYMBOL)) 
    (slot category2 (type SYMBOL))
-<<<<<<< .mine
-   (slot prefer (allowed-values close far)))
-=======
    (slot prefer (allowed-values close far))
    (multislot range (type FLOAT)))
->>>>>>> .r45
 
 
 ;; Furniture is a template to store the information of
@@ -103,20 +103,14 @@
 ;; Note that since the furniture could have two kinds of
 ;; orientations, thus x2-x1 may not always
 ;; represent the length.
+;; 4 orientations.
 (deftemplate furniture-pos
 (slot fid (type INTEGER))
-<<<<<<< .mine
-(slot x1 (type INTEGER))
-(slot y1 (type INTEGER))
-(slot x2 (type INTEGER))
-(slot y2 (type INTEGER))
-=======
 (slot orientation (allowed-values left right top bottom))
 (slot toleft (type INTEGER))
 (slot toright (type INTEGER))
 (slot totop (type INTEGER))
 (slot tobottom (type INTEGER))
->>>>>>> .r52
 )
 
 
@@ -678,6 +672,12 @@
         (bind ?drank (rank ?td ?dl ?dr ?dt ?db))
         (printout t ?wrank " " ?drank crlf))
 	
+
+(deffunction furniture-ratio
+	(?furniture-length ?furniture-width ?room-length ?room-width)
+	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
+
+
 (defrule POSITIONING::position-sofa
 	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
 	(room-size (length ?rlength) (width ?rwidth))
@@ -701,9 +701,9 @@
 	)
 )
 
-(deffunction furniture-ratio
-	(?furniture-length ?furniture-width ?room-length ?room-width)
-	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   COLORS rules                           ;;

@@ -667,3 +667,30 @@
         (bind ?drank (rank ?td ?dl ?dr ?dt ?db))
         (printout t ?wrank " " ?drank crlf))
 
+(defrule POSITIONING::position-sofa
+	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
+	(room-size (length ?rlength) (width ?rwidth))
+	;;(window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb) (orientation ?wo))
+	;;(door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db) (orientation ?do))
+	(distance (category1 sofa|window) (category2 sofa|window) (range ?sws ?swl))
+	(distance (category1 sofa|door) (category2 sofa|door) (range ?sds ?sdl))
+=>
+	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
+		(bind ?tl (* ?rlength ?sws))
+		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tt (* ?rwidth ?sds))
+		(bind ?tb (+ ?tt ?sofawidth))
+		(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
+	else 
+		(bind ?tl (* ?rlength ?swl))
+		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tt (* ?rwidth ?sdl))
+		(bind ?tb (+ ?tt ?sofawidth))
+		(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
+	)
+)
+
+(deffunction furniture-ratio
+	(?furniture-length ?furniture-width ?room-length ?room-width)
+	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
+

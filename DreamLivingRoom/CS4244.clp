@@ -8,10 +8,6 @@
 (defmodule POSITIONING (import MAIN ?ALL))
 (defmodule LAYOUT (import MAIN ?ALL))
 
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                      MAIN templates                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -670,5 +666,4 @@
         (bind ?wrank (rank ?tw ?wl ?wr ?wt ?wb))
         (bind ?drank (rank ?td ?dl ?dr ?dt ?db))
         (printout t ?wrank " " ?drank crlf))
-
 

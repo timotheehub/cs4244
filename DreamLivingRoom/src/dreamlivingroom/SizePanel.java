@@ -80,11 +80,9 @@ public class SizePanel extends JPanel{
             else if(e.getActionCommand().equals("Submit")) {
                 String inputLength = lengthPanel.getText();
                 String inputWidth = widthPanel.getText();
-                if(inputLength.matches("^-?\\d{1,5}(\\.\\d+)?$") && inputWidth.matches("^-?\\d{1,5}(\\.\\d+)?$")
-                        && currentQuestion != null){
-                   // container.setRoomLength((int)(Double.parseDouble(lengthPanel.getText()))*1000);
-                  //  container.setRoomWidth((int)(Double.parseDouble(widthPanel.getText()))*1000);
-                  //  container.initWindowDoorPanel();
+                if(inputLength.matches("^-?\\d{1,2}(\\.\\d+)?$") && inputWidth.matches("^-?\\d{1,2}(\\.\\d+)?$")
+                        && (currentQuestion != null) && (Double.parseDouble(inputWidth) >= 4.0f)
+                        && (Double.parseDouble(inputLength) >= 4.0f)){
                     Answer answer = new Answer(currentQuestion.getQuestionId(),
                     "room-width", Integer.toString((int)Double.parseDouble(inputWidth)*1000));
                     clips.setAnswer(answer);
@@ -94,7 +92,7 @@ public class SizePanel extends JPanel{
                     container.RunClips();
                 }
                 else{
-                    System.out.println("Only 5 digits is allowed.");
+                    System.out.println("Only values between 4 and 99 are allowed.");
                 }
             }
         }

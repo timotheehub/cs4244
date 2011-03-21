@@ -754,106 +754,108 @@
 ;;; But in duo color combination
 (defrule COLOR::black-white-selection
 	?black-white <- (furniture (color black|white))
-	=> (retract ?black-white)
+	=>(create$ ?black-white)
 )
 
 (defrule COLOR::blue-white-selection
-	?black-white <- (furniture (color blue|white))
-	=> (retract ?black-white)
+	?blue-white <- (furniture (color blue|white))
+	=>(create$ ?blue-white)
 )
 
 (defrule COLOR::red-white-selection
 	?red-white <- (furniture (color red|white))
-	=> (retract ?red-white)
+	=>(create$ ?red-white)
 )
 
 (defrule COLOR::green-white-selection
 	?green-white <- (furniture (color green|white))
-	=> (retract ?green-white)
+	=>(create$ ?green-white)
 )
 
 (defrule COLOR::beige-white-selection
 	?beige-white <- (furniture (color beige|white))
-	=> (retract ?beige-white)
+	=>(create$ ?beige-white)
 )
 
 (defrule COLOR::brown-white-selection
 	?brown-white <- (furniture (color brown|white))
-	=> (retract ?brown-white)
+	=>(create$ ?brown-white)
 )
 
 (defrule COLOR::dark-brown-white-selection
 	?dark-brown-white <- (furniture (color dark-brown|white))
-	=> (retract ?dark-brown-white)
+	=>(create$ ?dark-brown-white)
 )
 
 (defrule COLOR::pink-white-selection
 	?pink-white <- (furniture (color pink|white))
-	=> (retract ?pink-white)
+	=>(create$ ?pink-white)
 )
 
 (defrule COLOR::purple-white-selection
 	?purple-white <- (furniture (color purple|white))
-	=> (retract ?purple-white)
+	=>(create$ ?purple-white)
 )
 
 (defrule COLOR::flory-white-selection
 	?flory-white <- (furniture (color flory|white))
-	=> (retract ?flory-white)
+	=>(create$ ?flory-white)
 )
 (defrule COLOR::yellow-white-selection
 	?yellow-white <- (furniture (color yellow|white))
-	=> (retract ?yellow-white)
+	=>(create$ ?yellow-white)
 )
 
 (defrule COLOR::grey-white-selection
 	?grey-white <- (furniture (color grey|white))
-	=> (retract ?grey-white)
+	=>(create$ ?grey-white)
 )
 
 (defrule COLOR::silver-white-selection
 	?silver-white <- (furniture (color silver|white))
-	=> (retract ?silver-white)
+	=>(create$ ?silver-white)
 )
 
 ;;; Green can be matched with beige, brown, dark-brown, black,silver
 (defrule COLOR::green-selection
 	?green <- (furniture (color green|beige|brown|dark-brown|black|silver))
-	=> (retract ?green)
+	=>(create$ ?green)
 )
 
 ;;;flory can be matched with beige, brown, dark-brown, silver,yellow
 (defrule COLOR::flory-selection
 	?flory <- (furniture (color flory|beige|brown|dark-brown|silver|yellow))
-	=> (retract ?flory)
+	=>(create$ ?flory)
 )
 
 ;;; Blue can be matched with black, beige, dark-brown, brown, silver
 (defrule COLOR::blue-selection
 	?blue <- (furniture (color blue|beige|brown|dark-brown|black|silver))
-	=> (retract ?blue)
+	=>(create$ ?blue)
 )
 
 ;;; Red can be matched with beige, brown, dark-brown, silver,black, yellow
 (defrule COLOR::red-selection
 	?red <- (furniture (color red|beige|dark-brown|brown|silver|black|yellow))
-	=> (retract ?red)
+	=>(create$ ?red)
 )
 ;;;Purple can be matched with beige, brown, dark-brown, silver, black
 (defrule COLOR::purple-selection
 	?purple <- (furniture (color purple|beige|dark-brown|brown|silver|black))
-	=> (retract ?purple)
+	=>(create$ ?purple)
 )
 
 ;;;Pink can be matched with beige, brown, dark-brown, silver, black
 (defrule COLOR::pink-selection
 	?pink <- (furniture (color purple|beige|dark-brown|brown|silver|black))
-	=> (retract ?pink)
+	=>(create$ ?pink)
 )
 
 ;;;Grey can be matched with beige, dark-brown, silver, black, purple, brown
 (defrule COLOR::grey-selection
 	?grey <- (furniture (color grey|beige|dark-brown|brown|silver|black|purple))
-	=> (retract ?grey)
+	=>(create$ ?grey)
 )
 	
+
+

@@ -598,6 +598,8 @@
             (modify ?distance (range 0.6 0.8))))
 
 
+;; rank the sides of the place to start with based on the preference of the user.
+
 (deffunction POSITIONING::rank (?distance ?wl ?wr ?wt ?wb)
     (bind ?rankleft 0)
     (bind ?rankright 0)
@@ -655,16 +657,24 @@
             (bind ?rankbottom (+ ?rankbottom 1))))
     (return (create$ ?rankleft ?rankright ?ranktop ?rankbottom)))
 
+
+;; Tests if the two furnitures will overlap.
 (deffunction POSITIONING::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
     (if (and (< (+ (max ?tl1 ?tl2) (max ?tr1 ?tr2)) ?rlength) (< (+ (max ?tt1 ?tt2) (max ?tb1 ?tb2)) ?rwidth)) then
         (return True)
      else
         (return False))
-    (return False)
+    (return False))
 )
-(deffunction POSITIONING::loop-for-pos (?fid ?toleft ?toright ?totop ?tobottom ?direction))
+;; loop to find the position of the furniture
+(deffunction POSITIONING::loop-for-pos (?fid ?toleft ?toright ?totop ?tobottom ?direction)
+    (switch ?direction 
+        (case left then (printout t "what" crlf)))
+)
 
-(deffunction POSITIONING::find-start (?fid ?length ?width ?rlength ?rwidth ?first ?second ?middle)
+;; find the starting position of the furniture.
+;; If the furniture is the first to be placed, place the furniture at the starting position.
+(deffunction POSITIONING::find-start (?length ?width ?rlength ?rwidth ?first ?second)
     (bind ?toleft 0)
     (bind ?toright 0)
     (bind ?totop 0)
@@ -689,15 +699,15 @@
     (if (eq ?first left) then
         (bind ?toright (- ?rlength ?width))
         (switch ?second 
-            (case right then (bind ?direction 2))
-            (case top then (bind ?direction 2))
-            (case bottom then (bind ?direction 3))))
+            (case right then (bind ?direction top))
+            (case top then (bind ?direction top))
+            (case bottom then (bind ?direction bottom))))
     (if (eq ?first right) then
         (bind ?toleft (- ?rlength ?width))
         (switch ?second 
-            (case left then (bind ?direction 3))
-            (case top then (bind ?direction 2))
-            (case bottom then (bind ?direction 3))))
+            (case left then (bind ?direction bottom))
+            (case top then (bind ?direction top))
+            (case bottom then (bind ?direction bottom))))
     (if (or (eq ?first top) (eq ?first bottom)) then
         (bind ?orientation h)
         (bind ?toleft (/ (- ?rlength ?length) 2))
@@ -705,19 +715,16 @@
     (if (eq ?first top) then
         (bind ?tobottom (- ?rwidth ?width))
         (switch ?second 
-            (case left then (bind ?direction 1))
-            (case right then (bind ?direction 4))
-            (case bottom then (bind ?direction 4)))) 
+            (case left then (bind ?direction left))
+            (case right then (bind ?direction right))
+            (case bottom then (bind ?direction right)))) 
     (if (eq ?first bottom) then
         (bind ?totop (- ?rwidth ?width))
         (switch ?second 
-            (case left then (bind ?direction 1))
-            (case right then (bind ?direction 4))
-            (case top then (bind ?direction 1))))
-    (if (not (furniture-pos (fid ?other))) then
-        (assert (furniture-pos (fid ?fid) (toleft ?toleft) (toright ?toright) (totop ?totop) (tobottom ?tobottom)))
-     else
-        (loop-for-pos ?fid ?toleft ?toright ?totop ?tobottom ?direction)))
+            (case left then (bind ?direction left))
+            (case right then (bind ?direction right))
+            (case top then (bind ?direction left))))
+    (return (create$ ?toleft ?toright ?totop ?tobottom ?direction)))
 
 ;; Position TV first.
 (defrule POSITIONING::position-TV
@@ -725,7 +732,7 @@
         (room-size (length ?rlength) (width ?rwidth))
         (window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb))
         (door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db))
-        (not (furniture-pos (fid ?other)))
+        (not (furniture-pos))
         (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
         (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
 =>
@@ -743,9 +750,33 @@
         (if (> ?toprank ?firstscore) then (bind ?second ?first) (bind ?first top) (bind ?firstscore ?toprank)
          else (if (> ?toprank ?secondscore) then (bind ?second top) (bind ?secondscore ?toprank)))
         (bind ?bottomrank (+ (nth 4 ?wrank) (nth 4 ?drank)))
-        (if (> ?bottomrank ?firstscore) then (bind ?second ?first) (bind ?first bottom) (bind ?firstscore ?bottomscore)
+        (if (> ?bottomrank ?firstscore) then (bind ?second ?first) (bind ?first bottom) (bind ?firstscore ?bottomrank)
          else (if (> ?bottomrank ?secondscore) then (bind ?second bottom) (bind ?secondscore ?bottomrank)))
-        (printout t ?leftrank " " ?drank crlf))
+        (bind ?start (find-start ?tvlength ?tvwidth ?rlength ?rwidth ?first ?second))
+        (assert (furniture-pos (fid ?id) (toleft (nth 1 ?start)) (toright (nth 2 ?start)) (totop (nth 3 ?start)) (tobottom (nth 4 ?start)))))
+
+(deftemplate POSITIONING::temp-pos 
+    (slot pid (type SYMBOL))
+    (slot toleft (type INTEGER))
+    (slot toright (type INTEGER))
+    (slot totop (type INTEGER))
+    (slot tobottom (type INTEGER))
+    (slot fixed (type SYMBOL))
+)
+
+(defrule POSITIONING::position-cupboard
+    (furniture (id ?id) (function cupboard) (length ?cblength) (width ?cbwidth) (height ?cbheight))
+    (room-size (length ?rlength) (width ?rwidth))
+    (window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb))
+    (door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db))
+    (furniture-pos (fid ?fid))
+    (furniture (id ?fid) (function TV))
+    (distance (category1 cupboard) (category2 TV) (prefer ?cbtv))
+    (distance (category1 cupboard) (category2 window) (prefer ?cbw))
+    (distance (category2 cupboard) (category2 door) (prefer ?cvd))
+=>
+    (printout t "test" crlf))
+
 
 
 (deffunction furniture-ratio
@@ -766,7 +797,7 @@
 	(bind ?tl 0)
 	(bind ?tr 0)
 	(bind ?tt 0)
-	(bing ?tb 0)
+	(bind ?tb 0)
 =>
 (if (and (or (eq ?wo left) (eq ?wo right)) (or (eq ?do bottom) (eq ?do top))) then
 	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then

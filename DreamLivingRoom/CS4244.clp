@@ -268,17 +268,6 @@
 (furniture (id ST0013) (function small-table) (name GERACE-side-table) (color brown) (theme cozy nature warm) (length 450) (width 450) (height 450))
 (furniture (id ST0014) (function small-table) (name LORENZO-HAMPSHIRE-side-table) (color black) (theme modern cozy nature) (length 600) (width 600) (height 600))
 
-(furniture (id TL0001) (function tablelamp) (name ALANG-table-lamp) (color white) (theme modern cozy nature warm) (length 270) (width 270) (height 260))
-(furniture (id TL0002) (function tablelamp) (name ARSTID-table-lamp) (color white) (theme modern cozy nature warm) (length 170) (width 170) (height 170))
-(furniture (id TL0003) (function tablelamp) (name BOJA-table-lamp) (color brown) (theme cozy nature warm) (length 200) (width 200) (height 400))
-(furniture (id TL0004) (function tablelamp) (name FADO-table-lamp) (color white) (theme modern cozy nature warm) (length 250) (width 250) (height 230))
-(furniture (id TL0005) (function tablelamp) (name FILLSTA-table-lamp) (color white) (theme modern cozy nature warm) (length 270) (width 270) (height 310))
-(furniture (id TL0006) (function tablelamp) (name FILLSTA-table-lamp) (color orange) (theme modern cozy nature warm) (length 270) (width 270) (height 310))
-(furniture (id TL0007) (function tablelamp) (name GRONO-table-lamp) (color white) (theme modern cozy nature warm) (length 100) (width 100) (height 220))
-(furniture (id TL0008) (function tablelamp) (name KNUBBIG-table-lamp) (color green) (theme cozy nature warm) (length 200) (width 200) (height 110))
-(furniture (id TL0009) (function tablelamp) (name BRASA-table-lamp) (color black) (theme modern cozy) (length 470) (width 470) (height 260))
-(furniture (id TL0010) (function tablelamp) (name LAMPAN-table-lamp) (color red) (theme cozy warm) (length 190) (width 190) (height 290))
-(furniture (id TL0011) (function tablelamp) (name LJUSAS-SALBO-table-lamp) (color beige) (theme cozy nature warm) (length 140) (width 140) (height 610))
 )
 
 

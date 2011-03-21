@@ -661,7 +661,7 @@
      else
         (return False))
     (return False)
-
+)
 (deffunction POSITIONING::loop-for-pos (?fid ?toleft ?toright ?totop ?tobottom ?direction))
 
 (deffunction POSITIONING::find-start (?fid ?length ?width ?rlength ?rwidth ?first ?second ?middle)
@@ -771,49 +771,50 @@
 (if (and (or (eq ?wo left) (eq ?wo right)) (or (eq ?do bottom) (eq ?do top))) then
 	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
 		(bind ?tl (* ?rlength ?sws))
-		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tr (- rlength (+ ?tl ?sofalength))) 
 		(bind ?tt (* ?rwidth ?sds))
-		(bind ?tb (+ ?tt ?sofawidth))
+		(bind ?tb (- rwidth (+ ?tt ?sofawidth)))
 	else 
 		(bind ?tl (* ?rlength ?swl))
-		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tr (- rlength (+ ?tl ?sofalength))) 
+
 		(bind ?tt (* ?rwidth ?sdl))
-		(bind ?tb (+ ?tt ?sofawidth))
+		(bind ?tb (- rwidth (+ ?tt ?sofawidth))) 
+
 	)
 )
 (if (and (or (eq ?do left) (eq ?do right)) (or (eq ?wo bottom) (eq ?wo top))) then
 	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
 		(bind ?tl (* ?rlength ?sds))
-		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tr (- rlength (+ ?tl ?sofalength)))
 		(bind ?tt (* ?rwidth ?sws))
-		(bind ?tb (+ ?tt ?sofawidth))
+		(bind ?tb (- rwidth (+ ?tt ?sofawidth)))
 	else 
 		(bind ?tl (* ?rlength ?sdl))
-		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tr (- rlength (+ ?tl ?sofalength))) 
 		(bind ?tt (* ?rwidth ?swl))
-		(bind ?tb (+ ?tt ?sofawidth))
+		(bind ?tb (- rwidth (+ ?tt ?sofawidth)))
 	)
 )
 
 (if (or (and (eq ?wo top) (eq ?do bottom)) (and (eq ?wo bottom) (eq ?do top)))  then
 	(bind ?tl (* ?rlength 0.4))
-	(bind ?tr (+ ?tl ?sofalength))
+	(bind ?tr (- rlength (+ ?tl ?sofalength)))
 	(bind ?tt (* ?rwidth 0.4))
-	(bind ?tb (+ ?tt ?sofawidth))
+	(bind ?tb (- rwidth (+ ?tt ?sofawidth)))
 )
 (if (and (eq ?wo top) (eq ?do top))  then
 	(bind ?tl (* ?rlength ?swl))
-	(bind ?tr (+ ?tl ?sofalength))
+	(bind ?tr (- rlength (+ ?tl ?sofalength)))
 	(bind ?tt (* ?rwidth ?swl))
-	(bind ?tb (+ ?tt ?sofawidth))
+	(bind ?tb (- rwidth (+ ?tt ?sofawidth)))
 )
 (if (and (eq ?wo bottom) (eq ?do bottom))  then
 	(bind ?tl (* ?rlength ?sws))
-	(bind ?tr (+ ?tl ?sofalength))
+	(bind ?tr (- rlength (+ ?tl ?sofalength)))
 	(bind ?tt (* ?rwidth ?sws))
-	(bind ?tb (+ ?tt ?sofawidth))
+	(bind ?tb (- rwidth (+ ?tt ?sofawidth)))
 )
-
 	(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
 )
 

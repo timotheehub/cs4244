@@ -677,28 +677,69 @@
 	(?furniture-length ?furniture-width ?room-length ?room-width)
 	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
 
-
+;;This is quite complicated
+;;My rules is that taking the ratio of the sofa compared with the room in terms of area
+;;Using the ratio to determine the range of distance between  the sofa and the window,door
+;;Also considering the orientation of the window and door
 (defrule POSITIONING::position-sofa
 	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
 	(room-size (length ?rlength) (width ?rwidth))
-	;;(window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb) (orientation ?wo))
-	;;(door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db) (orientation ?do))
+	(window (orientation ?wo))
+	(door (orientation ?do))
 	(distance (category1 sofa|window) (category2 sofa|window) (range ?sws ?swl))
 	(distance (category1 sofa|door) (category2 sofa|door) (range ?sds ?sdl))
+	(bind ?tl 0)
+	(bind ?tr 0)
+	(bind ?tt 0)
+	(bing ?tb 0)
 =>
+(if (and (or (eq ?wo left) (eq ?wo right)) (or (eq ?do bottom) (eq ?do top))) then
 	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
 		(bind ?tl (* ?rlength ?sws))
 		(bind ?tr (+ ?tl ?sofalength))
 		(bind ?tt (* ?rwidth ?sds))
 		(bind ?tb (+ ?tt ?sofawidth))
-		(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
 	else 
 		(bind ?tl (* ?rlength ?swl))
 		(bind ?tr (+ ?tl ?sofalength))
 		(bind ?tt (* ?rwidth ?sdl))
 		(bind ?tb (+ ?tt ?sofawidth))
-		(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
 	)
+)
+(if (and (or (eq ?do left) (eq ?do right)) (or (eq ?wo bottom) (eq ?wo top))) then
+	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
+		(bind ?tl (* ?rlength ?sds))
+		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tt (* ?rwidth ?sws))
+		(bind ?tb (+ ?tt ?sofawidth))
+	else 
+		(bind ?tl (* ?rlength ?sdl))
+		(bind ?tr (+ ?tl ?sofalength))
+		(bind ?tt (* ?rwidth ?swl))
+		(bind ?tb (+ ?tt ?sofawidth))
+	)
+)
+
+(if (or (and (eq ?wo top) (eq ?do bottom)) (and (eq ?wo bottom) (eq ?do top)))  then
+	(bind ?tl (* ?rlength 0.4))
+	(bind ?tr (+ ?tl ?sofalength))
+	(bind ?tt (* ?rwidth 0.4))
+	(bind ?tb (+ ?tt ?sofawidth))
+)
+(if (and (eq ?wo top) (eq ?do top))  then
+	(bind ?tl (* ?rlength ?swl))
+	(bind ?tr (+ ?tl ?sofalength))
+	(bind ?tt (* ?rwidth ?swl))
+	(bind ?tb (+ ?tt ?sofawidth))
+)
+(if (and (eq ?wo bottom) (eq ?do bottom))  then
+	(bind ?tl (* ?rlength ?sws))
+	(bind ?tr (+ ?tl ?sofalength))
+	(bind ?tt (* ?rwidth ?sws))
+	(bind ?tb (+ ?tt ?sofawidth))
+)
+
+	(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
 )
 
 

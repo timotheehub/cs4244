@@ -68,11 +68,10 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
              s2 = question.getValidAnswers().get(1);
              s3 = s1 + ".jpg";
              s4 = s2 + ".jpg";
-             File file1 = new File(s3);
-             File file2 = new File(s4);
+             File file1 = new File(imagedir + s3);
+             File file2 = new File(imagedir + s4);
 
-            JButton button1 = new JButton();
-            JButton button2 = new JButton();
+            
            
              img1 = ImageIO.read(file1);
              img2 = ImageIO.read(file2);

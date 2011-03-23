@@ -94,6 +94,22 @@
 )
 
 
+;; Copy-furniture is a template to store the information of
+;; furnitures. Each furniture has a copy so that when we
+;; remove a furniture, we still have access to the copy.
+(deftemplate MAIN::copy-furniture
+	(slot id (type SYMBOL))
+	(slot function (type SYMBOL))
+	(slot name (type SYMBOL))
+	(slot color (type SYMBOL))
+	(multislot theme (type SYMBOL))
+	(slot length (type INTEGER))
+	(slot width (type INTEGER))
+	(slot height (type INTEGER))
+)
+
+
+
 ;; The space the furniture occupies.
 ;; fid is the id of the furniture.
 ;; (x1,y1) is the position of the top-left corner of the
@@ -293,6 +309,17 @@
    (focus SELECTION))
 
 
+;; Copy all the furnitures
+(defrule MAIN::copy-all-furnitures
+   (furniture (id ?id) (function ?function) (name ?name)
+      (color ?color) (theme ?theme) (length ?length)
+      (width ?width) (height ?height))
+=>
+   (assert (copy-furniture (id ?id) (function ?function)
+      (name ?name) (color ?color) (theme ?theme)
+      (length ?length) (width ?width) (height ?height))))
+
+
 
 
 
@@ -351,7 +378,8 @@
 =>
    (assert (question (question-id (sym-cat ?cat1 ?cat2)) (question-type preference) (category1 ?cat1) (category2 ?cat2)
       (text (str-cat "What would be your preference for the distance between " ?cat1 " and " ?cat2 "?"))
-      (valid-answers "As far as possible" "As close as possible"))))
+      (valid-answers "As far as possible" "As close as possible")))
+    (retract ?preference))
 
 
 ;; If there is an answer for a preference of distance, we 
@@ -843,6 +871,39 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   COLORS rules                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Answer color advice
+(defrule COLOR::advice-answer
+   (answer (question-id ?id) (value ?value))
+   ?question <- (question (question-id ?id) (valid-answers ?answers))
+   ?old-fact <- (furniture (id ?old-id))
+   (copy-furniture (id ?new-id) (function ?function)
+      (name ?name) (color ?color) (theme ?theme)
+      (length ?length) (width ?width) (height ?height))
+   ?furniture-pos <- (furniture-pos (fid ?new-id))
+=>
+   (if (= ?value (nth$ 2 ?answers)) then
+      ;; TODO : calculate the new tobottom, toleft and so on
+      (modify ?furniture-pos (fid ?new-id))
+      (assert (copy-furniture (id ?new-id)
+         (function ?function) (name ?name) (color ?color)
+         (theme ?theme) (length ?length) (width ?width)
+         (height ?height)))
+   )
+   (retract ?question)
+)
+
+
+;; Red green color
+(defrule COLOR::red-green-remove
+   (furniture (id ?red-id) (color red) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?new-id) (color white|black|pink|brown) (function ?function))
+=>
+   (assert (question (question-id red-green)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?green-id ?new-id)))
+)
+
+
 ;;; White color generally
 ;;; can be used to match with any other colors.
 ;;; But in duo color combination

@@ -13,6 +13,9 @@ import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
 import java.awt.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -89,7 +92,11 @@ public class SizePanel extends JPanel{
                     answer = new Answer(currentQuestion.getQuestionId(),
                     "room-length", Integer.toString((int)Double.parseDouble(inputLength)*1000));
                     clips.setAnswer(answer);
-                    container.RunClips();
+                    try {
+                        container.RunClips();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SizePanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 else{
                     System.out.println("Only values between 4 and 99 are allowed.");

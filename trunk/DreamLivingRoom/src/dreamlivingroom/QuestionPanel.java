@@ -14,6 +14,9 @@ package dreamlivingroom;
 import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JRadioButton;
 import java.lang.*;
 
@@ -101,7 +104,11 @@ public class QuestionPanel extends javax.swing.JPanel {
             Answer answer = new Answer(currentQuestion.getQuestionId(),
                     currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
-            container.RunClips();
+            try {
+                container.RunClips();
+            } catch (IOException ex) {
+                Logger.getLogger(QuestionPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -20,6 +20,15 @@ package dreamlivingroom;
 import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
+import java.awt.Graphics2D;
+import java.awt.Dimension;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class PictureDisplayPanel extends javax.swing.JPanel {
@@ -29,6 +38,9 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
     ClipsEngine clips;
     MainFrame container;
     private String imagedir = "database/";
+    BufferedImage img1,img2;
+    BufferedImage sm1,sm2;
+    ImageIcon ic1,ic2;
 
    
 
@@ -41,8 +53,8 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
 
     }
 
-    public void setQuestion(Question question){
-        String s1,s2;
+    public void setQuestion(Question question) throws IOException{
+        String s1,s2,s3,s4;
         //Assign question, question looks the same for each function
         currentQuestion = question;
 
@@ -54,10 +66,36 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         {
              s1 = question.getValidAnswers().get(0);
              s2 = question.getValidAnswers().get(1);
-             s1 = s1 + ".jpg";
-             s2 = s2 + ".jpg";
-             jButton1 = new JButton(new ImageIcon(imagedir + s1));
-             jButton2 = new JButton(new ImageIcon(imagedir + s2));
+             s3 = s1 + ".jpg";
+             s4 = s2 + ".jpg";
+             File file1 = new File(s3);
+             File file2 = new File(s4);
+
+            JButton button1 = new JButton();
+            JButton button2 = new JButton();
+           
+             img1 = ImageIO.read(file1);
+             img2 = ImageIO.read(file2);
+
+            
+             sm1 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
+              sm2 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
+              Graphics2D g1 = sm1.createGraphics();
+
+              Graphics2D g2 = sm2.createGraphics();
+              g1.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+              g1.drawImage(img1,0,0,250,250,null);
+              g1.dispose();
+              g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+              g2.drawImage(img2,0,0,250,250,null);
+              g2.dispose();
+              ic1 = new ImageIcon(sm1);
+              ic2 = new ImageIcon(sm2);
+             jButton1.setIcon(ic1);
+             jButton2.setIcon(ic2);
+             jButton1.setActionCommand(s1);
+             jButton2.setActionCommand(s2);
+
              repaint();
 
         }
@@ -77,14 +115,20 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setText("jButton1");
+        jButton1.setMaximumSize(new java.awt.Dimension(248, 248));
+        jButton1.setMinimumSize(new java.awt.Dimension(248, 248));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText("jButton2");
+        jButton2.setMaximumSize(new java.awt.Dimension(248, 248));
+        jButton2.setMinimumSize(new java.awt.Dimension(248, 248));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -97,16 +141,17 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(72, 72, 72))
             .addGroup(layout.createSequentialGroup()
-                .addGap(178, 178, 178)
-                .addComponent(jLabel1)
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(178, 178, 178)
+                        .addComponent(jLabel1)))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,8 +160,8 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                 .addGap(81, 81, 81))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -131,7 +176,11 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
             }
             Answer answer = new Answer(currentQuestion.getQuestionId(),currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
-            container.RunClips();
+            try {
+                container.RunClips();
+            } catch (IOException ex) {
+                Logger.getLogger(PictureDisplayPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -145,7 +194,11 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
             }
             Answer answer = new Answer(currentQuestion.getQuestionId(),currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
-            container.RunClips();
+            try {
+                container.RunClips();
+            } catch (IOException ex) {
+                Logger.getLogger(PictureDisplayPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

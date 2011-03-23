@@ -26,6 +26,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -201,7 +203,11 @@ public class WindowDoorPanel extends javax.swing.JPanel {
                     answer = new Answer(currentQuestion.getQuestionId(),
                         "door-orientation", doorOrientation);
                     clips.setAnswer(answer);
-                    container.RunClips();
+                    try {
+                        container.RunClips();
+                    } catch (IOException ex) {
+                        Logger.getLogger(WindowDoorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }

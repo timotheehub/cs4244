@@ -14,6 +14,9 @@ package dreamlivingroom;
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Question;
 import ClipsInteraction.RoomSize;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -77,7 +80,11 @@ public class MainFrame extends javax.swing.JFrame {
             public void run() {
                 MainFrame mainFrame = new MainFrame();
                 mainFrame.setVisible(true);
-                mainFrame.RunClips();
+                try {
+                    mainFrame.RunClips();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -129,8 +136,19 @@ public class MainFrame extends javax.swing.JFrame {
         add(mainPanel);
         repaint();
     }
+//     private void initTestingPanel() {
+//          if (mainPanel != null)
+//        {
+//            mainPanel.setVisible(false);
+//        }
+//        mainPanel = new TestingPanel(this);
+//        mainPanel.setSize(600,400);
+//        add(mainPanel);
+//        repaint();
+//    }
+
      
-    public void RunClips()
+    public void RunClips() throws IOException
     {
         Question question;
         clips.runEnvironment();

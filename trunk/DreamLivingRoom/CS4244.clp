@@ -83,7 +83,7 @@
 ;; furnitures.
 ;; Each furniture should have a distinct id.
 (deftemplate MAIN::furniture
-	(slot id (type SYMBOL))
+	(slot id)
 	(slot function (type SYMBOL))
 	(slot name (type SYMBOL))
 	(slot color (type SYMBOL))
@@ -98,7 +98,7 @@
 ;; furnitures. Each furniture has a copy so that when we
 ;; remove a furniture, we still have access to the copy.
 (deftemplate MAIN::copy-furniture
-	(slot id (type SYMBOL))
+	(slot id)
 	(slot function (type SYMBOL))
 	(slot name (type SYMBOL))
 	(slot color (type SYMBOL))
@@ -295,7 +295,9 @@
 ;; The first focus must be on QUESTION when there is a new
 ;; answer
 (defrule MAIN::answer-focus-question
-   (answer)
+   (answer (question-id ?id))
+   (question (question-id ?id)
+      (question-type ~furniture-preference))
    =>
    (focus QUESTION))
 
@@ -307,6 +309,18 @@
    (not(exists(question (question-type preference))))
    =>
    (focus SELECTION))
+
+
+;; If there is an answer for a furniture-preference question,
+;; we will ask the next selection question
+(defrule MAIN::answer-focus-selection
+   (answer (question-id ?id))
+   (question (question-id ?id)
+      (question-type furniture-preference))
+   =>
+   (focus SELECTION))
+
+
 
 
 ;; Copy all the furnitures
@@ -601,6 +615,7 @@
      else
         (retract ?id1)
      (retract ?question)))	
+
 	 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   POSITIONING rules                      ;;
@@ -874,14 +889,14 @@
 ;; Answer color advice
 (defrule COLOR::advice-answer
    (answer (question-id ?id) (value ?value))
-   ?question <- (question (question-id ?id) (valid-answers ?answers))
+   ?question <- (question (question-id ?id) (valid-answers ?old-id ?new-id))
    ?old-fact <- (furniture (id ?old-id))
    (copy-furniture (id ?new-id) (function ?function)
       (name ?name) (color ?color) (theme ?theme)
       (length ?length) (width ?width) (height ?height))
-   ?furniture-pos <- (furniture-pos (fid ?new-id))
+   ?furniture-pos <- (furniture-pos (fid ?old-id))
 =>
-   (if (= ?value (nth$ 2 ?answers)) then
+   (if (= ?value ?new-id) then
       ;; TODO : calculate the new tobottom, toleft and so on
       (modify ?furniture-pos (fid ?new-id))
       (assert (copy-furniture (id ?new-id)

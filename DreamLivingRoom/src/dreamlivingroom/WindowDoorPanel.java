@@ -116,19 +116,20 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             int [] tempCoordinates = new int[2]; // x and y
+            int [] windowCoordinates = new int[2];
 
             if((selected >=0) && (selected<10)
             && (isMouseOnAWall(windowX + e.getX() - mouseX,
-                windowY + e.getY() - mouseY, tempCoordinates))){
-                windowX = tempCoordinates[0];
-                windowY = tempCoordinates[1];
+                windowY + e.getY() - mouseY, tempCoordinates, windowCoordinates))){
+                windowX = windowCoordinates[0];
+                windowY = windowCoordinates[1];
             }
             else if((selected>=10)
                 && (isMouseOnAWall(doorX + e.getX() - mouseX,
-                    doorY + e.getY() - mouseY, tempCoordinates))){
+                    doorY + e.getY() - mouseY, tempCoordinates, windowCoordinates))){
                 doorX = tempCoordinates[0];
                 doorY = tempCoordinates[1];
-            }
+            } 
 
             mouseX = e.getX();
             mouseY = e.getY();
@@ -234,13 +235,15 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         }
     }
 
-    boolean isMouseOnAWall (int x, int y, int [] objectCoordinates) {
+    boolean isMouseOnAWall (int x, int y, int [] objectCoordinates, int [] windowCoordinates) {
         // Left wall
         if ((x >= (int)layout.getMinX() - 40) && (x <= (int)layout.getMinX())
             && (y >= (int)layout.getMinY() + 1) && (y <= (int)layout.getMaxY() - 40))
         {
             objectCoordinates[0] = (int)layout.getMinX() - 20;
             objectCoordinates[1] = y;
+            windowCoordinates[0] = (int)layout.getMinX() - 20;
+            windowCoordinates[1] = y;
         }
         // Right wall
         else if ((x >= (int)layout.getMaxX() - 40) && (x <= (int)layout.getMaxX())
@@ -248,6 +251,8 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         {
             objectCoordinates[0] = (int)layout.getMaxX() - 20;
             objectCoordinates[1] = y;
+            windowCoordinates[0] = (int)layout.getMaxX() - 20;
+            windowCoordinates[1] = y;
         }
         // Top wall
         else if ((x >= (int)layout.getMinX() + 1) && (x <= (int)layout.getMaxX() - 40)
@@ -255,6 +260,8 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         {
             objectCoordinates[0] = x;
             objectCoordinates[1] = (int)layout.getMinY() - 20;
+            windowCoordinates[0] = x;
+            windowCoordinates[1] = (int)layout.getMinY() - 20;
         }
         // Bottom wall
         else if ((x >= (int)layout.getMinX() + 1) && (x <= (int)layout.getMaxX() - 40)
@@ -262,12 +269,16 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         {
             objectCoordinates[0] = x;
             objectCoordinates[1] = (int)layout.getMaxY() - 20;
+            windowCoordinates[0] = x;
+            windowCoordinates[1] = (int)layout.getMinY() - 20;
         }
         // Initial position
         else
         {
             objectCoordinates[0] = 10;
-            objectCoordinates[1] = 100;
+            objectCoordinates[1] = 150;
+            windowCoordinates[0] = 10;
+            windowCoordinates[1] = 100;
         }
         return true;
     }

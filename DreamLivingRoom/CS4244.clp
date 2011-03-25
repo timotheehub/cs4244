@@ -121,8 +121,8 @@
 ;; represent the length.
 ;; 4 orientations.
 (deftemplate furniture-pos
-(slot fid (type INTEGER))
-(slot orientation (allowed-values left right top bottom))
+(slot fid (type SYMBOL))
+(slot orientation (allowed-values v h))
 (slot toleft (type INTEGER))
 (slot toright (type INTEGER))
 (slot totop (type INTEGER))
@@ -689,6 +689,18 @@
             (bind ?rankbottom (+ ?rankbottom 1))))
     (return (create$ ?rankleft ?rankright ?ranktop ?rankbottom)))
 
+;; a template to store the start position of the furniture
+(deftemplate POSITIONING::current-pos 
+    (slot fid (type SYMBOL))
+    (slot toleft (type INTEGER))
+    (slot toright (type INTEGER))
+    (slot totop (type INTEGER))
+    (slot tobottom (type INTEGER))
+    (slot direction (type SYMBOL))
+    (slot orientation (type SYMBOL))
+    (slot cycle (allowed-values c cc))
+    (slot fixed (type SYMBOL))
+)
 
 ;; Tests if the two furnitures will overlap.
 (deffunction POSITIONING::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
@@ -699,64 +711,108 @@
     (return False))
 
 ;; loop to find the position of the furniture
-(deffunction POSITIONING::loop-for-pos (?fid ?toleft ?toright ?totop ?tobottom ?direction)
-    (switch ?direction 
-        (case left then (printout t "what" crlf)))
-)
+;; needs to be modified for turning.
+(defrule POSITIONING::loop-for-position
+    ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
+    (room-size (length ?rlength) (width ?rwidth))
+    (furniture (id ?fid) (length ?length) (width ?width))
+    (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth)))
+=>
+    (if (eq ?c c) then (switch ?d 
+        (case left then (if (< (- ?tl 1) 0) then (modify ?f (direction top)) else (modify ?f (toleft (- ?tl 1)) (toright (+ ?tr 1)))))
+        (case right then (if (< (- ?tr 1) 0) then (modify ?f (direction bottom)) else (modify ?f (toleft (+ ?tl 1)) (toright (- ?tr 1)))))
+        (case top then (if (< (- ?tt 1) 0) then (modify ?f (direction right)) else (modify ?f (totop (- ?tt 1))(tobottom (+ ?tb 1)))))
+        (case bottom then (if (< (- ?tb 1) 0) then (modify ?f (direction left)) else (modify ?f (totop (+ ?tt 1)) (tobottom (- ?tb 1))))))
+    else (switch ?d
+        (case left then (if (< (- ?tl 1) 0) then (modify ?f (direction bottom)) else (modify ?f (toleft (- ?tl 1)) (toright (+ ?tr 1)))))
+        (case right then (if (< (- ?tr 1) 0) then (modify ?f (direction top)) else (modify ?f (toleft (+ ?tl 1)) (toright (- ?tr 1)))))
+        (case top then (if (< (- ?tt 1) 0) then (modify ?f (direction left)) else (modify ?f (totop (- ?tt 1))(tobottom (+ ?tb 1)))))
+        (case bottom then (if (< (- ?tb 1) 0) then (modify ?f (direction right)) else (modify ?f (totop (+ ?tt 1)) (tobottom (- ?tb 1))))))))
+
+;; set the position of the furniture when there is not overlapping
+(defrule POSITIONING::set-position
+    ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
+    (room-size (length ?rlength) (width ?rwidth))
+    (not (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth))))
+=>
+    (retract ?f)
+    (assert (furniture-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(orientation ?o))))
+                
+
+
+
 
 ;; find the starting position of the furniture.
-;; If the furniture is the first to be placed, place the furniture at the starting position.
-(deffunction POSITIONING::find-start (?length ?width ?rlength ?rwidth ?first ?second)
+(defrule POSITIONING::find-start
+    ?a<-(ori-rank ?fid ?first ?second ?ori3 ?ori4)
+    (room-size (length ?rlength) (width ?rwidth))
+    (furniture (id ?fid) (length ?length) (width ?width))
+=>
+    (retract ?a)
+    (bind ?totop 0)
     (bind ?toleft 0)
     (bind ?toright 0)
-    (bind ?totop 0)
     (bind ?tobottom 0)
-    (bind ?orientation h)
-    (bind ?firstindex 1)
-    (bind ?secondindex 1)
-    (switch ?first 
-        (case left then (bind ?firstindex 1))
-        (case right then (bind ?firstindex 4))
-        (case top then (bind ?firstindex 2))
-        (case bottom then (bind ?firstindex 3)))
-    (switch ?second
-        (case left then (bind ?secondindex 1))
-        (case right then (bind ?secondindex 4))
-        (case top then (bind ?secondindex 2))
-        (case bottom then (bind ?secondindex 3)))
     (if (or (eq ?first left) (eq ?first right)) then
-        (bind ?orientation v)
+        (bind ?orientation vertical)
         (bind ?totop (/ (- ?rwidth ?length) 2))
         (bind ?tobbtom (- (- ?rwidth ?length) ?totop)))
     (if (eq ?first left) then
         (bind ?toright (- ?rlength ?width))
         (switch ?second 
-            (case right then (bind ?direction top))
-            (case top then (bind ?direction top))
-            (case bottom then (bind ?direction bottom))))
+            (case right then (bind ?direction top) (bind ?cycle c))
+            (case top then (bind ?direction top) (bind ?cycle c))
+            (case bottom then (bind ?direction bottom) (bind ?cycle cc))))
     (if (eq ?first right) then
         (bind ?toleft (- ?rlength ?width))
         (switch ?second 
-            (case left then (bind ?direction bottom))
-            (case top then (bind ?direction top))
-            (case bottom then (bind ?direction bottom))))
+            (case left then (bind ?direction bottom)(bind ?cycle c))
+            (case top then (bind ?direction top)(bind ?cycle cc))
+            (case bottom then (bind ?direction bottom)(bind ?cycle c))))
     (if (or (eq ?first top) (eq ?first bottom)) then
-        (bind ?orientation h)
+        (bind ?orientation horizontal)
         (bind ?toleft (/ (- ?rlength ?length) 2))
         (bind ?toright (- (- ?rlength ?length) ?toleft)))
     (if (eq ?first top) then
         (bind ?tobottom (- ?rwidth ?width))
         (switch ?second 
-            (case left then (bind ?direction left))
-            (case right then (bind ?direction right))
-            (case bottom then (bind ?direction right)))) 
+            (case left then (bind ?direction left)(bind ?cycle cc))
+            (case right then (bind ?direction right)(bind ?cycle c))
+            (case bottom then (bind ?direction right)(bind ?cycle c)))) 
     (if (eq ?first bottom) then
         (bind ?totop (- ?rwidth ?width))
         (switch ?second 
-            (case left then (bind ?direction left))
-            (case right then (bind ?direction right))
-            (case top then (bind ?direction left))))
-    (return (create$ ?toleft ?toright ?totop ?tobottom ?direction)))
+            (case left then (bind ?direction left)(bind ?cycle c))
+            (case right then (bind ?direction right)(bind ?cycle cc))
+            (case top then (bind ?direction left)(bind ?cycle c))))
+    (assert (current-pos (fid ?fid) (toleft ?toleft) (toright ?toright) (totop ?totop) (tobottom ?tobottom)(cycle ?cycle)(orientation ?orientation) (direction ?direction))))
+ 
+;; Use bubble sort to sort the rankings of the orientations
+(defrule POSITIONING::bubble-sort
+    (sort-status ?fid no)
+    ?f<-(sort-list ?fid ?ori1 ?rank1 ?place1)
+    ?g<-(sort-list ?fid ?ori2 ?rank2 ?place2)
+    (test (> ?rank1 ?rank2))
+    (test (= ?place1 (+ ?place2 1)))
+=>
+    (retract ?f ?g)
+    (assert (sort-list ?ori1 ?rank1 ?place2)
+            (sort-list ?ori2 ?rank2 ?place1)))
+
+
+;; Check whether the sorting is completed
+(defrule POSITIONING::check-sort-status
+    ?a<-(sort-list ?fid ?ori1 ?rank1 ?place1)
+    ?b<-(sort-list ?fid ?ori2 ?rank2 ?place2)
+    ?c<-(sort-list ?fid ?ori3 ?rank3 ?place3)
+    ?d<-(sort-list ?fid ?ori4 ?rank4 ?place4)
+    ?e<-(sort-status ?fid no)
+    (test (>= ?rank1 ?rank2 ?rank3 ?rank4))
+    (test (< ?place1 ?place2 ?place3 ?place4))
+=>
+    (retract ?a ?b ?c ?d ?e)
+    (assert (ori-rank ?fid ?ori1 ?ori2 ?ori3 ?ori4)))
+
 
 ;; Position TV first.
 (defrule POSITIONING::position-TV
@@ -770,40 +826,23 @@
 =>
         (bind ?wrank (rank ?tw ?wl ?wr ?wt ?wb))
         (bind ?drank (rank ?td ?dl ?dr ?dt ?db))
-        (bind ?first left)
-        (bind ?second right)
-        (bind ?leftrank (+ (nth 1 ?wrank) (nth 1 ?drank)))
-        (bind ?firstscore ?leftrank)
-        (bind ?secondscore 0)
-        (bind ?rightrank (+ (nth 2 ?wrank) (nth 2 ?drank)))
-        (if (> ?rightrank ?firstscore) then (bind ?second ?first) (bind ?first right) (bind ?firstscore ?rightrank)
-         else (if (> ?rightrank ?secondscore) then (bind ?second right) (bind ?secondscore ?rightrank)))
-        (bind ?toprank (+ (nth 3 ?wrank) (nth 3 ?drank)))
-        (if (> ?toprank ?firstscore) then (bind ?second ?first) (bind ?first top) (bind ?firstscore ?toprank)
-         else (if (> ?toprank ?secondscore) then (bind ?second top) (bind ?secondscore ?toprank)))
-        (bind ?bottomrank (+ (nth 4 ?wrank) (nth 4 ?drank)))
-        (if (> ?bottomrank ?firstscore) then (bind ?second ?first) (bind ?first bottom) (bind ?firstscore ?bottomrank)
-         else (if (> ?bottomrank ?secondscore) then (bind ?second bottom) (bind ?secondscore ?bottomrank)))
-        (bind ?start (find-start ?tvlength ?tvwidth ?rlength ?rwidth ?first ?second))
-        (assert (furniture-pos (fid ?id) (toleft (nth 1 ?start)) (toright (nth 2 ?start)) (totop (nth 3 ?start)) (tobottom (nth 4 ?start)))))
+        (assert (sort-list ?id left (+ (nth 1 ?wrank) (nth 1 ?drank)) 1)
+                (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
+                (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
+                (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
+                (sort-status ?id no)))
 
-(deftemplate POSITIONING::temp-pos 
-    (slot pid (type SYMBOL))
-    (slot toleft (type INTEGER))
-    (slot toright (type INTEGER))
-    (slot totop (type INTEGER))
-    (slot tobottom (type INTEGER))
-    (slot fixed (type SYMBOL))
-)
 
 (defrule POSITIONING::position-cupboard
     (furniture (id ?id) (function cupboard) (length ?cblength) (width ?cbwidth) (height ?cbheight))
     (room-size (length ?rlength) (width ?rwidth))
     (window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb))
     (door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db))
-    (distance (category1 cupboard) (category2 TV) (prefer ?cbtv))
-    (distance (category1 cupboard) (category2 window) (prefer ?cbw))
-    (distance (category1 cupboard) (category2 door) (prefer ?cbd))
+    (furniture (id ?tvid) (function TV))
+    (furniture-pos (fid ?tvid) (toleft ?tvl) (toright ?tvr) (totop ?tvt) (tobottom ?tvb))
+    (distance (category1 cupboard|TV) (category2 TV|cupboard) (prefer ?cbtv))
+    (distance (category1 cupboard|window) (category2 window|cupboard) (prefer ?cbw))
+    (distance (category1 cupboard|door) (category2 door|cupboard) (prefer ?cbd))
 =>
     (printout t "test" crlf))
 

@@ -6,6 +6,7 @@
 package ClipsInteraction;
 
 import CLIPSJNI.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,6 +81,7 @@ public class ClipsEngine {
         if (listSize >= 1)
         {
              factAddressValue = (FactAddressValue) multifieldValue.listValue().get(0);
+             
              size.length = Integer.parseInt(factAddressValue.
                      getFactSlot("length").toString());
              size.width = Integer.parseInt(factAddressValue.
@@ -87,6 +89,47 @@ public class ClipsEngine {
         }
 
         return size;
+    }
+
+    public ArrayList getFurniture()
+    {
+        ArrayList<Furniture> furnitureList = new ArrayList();
+
+        String factsRequest = "(find-all-facts ((?f furniture-pos)) TRUE)";
+        MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
+
+        int listSize = multifieldValue.listValue().size();
+        FactAddressValue factAddressValue;
+        // Take the first question
+        if (listSize >= 1)
+        {
+            for (int i = 0; i < listSize; i++) {
+             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
+             Furniture furniturePos = new Furniture();
+             furniturePos.setFurnitureId(factAddressValue.
+                     getFactSlot("fid").toString());
+
+             furniturePos.setToRight(Integer.parseInt(factAddressValue.
+                     getFactSlot("toright").toString()));
+             furniturePos.setToLeft(Integer.parseInt(factAddressValue.
+                     getFactSlot("toleft").toString()));
+             furniturePos.setToTop(Integer.parseInt(factAddressValue.
+                     getFactSlot("totop").toString()));
+             furniturePos.setToBottom(Integer.parseInt(factAddressValue.
+                     getFactSlot("tobottom").toString()));
+             System.out.println("(furniture-pos (fid "
+                + furniturePos.getFurnitureId() + ") (toRight "
+                + furniturePos.getToRight() + ") (toLeft "
+                + furniturePos.getToLeft() + ") (toTop "
+                + furniturePos.getToTop() + ") (toBottom "
+                + furniturePos.getToBottom() + "))");
+             furnitureList.add(furniturePos);
+            }
+        }
+
+        
+
+        return furnitureList;
     }
 
     public void setAnswer(Answer answer)

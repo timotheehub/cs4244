@@ -12,9 +12,11 @@
 package dreamlivingroom;
 
 import ClipsInteraction.ClipsEngine;
+import ClipsInteraction.Furniture;
 import ClipsInteraction.Question;
 import ClipsInteraction.RoomSize;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +27,10 @@ import java.util.logging.Logger;
 public class MainFrame extends javax.swing.JFrame {
     private RoomSize roomSize;
     private ClipsEngine clips;
+    private int windowX;
+    private int windowY;
+    private int doorX;
+    private int doorY;
 
 
     /** Creates new form QuestionFrame */
@@ -35,6 +41,38 @@ public class MainFrame extends javax.swing.JFrame {
         clips = new ClipsEngine("CS4244.clp");
     }
     
+    int getWindowX() {
+        return windowX;
+    }
+    
+    int getWindowY() {
+        return windowY;
+    }
+
+    void setWindowX(int x) {
+        windowX = x;
+    }
+
+    void setWindowY(int y) {
+        windowY = y;
+    }
+    
+    int getDoorX() {
+        return doorX;
+    }
+    
+    int getDoorY() {
+        return doorY;
+    }
+
+     void setDoorX(int x) {
+        doorX = x;
+    }
+
+    void setDoorY(int y) {
+        doorY = y;
+    }
+
     int getRoomLength() {
         return roomSize.length;
     }
@@ -136,6 +174,17 @@ public class MainFrame extends javax.swing.JFrame {
         add(mainPanel);
         repaint();
     }
+
+     private void initLayoutPanel() {
+          if (mainPanel != null)
+        {
+            mainPanel.setVisible(false);
+        }
+        mainPanel = new FurniturePosition(this);
+        mainPanel.setSize(600,400);
+        add(mainPanel);
+        repaint();
+    }
 //     private void initTestingPanel() {
 //          if (mainPanel != null)
 //        {
@@ -153,6 +202,7 @@ public class MainFrame extends javax.swing.JFrame {
         Question question;
         clips.runEnvironment();
         question = clips.getQuestion();
+        ArrayList<Furniture> furnitureList = clips.getFurniture();
         // System.out.println(question.getQuestionType());
 
         if ((question.getQuestionType().equals("list"))
@@ -161,6 +211,7 @@ public class MainFrame extends javax.swing.JFrame {
             initQuestionPanel();
             ((QuestionPanel)mainPanel).setQuestion(question);
         }
+
         else if (question.getQuestionType().equals("size"))
         {
             initSizePanel();
@@ -172,10 +223,21 @@ public class MainFrame extends javax.swing.JFrame {
             initWindowDoorPanel();
             ((WindowDoorPanel)mainPanel).setQuestion(question);
         }
+        
         else if (question.getQuestionType().equals("furniture-preference"))
         {
             initPictureDisplayPanel();
             ((PictureDisplayPanel)mainPanel).setQuestion(question);
+        }
+     
+        else if (!furnitureList.isEmpty())
+        {
+            initLayoutPanel();
+            ((FurniturePosition)mainPanel).setFurniture(furnitureList);
+            ((FurniturePosition)mainPanel).windowX = this.windowX;
+            ((FurniturePosition)mainPanel).windowY = this.windowY;
+            ((FurniturePosition)mainPanel).doorX = this.doorX;
+            ((FurniturePosition)mainPanel).doorY = this.doorY;
         }
         else if (question.getQuestionType().equals(""))
         {

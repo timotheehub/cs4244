@@ -143,6 +143,11 @@ public class WindowDoorPanel extends javax.swing.JPanel {
               //  frame.initQuestionPanel();
                 if ((currentQuestion != null) && (windowX > 10) && (doorX > 10))
                 {
+                    // Pass window and door position to MainFrame
+                    container.setDoorX(doorX);
+                    container.setDoorY(doorY);
+                    container.setWindowX(windowX);
+                    container.setWindowY(windowY);
                     // Compute the size of the window
                     String windowOrientation = getOrientation(windowX, windowY);
                     String doorOrientation = getOrientation(doorX, doorY);

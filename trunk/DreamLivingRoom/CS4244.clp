@@ -977,11 +977,313 @@
 (defrule COLOR::red-green-remove
    (furniture (id ?red-id) (color red) (function ?function))
    (furniture (id ?green-id) (color green))
-   (copy-furniture (id ?new-id) (color white|black|pink|brown) (function ?function))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|yellow|blue|pink|purple|white) (function ?function))
 =>
    (assert (question (question-id red-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?green-id ?new-id)))
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
+
+;; Blue green color
+(defrule COLOR::blue-green-remove
+   (furniture (id ?blue-id) (color blue) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
+=>
+   (assert (question (question-id blue-green)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+)
+
+;; Purple green color
+(defrule COLOR::purple-green-remove
+   (furniture (id ?purple-id) (color purple) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+=>
+   (assert (question (question-id purple-green)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+)
+
+;; Yellow green color
+(defrule COLOR::yellow-green-remove
+   (furniture (id ?yellow-id) (color yellow) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+=>
+   (assert (question (question-id purple-yellow)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+)
+
+;; Pink Green color
+(defrule COLOR::pink-green-remove
+   (furniture (id ?pink-id) (color pink) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
+=>
+   (assert (question (question-id pink-green)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+)
+
+
+;; Grey Green color
+(defrule COLOR::grey-green-remove
+   (furniture (id ?grey-id) (color grey) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+=>
+   (assert (question (question-id grey-green)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+)
+
+;; Flory Green color
+(defrule COLOR::flory-green-remove
+   (furniture (id ?flory-id) (color flory) (function ?function))
+   (furniture (id ?green-id) (color green))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id flory-green)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+)
+
+
+;;Flory Red color
+(defrule COLOR::flory-red-remove
+   (furniture (id ?flory-id) (color flory) (function ?function))
+   (furniture (id ?red-id) (color red))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id flory-red)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
+)
+
+;; Flory Blue color
+(defrule COLOR::flory-blue-remove
+   (furniture (id ?flory-id) (color flory) (function ?function))
+   (furniture (id ?blue-id) (color blue))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id flory-blue)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+)
+
+;; Flory Grey color
+(defrule COLOR::flory-grey-remove
+   (furniture (id ?flory-id) (color flory) (function ?function))
+   (furniture (id ?grey-id) (color grey))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id flory-grey)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
+)
+
+;; Flory pink color
+(defrule COLOR::flory-pink-remove
+   (furniture (id ?flory-id) (color flory) (function ?function))
+   (furniture (id ?pink-id) (color pink))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id flory-pink)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
+)
+
+;;Flory purple color
+(defrule COLOR::flory-purple-remove
+   (furniture (id ?flory-id) (color flory) (function ?function))
+   (furniture (id ?purple-id) (color purple))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id flory-purple)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+)
+
+;; Blue Grey Color
+(defrule COLOR::blue-grey-remove
+   (furniture (id ?blue-id) (color blue) (function ?function))
+   (furniture (id ?grey-id) (color grey))
+   (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
+=>
+   (assert (question (question-id blue-grey)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
+)
+
+;; Blue purple color
+(defrule COLOR::blue-purple-remove
+   (furniture (id ?blue-id) (color blue) (function ?function))
+   (furniture (id ?purple-id) (color purple))
+   (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
+=>
+   (assert (question (question-id blue-purple)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+)
+
+;; Purple Blue color
+(defrule COLOR::purple-blue-remove
+   (furniture (id ?purple-id) (color purple) (function ?function))
+   (furniture (id ?blue-id) (color blue))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+=>
+   (assert (question (question-id purple-blue)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+)
+
+;; Purple yellow color
+(defrule COLOR::purple-yellow-remove
+   (furniture (id ?purple-id) (color purple) (function ?function))
+   (furniture (id ?yellow-id) (color yellow))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+=>
+   (assert (question (question-id purple-yellow)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+)
+
+
+;; Red Flory Color
+(defrule COLOR::red-flory-remove
+   (furniture (id ?red-id) (color red) (function ?function))
+   (furniture (id ?flory-id) (color flory))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|yellow|blue|pink|white) (function ?function))
+=>
+   (assert (question (question-id red-flory)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+)
+	
+;; Grey Flory Color
+(defrule COLOR::grey-flory-remove
+   (furniture (id ?grey-id) (color grey) (function ?function))
+   (furniture (id ?flory-id) (color flory))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+=>
+   (assert (question (question-id grey-flory)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+)
+
+;; Grey Red Color
+(defrule COLOR::grey-red-remove
+   (furniture (id ?grey-id) (color grey) (function ?function))
+   (furniture (id ?red-id) (color red))
+   (copy-furniture (id ?new-id) (color bbeige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+=>
+   (assert (question (question-id grey-red)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
+)
+
+;; Grey Blue Color
+(defrule COLOR::grey-blue-remove
+   (furniture (id ?grey-id) (color grey) (function ?function))
+   (furniture (id ?blue-id) (color blue))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+=>
+   (assert (question (question-id grey-blue)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+)
+
+;; Pink Flory Color
+(defrule COLOR::pink-flory-remove
+   (furniture (id ?pink-id) (color pink) (function ?function))
+   (furniture (id ?flory-id) (color flory))
+   (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
+=>
+   (assert (question (question-id pink-flory)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+)
+
+;; Pink Yellow Color
+(defrule COLOR::pink-yellow-remove
+   (furniture (id ?pink-id) (color pink) (function ?function))
+   (furniture (id ?yellow-id) (color yellow))
+   (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
+=>
+   (assert (question (question-id pink-yellow)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+)
+
+;;; Green red Color
+(defrule COLOR::green-red-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?red-id) (color red))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id green-red)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
+)
+
+;; Green blue color
+(defrule COLOR::green-red-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?blue-id) (color blue))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+=>
+   (assert (question (question-id green-blue)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+)
+
+;; Green flory color
+(defrule COLOR::green-flory-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?flory-id) (color flory))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+=>
+   (assert (question (question-id green-flory)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+)
+
+;; Green grey color
+(defrule COLOR::green-grey-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?grey-id) (color grey))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+=>
+   (assert (question (question-id green-grey)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
+)
+;; Green pink color
+(defrule COLOR::green-pink-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?pink-id) (color pink))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+=>
+   (assert (question (question-id green-pink)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
+)
+;; Green purple color
+(defrule COLOR::green-purple-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?purple-id) (color purple))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+=>
+   (assert (question (question-id green-purple)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+)
+
+;; Green yellow
+(defrule COLOR::green-yellow-remove
+   (furniture (id ?green-id) (color green) (function ?function))
+   (furniture (id ?yellow-id) (color yellow))
+   (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+=>
+   (assert (question (question-id green-yellow)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+)
+
+;; Yellow pink color
+(defrule COLOR::yellow-pink-remove
+   (furniture (id ?yellow-id) (color yellow) (function ?function))
+   (furniture (id ?pink-id) (color pink))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|flory|blue|red|white) (function ?function))
+=>
+   (assert (question (question-id yellow-pink)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
+)
+
+;; Yellow purple color
+(defrule COLOR::yellow-purple-remove
+   (furniture (id ?yellow-id) (color yellow) (function ?function))
+   (furniture (id ?purple-id) (color purple))
+   (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|flory|blue|red|white) (function ?function))
+=>
+   (assert (question (question-id yellow-purple)
+      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+)
+
 
 
 ;;; White color generally
@@ -1057,40 +1359,42 @@
 	=>(create$ ?green)
 )
 
-;;;flory can be matched with beige, brown, dark-brown, silver,yellow
+;;;flory can be matched with beige, brown, dark-brown, silver,yellow, black
 (defrule COLOR::flory-selection
-	?flory <- (furniture (color flory|beige|brown|dark-brown|silver|yellow))
+	?flory <- (furniture (color flory|beige|brown|dark-brown|silver|yellow|black))
 	=>(create$ ?flory)
 )
 
-;;; Blue can be matched with black, beige, dark-brown, brown, silver
+;;; Blue can be matched with black, beige, dark-brown, brown, silver, red, yellow
 (defrule COLOR::blue-selection
-	?blue <- (furniture (color blue|beige|brown|dark-brown|black|silver))
+	?blue <- (furniture (color pink|blue|beige|brown|dark-brown|black|silver|red|yellow))
 	=>(create$ ?blue)
 )
-
-;;; Red can be matched with beige, brown, dark-brown, silver,black, yellow
+;;; Red can be matched with beige, brown, dark-brown, silver,black, yellow, blue, pink, purple
 (defrule COLOR::red-selection
-	?red <- (furniture (color red|beige|dark-brown|brown|silver|black|yellow))
+	?red <- (furniture (color red|beige|dark-brown|brown|silver|black|yellow|blue|pink|purple))
 	=>(create$ ?red)
 )
-;;;Purple can be matched with beige, brown, dark-brown, silver, black
+;;;Purple can be matched with beige, brown, dark-brown, silver, black,pink, red
 (defrule COLOR::purple-selection
-	?purple <- (furniture (color purple|beige|dark-brown|brown|silver|black))
+	?purple <- (furniture (color purple|beige|dark-brown|brown|silver|black|pink|red))
 	=>(create$ ?purple)
 )
 
-;;;Pink can be matched with beige, brown, dark-brown, silver, black
+;;;Pink can be matched with beige, brown, dark-brown, silver, black, blue, red
 (defrule COLOR::pink-selection
-	?pink <- (furniture (color purple|beige|dark-brown|brown|silver|black))
+	?pink <- (furniture (color pink|purple|beige|dark-brown|brown|silver|black|blue|red))
 	=>(create$ ?pink)
 )
 
-;;;Grey can be matched with beige, dark-brown, silver, black, purple, brown
+;;;Grey can be matched with beige, dark-brown, silver, black, purple, brown, yellow
 (defrule COLOR::grey-selection
-	?grey <- (furniture (color grey|beige|dark-brown|brown|silver|black|purple))
+	?grey <- (furniture (color grey|beige|dark-brown|brown|silver|black|purple|yellow))
 	=>(create$ ?grey)
 )
-	
 
-
+;;; Yellow can be matched with beige, dark-brown, silver, black, brown,flory, blue, red
+(defrule COLOR::yellow-selection
+	?yellow <- (furniture (color yellow|beige|dark-brown|brown|silver|black|flory|blue|red))
+	=>(create$ ?yellow)
+)

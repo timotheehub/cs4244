@@ -977,7 +977,7 @@
 (defrule COLOR::red-green-remove
    (furniture (id ?red-id) (color red) (function ?function))
    (furniture (id ?green-id) (color green))
-   (furniture (id ?new-id) (color white|black|pink|brown) (function ?function))
+   (copy-furniture (id ?new-id) (color white|black|pink|brown) (function ?function))
 =>
    (assert (question (question-id red-green)
       (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?green-id ?new-id)))

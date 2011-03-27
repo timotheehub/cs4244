@@ -62,42 +62,34 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         jLabel1.setText(question.getText());
 
         //Display valid answers for each group of furniture
-        for( int i = 0; i<2; i++)
-        {
-             s1 = question.getValidAnswers().get(0);
-             s2 = question.getValidAnswers().get(1);
-             s3 = s1 + ".jpg";
-             s4 = s2 + ".jpg";
-             File file1 = new File(imagedir + s3);
-             File file2 = new File(imagedir + s4);
+        s1 = question.getValidAnswers().get(0);
+        s2 = question.getValidAnswers().get(1);
+        s3 = s1 + ".jpg";
+        s4 = s2 + ".jpg";
+        File file1 = new File(s3);
+        File file2 = new File(s4);
 
-            
-           
-             img1 = ImageIO.read(file1);
-             img2 = ImageIO.read(file2);
+        img1 = ImageIO.read(file1);
+        img2 = ImageIO.read(file2);
 
-            
-             sm1 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
-              sm2 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
-              Graphics2D g1 = sm1.createGraphics();
+        sm1 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
+        sm2 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
+        Graphics2D g1 = sm1.createGraphics();
+        Graphics2D g2 = sm2.createGraphics();
+        g1.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        g1.drawImage(img1,0,0,250,250,null);
+        g1.dispose();
+        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        g2.drawImage(img2,0,0,250,250,null);
+        g2.dispose();
+        ic1 = new ImageIcon(sm1);
+        ic2 = new ImageIcon(sm2);
+        jButton1.setIcon(ic1);
+        jButton2.setIcon(ic2);
+        jButton1.setActionCommand(s1);
+        jButton2.setActionCommand(s2);
 
-              Graphics2D g2 = sm2.createGraphics();
-              g1.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-              g1.drawImage(img1,0,0,250,250,null);
-              g1.dispose();
-              g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-              g2.drawImage(img2,0,0,250,250,null);
-              g2.dispose();
-              ic1 = new ImageIcon(sm1);
-              ic2 = new ImageIcon(sm2);
-             jButton1.setIcon(ic1);
-             jButton2.setIcon(ic2);
-             jButton1.setActionCommand(s1);
-             jButton2.setActionCommand(s2);
-
-             repaint();
-
-        }
+        repaint();
     }
 
 

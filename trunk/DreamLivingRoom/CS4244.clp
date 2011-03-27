@@ -5,9 +5,9 @@
 (defmodule MAIN (export ?ALL)) 
 (defmodule QUESTION (import MAIN ?ALL))
 (defmodule SELECTION (import MAIN ?ALL))
-(defmodule COLOR (import MAIN ?ALL))
+(defmodule SELECTION-QUESTION (import MAIN ?ALL))
 (defmodule POSITIONING (import MAIN ?ALL))
-(defmodule LAYOUT (import MAIN ?ALL))
+(defmodule COLOR (import MAIN ?ALL))
 
 
 
@@ -297,7 +297,7 @@
 (defrule MAIN::answer-focus-question
    (answer (question-id ?id))
    (question (question-id ?id)
-      (question-type ~furniture-preference))
+      (question-type ~furniture-preference&~advice))
    =>
    (focus QUESTION))
 
@@ -306,20 +306,40 @@
 ;; been answered then we will ask the selection question
 (defrule MAIN::focus-selection
    (distance)
-   (not(exists(question (question-type preference))))
+   (furniture (id ?id1) (function ?function))
+   (furniture (id ?id2&~id1) (function ?function))
+   (not(exists(question)))
    =>
-   (focus SELECTION))
+   (focus SELECTION SELECTION-QUESTION))
 
 
 ;; If there is an answer for a furniture-preference question,
 ;; we will ask the next selection question
-(defrule MAIN::answer-focus-selection
+(defrule MAIN::answer-focus-selection-question
    (answer (question-id ?id))
    (question (question-id ?id)
       (question-type furniture-preference))
    =>
-   (focus SELECTION))
+   (focus SELECTION-QUESTION))
 
+
+;; If there is at most one furniture of each type, we place
+;; the objects then we show the advice
+(defrule MAIN::focus-color
+   (forall (furniture (id ?id1) (function ?function))
+      (not(exists(furniture (id ?id2&~id1) (function ?function)))))
+   =>
+   (focus POSITIONING COLOR))
+
+
+;; If there is an answer for an advice, we show the next
+;; advice.
+(defrule MAIN::answer-focus-color
+   (answer (question-id ?id))
+   (question (question-id ?id)
+      (question-type advice))
+   =>
+   (focus COLOR))
 
 
 
@@ -332,6 +352,15 @@
    (assert (copy-furniture (id ?id) (function ?function)
       (name ?name) (color ?color) (theme ?theme)
       (length ?length) (width ?width) (height ?height))))
+
+
+;; Tests if the two furnitures will overlap.
+(deffunction MAIN::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
+    (if (and (< (+ (max ?tl1 ?tl2) (max ?tr1 ?tr2)) ?rlength) (< (+ (max ?tt1 ?tt2) (max ?tb1 ?tb2)) ?rwidth)) then
+        (return True)
+     else
+        (return False))
+    (return False))
 
 
 
@@ -593,30 +622,39 @@
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                  Advanced selection rules                ;;
+;;               SELECTION-QUESTION rules                   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Advanced user-selection rules
 ;; If more than one facts were selected, need to prompt question
 ;; to user to ask them to select their preference furniture.
 ;; Every furniture categories will be covered.
 ;; The value that capture would be the ID of the furniture.
-(defrule SELECTION::user-select-furniture
+(defrule SELECTION-QUESTION::user-select-furniture
 	(furniture (id ?id1) (function ?function)) 
 	(furniture (id ?id2&~?id1) (function ?function))
+     (not(exists(question)))
 => 
 	(assert (question (question-id (sym-cat ?id1 ?id2)) (question-type furniture-preference) (text "Please select you favorite furniture.") (valid-answers ?id1 ?id2))))
 
-(defrule SELECTION::answer-user-select-furniture
-        (answer (question-id ?id) (value ?v))
-        ?question <- (question (question-id ?id) (question-type furniture-preference) (valid-answers ?id1 ?id2))
+
+;; Apply the rules when the question is answered
+(defrule SELECTION-QUESTION::answer-user-select-furniture
+   (answer (question-id ?id) (value ?v))
+   ?question <- (question (question-id ?id) (question-type furniture-preference) (valid-answers ?id1 ?id2))
+   ?furniture1 <- (furniture (id ?id1))
+   ?furniture2 <- (furniture (id ?id2))
 =>
-    (if (= ?v ?id1) then
-        (retract ?id2)
-     else
-        (retract ?id1)
-     (retract ?question)))	
+   (if (= (str-compare ?v ?id1) 0) then
+        (retract ?furniture2)
+   else
+        (retract ?furniture1))
+   (retract ?question)
+)
+
 
 	 
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   POSITIONING rules                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -702,13 +740,6 @@
     (slot fixed (type SYMBOL))
 )
 
-;; Tests if the two furnitures will overlap.
-(deffunction POSITIONING::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
-    (if (and (< (+ (max ?tl1 ?tl2) (max ?tr1 ?tr2)) ?rlength) (< (+ (max ?tt1 ?tt2) (max ?tb1 ?tb2)) ?rwidth)) then
-        (return True)
-     else
-        (return False))
-    (return False))
 
 ;; loop to find the position of the furniture
 ;; needs to be modified for turning.
@@ -951,24 +982,72 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   COLORS rules                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Calculate new vertical size
+(deffunction COLOR::new-vertical-size (?old-to-vertical ?old-length ?new-length ?old-width ?new-width ?orientation)
+   (if (= (str-compare ?orientation "vertical") 0) then
+      (return (+ ?old-to-vertical (/ (- ?new-width ?old-width) 2)))
+   else
+      (return (+ ?old-to-vertical (/ (- ?new-length ?old-length) 2))))
+)
+
+
+;; Calculate new horizontal size
+(deffunction COLOR::new-horizontal-size (?old-to-horizontal ?old-length ?new-length ?old-width ?new-width ?orientation)
+   (if (= (str-compare ?orientation "horizontal") 0) then
+      (return (+ ?old-to-horizontal (/ (- ?new-length ?old-length) 2)))
+   else
+      (return (+ ?old-to-horizontal (/ (- ?new-width ?old-width) 2))))
+)
+   
+
 ;; Answer color advice
-(defrule COLOR::advice-answer
+(defrule COLOR::advice-answer-can-place
    (answer (question-id ?id) (value ?value))
-   ?question <- (question (question-id ?id) (valid-answers ?old-id ?new-id))
-   ?old-fact <- (furniture (id ?old-id))
+   ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?old-id ?new-id))
+   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
    (copy-furniture (id ?new-id) (function ?function)
       (name ?name) (color ?color) (theme ?theme)
       (length ?length) (width ?width) (height ?height))
-   ?furniture-pos <- (furniture-pos (fid ?old-id))
+   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
+   (room-size (length ?rlength) (width ?rwidth))
+   (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
+        (test (eq (overlap
+            (new-horizontal-size ?tlo ?old-length ?length ?old-width ?width ?orientation)
+            (new-horizontal-size ?tro ?old-length ?length ?old-width ?width ?orientation) 
+            (new-vertical-size ?tto ?old-length ?length ?old-width ?width ?orientation)
+            (new-vertical-size ?tbo ?old-length ?length ?old-width ?width ?orientation)
+             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False)))
 =>
-   (if (= ?value ?new-id) then
-      ;; TODO : calculate the new tobottom, toleft and so on
-      (modify ?furniture-pos (fid ?new-id))
-      (assert (copy-furniture (id ?new-id)
+   (if (= (str-compare ?value ?new-id) 0) then
+      (modify ?furniture-pos (fid ?new-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo))
+      (assert (furniture (id ?new-id)
          (function ?function) (name ?name) (color ?color)
          (theme ?theme) (length ?length) (width ?width)
          (height ?height)))
+      (retract ?old-fact)
    )
+   (retract ?question)
+)
+
+
+;; Answer color advice
+(defrule COLOR::advice-answer-cannot-place
+   (answer (question-id ?id) (value ?value))
+   ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?old-id ?new-id))
+   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
+   (copy-furniture (id ?new-id) (function ?function)
+      (name ?name) (color ?color) (theme ?theme)
+      (length ?length) (width ?width) (height ?height))
+   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
+   (room-size (length ?rlength) (width ?rwidth))
+   (not (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
+        (test (eq (overlap
+            (new-horizontal-size ?tlo ?old-length ?length ?old-width ?width ?orientation)
+            (new-horizontal-size ?tro ?old-length ?length ?old-width ?width ?orientation) 
+            (new-vertical-size ?tto ?old-length ?length ?old-width ?width ?orientation)
+            (new-vertical-size ?tbo ?old-length ?length ?old-width ?width ?orientation)
+             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False))))
+=>
    (retract ?question)
 )
 

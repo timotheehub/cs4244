@@ -192,7 +192,6 @@ public class MainFrame extends javax.swing.JFrame {
         Question question;
         clips.runEnvironment();
         question = clips.getQuestion();
-        ArrayList<Furniture> furnitureList = clips.getFurniture();
         // System.out.println(question.getQuestionType());
 
         if ((question.getQuestionType().equals("list"))
@@ -226,7 +225,7 @@ public class MainFrame extends javax.swing.JFrame {
         {
             initLayoutPanel();
             ((FurniturePosition)mainPanel).setQuestion(question);
-            ((FurniturePosition)mainPanel).setFurniture(furnitureList);
+            ((FurniturePosition)mainPanel).setFurniture(clips.getFurniture());
             ((FurniturePosition)mainPanel).windowX = this.windowX;
             ((FurniturePosition)mainPanel).windowY = this.windowY;
             ((FurniturePosition)mainPanel).doorX = this.doorX;

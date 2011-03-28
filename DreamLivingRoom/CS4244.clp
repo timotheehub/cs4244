@@ -8,6 +8,7 @@
 (defmodule SELECTION-QUESTION (import MAIN ?ALL))
 (defmodule POSITIONING (import MAIN ?ALL))
 (defmodule COLOR (import MAIN ?ALL))
+(defmodule LAYOUT (import MAIN ?ALL))
 
 
 
@@ -297,7 +298,7 @@
 (defrule MAIN::answer-focus-question
    (answer (question-id ?id))
    (question (question-id ?id)
-      (question-type ~furniture-preference&~advice))
+      (question-type ~furniture-preference&~advice&~layout))
    =>
    (focus QUESTION))
 
@@ -307,7 +308,7 @@
 (defrule MAIN::focus-selection
    (distance)
    (furniture (id ?id1) (function ?function))
-   (furniture (id ?id2&~id1) (function ?function))
+   (furniture (id ?id2&~?id1) (function ?function))
    (not(exists(question)))
    =>
    (focus SELECTION SELECTION-QUESTION))
@@ -323,15 +324,6 @@
    (focus SELECTION-QUESTION))
 
 
-;; If there is at most one furniture of each type, we place
-;; the objects then we show the advice
-(defrule MAIN::focus-color
-   (forall (furniture (id ?id1) (function ?function))
-      (not(exists(furniture (id ?id2&~id1) (function ?function)))))
-   =>
-   (focus POSITIONING COLOR))
-
-
 ;; If there is an answer for an advice, we show the next
 ;; advice.
 (defrule MAIN::answer-focus-color
@@ -341,6 +333,24 @@
    =>
    (focus COLOR))
 
+
+;; If there is at most one furniture of each type, we place
+;; the objects then we show the layout
+(defrule MAIN::focus-layout
+   (forall (furniture (id ?id1) (function ?function))
+      (not(exists(furniture (id ?id2&~?id1) (function ?function)))))
+   =>
+   (focus POSITIONING LAYOUT))
+
+
+;; If there is an answer for a layout, we retract the question
+;; and show the advices
+(defrule MAIN::answer-focus-color
+   (answer (question-id ?id))
+   (question (question-id ?id)
+      (question-type layout))
+   =>
+   (focus LAYOUT COLOR))
 
 
 ;; Copy all the furnitures
@@ -354,6 +364,13 @@
       (length ?length) (width ?width) (height ?height))))
 
 
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                     MAIN functions                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Tests if the two furnitures will overlap.
 (deffunction MAIN::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
     (if (and (< (+ (max ?tl1 ?tl2) (max ?tr1 ?tr2)) ?rlength) (< (+ (max ?tt1 ?tt2) (max ?tb1 ?tb2)) ?rwidth)) then
@@ -1476,4 +1493,28 @@
 (defrule COLOR::yellow-selection
 	?yellow <- (furniture (color yellow|beige|dark-brown|brown|silver|black|flory|blue|red))
 	=>(create$ ?yellow)
+)
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                   LAYOUT rules                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ask a question do display the layout
+(defrule LAYOUT::ask-layout
+   (initial-fact)
+   (not(exists(question)))
+=>
+   (assert(question (question-id layout) (question-type layout) (text "Here is the layout")))
+)
+
+
+;; Answer a question about the layout
+(defrule LAYOUT::ask-layout
+   ?question <- (question (question-id layout))
+   (answer (question-id layout))
+=>
+   (retract ?question)
 )

@@ -809,7 +809,7 @@
     (if (or (eq ?first left) (eq ?first right)) then
         (bind ?orientation vertical)
         (bind ?totop (/ (- ?rwidth ?length) 2))
-        (bind ?tobbtom (- (- ?rwidth ?length) ?totop)))
+        (bind ?tobottom (- (- ?rwidth ?length) ?totop)))
     (if (eq ?first left) then
         (bind ?toright (- ?rlength ?width))
         (switch ?second 

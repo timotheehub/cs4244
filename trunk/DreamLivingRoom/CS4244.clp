@@ -7,8 +7,9 @@
 (defmodule SELECTION (import MAIN ?ALL))
 (defmodule SELECTION-QUESTION (import MAIN ?ALL))
 (defmodule POSITIONING (import MAIN ?ALL))
-(defmodule COLOR (import MAIN ?ALL))
 (defmodule LAYOUT (import MAIN ?ALL))
+(defmodule COLOR (import MAIN ?ALL))
+(defmodule FINAL-LAYOUT (import MAIN ?ALL))
 
 
 
@@ -298,7 +299,7 @@
 (defrule MAIN::answer-focus-question
    (answer (question-id ?id))
    (question (question-id ?id)
-      (question-type ~furniture-preference&~advice&~layout))
+      (question-type ~furniture-preference&~advice&~layout&~final-layout))
    =>
    (focus QUESTION))
 
@@ -331,7 +332,7 @@
    (question (question-id ?id)
       (question-type advice))
    =>
-   (focus COLOR))
+   (focus COLOR FINAL-LAYOUT))
 
 
 ;; If there is at most one furniture of each type, we place
@@ -341,11 +342,12 @@
       (not(exists(furniture (id ?id2&~?id1) (function ?function)))))
    =>
    (focus POSITIONING LAYOUT))
+   ;;(focus LAYOUT)) ;; for debugging without positioning
 
 
 ;; If there is an answer for a layout, we retract the question
 ;; and show the advices
-(defrule MAIN::answer-focus-color
+(defrule MAIN::answer-focus-layout
    (answer (question-id ?id))
    (question (question-id ?id)
       (question-type layout))
@@ -353,14 +355,24 @@
    (focus LAYOUT COLOR))
 
 
+
+;; If there is an answer for the final layout, we retract the ;; question
+(defrule MAIN::answer-focus-final-layout
+   (answer (question-id ?id))
+   (question (question-id ?id)
+      (question-type final-layout))
+   =>
+   (focus FINAL-LAYOUT))
+
+
 ;; Copy all the furnitures
 (defrule MAIN::copy-all-furnitures
    (furniture (id ?id) (function ?function) (name ?name)
-      (color ?color) (theme ?theme) (length ?length)
+      (color ?color) (theme $?theme) (length ?length)
       (width ?width) (height ?height))
 =>
    (assert (copy-furniture (id ?id) (function ?function)
-      (name ?name) (color ?color) (theme ?theme)
+      (name ?name) (color ?color) (theme $?theme)
       (length ?length) (width ?width) (height ?height))))
 
 
@@ -997,6 +1009,30 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                   LAYOUT rules                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Ask a question do display the layout
+(defrule LAYOUT::ask-layout
+   (not(exists(question)))
+   (not (exists(answer (question-id layout))))
+=>
+   (assert(question (question-id layout) (question-type layout) (text "Here is the layout")))
+)
+
+
+;; Answer a question about the layout
+(defrule LAYOUT::answer-layout
+   ?question <- (question (question-id layout))
+   (answer (question-id layout))
+=>
+   (retract ?question)
+)
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   COLORS rules                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Calculate new vertical size
@@ -1051,19 +1087,19 @@
 (defrule COLOR::advice-answer-cannot-place
    (answer (question-id ?id) (value ?value))
    ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?old-id ?new-id))
-   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
-   (copy-furniture (id ?new-id) (function ?function)
-      (name ?name) (color ?color) (theme ?theme)
-      (length ?length) (width ?width) (height ?height))
-   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
-   (room-size (length ?rlength) (width ?rwidth))
-   (not (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
-        (test (eq (overlap
-            (new-horizontal-size ?tlo ?old-length ?length ?old-width ?width ?orientation)
-            (new-horizontal-size ?tro ?old-length ?length ?old-width ?width ?orientation) 
-            (new-vertical-size ?tto ?old-length ?length ?old-width ?width ?orientation)
-            (new-vertical-size ?tbo ?old-length ?length ?old-width ?width ?orientation)
-             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False))))
+;;   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
+;;   (copy-furniture (id ?new-id) (function ?function)
+;;      (name ?name) (color ?color) (theme ?theme)
+;;      (length ?length) (width ?width) (height ?height))
+;;   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
+;;   (room-size (length ?rlength) (width ?rwidth))
+;;   (not (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
+;;        (test (eq (overlap
+;;            (new-horizontal-size ?tlo ?old-length ?length ?old-width ?width ?orientation)
+;;            (new-horizontal-size ?tro ?old-length ?length ?old-width ?width ?orientation) 
+;;            (new-vertical-size ?tto ?old-length ?length ?old-width ?width ?orientation)
+;;            (new-vertical-size ?tbo ?old-length ?length ?old-width ?width ?orientation)
+;;             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False))))
 =>
    (retract ?question)
 )
@@ -1071,428 +1107,395 @@
 
 ;; Red green color
 (defrule COLOR::red-green-remove
-   (furniture (id ?red-id) (color red) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?red-id) (color red))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|yellow|blue|pink|purple|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id red-green) (value ?green-id))))
 =>
    (assert (question (question-id red-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
+
 
 ;; Blue green color
 (defrule COLOR::blue-green-remove
-   (furniture (id ?blue-id) (color blue) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?blue-id) (color blue))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id blue-green) (value ?green-id))))
 =>
    (assert (question (question-id blue-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
+
 
 ;; Purple green color
 (defrule COLOR::purple-green-remove
-   (furniture (id ?purple-id) (color purple) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id purple-green) (value ?green-id))))
 =>
    (assert (question (question-id purple-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
+
 
 ;; Yellow green color
 (defrule COLOR::yellow-green-remove
-   (furniture (id ?yellow-id) (color yellow) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?yellow-id) (color yellow))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id yellow-green) (value ?green-id))))
 =>
-   (assert (question (question-id purple-yellow)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+   (assert (question (question-id yellow-green)
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
 )
+
 
 ;; Pink Green color
 (defrule COLOR::pink-green-remove
-   (furniture (id ?pink-id) (color pink) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?pink-id) (color pink))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id pink-green) (value ?green-id))))
 =>
    (assert (question (question-id pink-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
 
 
 ;; Grey Green color
 (defrule COLOR::grey-green-remove
-   (furniture (id ?grey-id) (color grey) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id grey-green) (value ?green-id))))
 =>
    (assert (question (question-id grey-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
+
 
 ;; Flory Green color
 (defrule COLOR::flory-green-remove
-   (furniture (id ?flory-id) (color flory) (function ?function))
-   (furniture (id ?green-id) (color green))
+   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id flory-green) (value ?green-id))))
 =>
    (assert (question (question-id flory-green)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
 )
 
 
 ;;Flory Red color
 (defrule COLOR::flory-red-remove
-   (furniture (id ?flory-id) (color flory) (function ?function))
-   (furniture (id ?red-id) (color red))
+   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?red-id) (color red) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id flory-red) (value ?red-id))))
 =>
    (assert (question (question-id flory-red)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
 )
+
 
 ;; Flory Blue color
 (defrule COLOR::flory-blue-remove
-   (furniture (id ?flory-id) (color flory) (function ?function))
-   (furniture (id ?blue-id) (color blue))
+   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id flory-blue) (value ?blue-id))))
 =>
    (assert (question (question-id flory-blue)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
 )
 
 ;; Flory Grey color
 (defrule COLOR::flory-grey-remove
-   (furniture (id ?flory-id) (color flory) (function ?function))
-   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?grey-id) (color grey) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id flory-grey) (value ?grey-id))))
 =>
    (assert (question (question-id flory-grey)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
 )
 
 ;; Flory pink color
 (defrule COLOR::flory-pink-remove
-   (furniture (id ?flory-id) (color flory) (function ?function))
-   (furniture (id ?pink-id) (color pink))
+   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?pink-id) (color pink) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id flory-pink) (value ?pink-id))))
 =>
    (assert (question (question-id flory-pink)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
 )
 
 ;;Flory purple color
 (defrule COLOR::flory-purple-remove
-   (furniture (id ?flory-id) (color flory) (function ?function))
-   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id flory-purple) (value ?purple-id))))
 =>
    (assert (question (question-id flory-purple)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
 )
 
 ;; Blue Grey Color
 (defrule COLOR::blue-grey-remove
-   (furniture (id ?blue-id) (color blue) (function ?function))
-   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?blue-id) (color blue))
+   (furniture (id ?grey-id) (color grey) (function ?function))
    (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id blue-grey) (value ?grey-id))))
 =>
    (assert (question (question-id blue-grey)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
 )
 
 ;; Blue purple color
 (defrule COLOR::blue-purple-remove
-   (furniture (id ?blue-id) (color blue) (function ?function))
-   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?blue-id) (color blue))
+   (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id blue-purple) (value ?purple-id))))
 =>
    (assert (question (question-id blue-purple)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
 )
 
 ;; Purple Blue color
 (defrule COLOR::purple-blue-remove
-   (furniture (id ?purple-id) (color purple) (function ?function))
-   (furniture (id ?blue-id) (color blue))
+   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id purple-blue) (value ?blue-id))))
 =>
    (assert (question (question-id purple-blue)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
 )
 
 ;; Purple yellow color
 (defrule COLOR::purple-yellow-remove
-   (furniture (id ?purple-id) (color purple) (function ?function))
-   (furniture (id ?yellow-id) (color yellow))
+   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?yellow-id) (color yellow) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id purple-yellow) (value ?yellow-id))))
 =>
    (assert (question (question-id purple-yellow)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
 )
 
 
 ;; Red Flory Color
 (defrule COLOR::red-flory-remove
-   (furniture (id ?red-id) (color red) (function ?function))
-   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?red-id) (color red))
+   (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|yellow|blue|pink|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id red-flory) (value ?flory-id))))
 =>
    (assert (question (question-id red-flory)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
 )
+
 	
 ;; Grey Flory Color
 (defrule COLOR::grey-flory-remove
-   (furniture (id ?grey-id) (color grey) (function ?function))
-   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id grey-flory) (value ?flory-id))))
 =>
    (assert (question (question-id grey-flory)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
 )
+
 
 ;; Grey Red Color
 (defrule COLOR::grey-red-remove
-   (furniture (id ?grey-id) (color grey) (function ?function))
-   (furniture (id ?red-id) (color red))
+   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?red-id) (color red) (function ?function))
    (copy-furniture (id ?new-id) (color bbeige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id grey-red) (value ?red-id))))
 =>
    (assert (question (question-id grey-red)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
 )
+
 
 ;; Grey Blue Color
 (defrule COLOR::grey-blue-remove
-   (furniture (id ?grey-id) (color grey) (function ?function))
-   (furniture (id ?blue-id) (color blue))
+   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id grey-blue) (value ?blue-id))))
 =>
    (assert (question (question-id grey-blue)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
 )
+
 
 ;; Pink Flory Color
 (defrule COLOR::pink-flory-remove
-   (furniture (id ?pink-id) (color pink) (function ?function))
-   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?pink-id) (color pink))
+   (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id pink-flory) (value ?flory-id))))
 =>
    (assert (question (question-id pink-flory)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
 )
+
 
 ;; Pink Yellow Color
 (defrule COLOR::pink-yellow-remove
-   (furniture (id ?pink-id) (color pink) (function ?function))
-   (furniture (id ?yellow-id) (color yellow))
+   (furniture (id ?pink-id) (color pink))
+   (furniture (id ?yellow-id) (color yellow) (function ?function))
    (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id pink-yellow) (value ?yellow-id))))
 =>
    (assert (question (question-id pink-yellow)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
 )
+
 
 ;;; Green red Color
 (defrule COLOR::green-red-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?red-id) (color red))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?red-id) (color red) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-red) (value ?red-id))))
 =>
    (assert (question (question-id green-red)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
 )
 
+
 ;; Green blue color
-(defrule COLOR::green-red-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?blue-id) (color blue))
+(defrule COLOR::green-blue-remove
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-blue) (value ?blue-id))))
 =>
    (assert (question (question-id green-blue)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
 )
+
 
 ;; Green flory color
 (defrule COLOR::green-flory-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?flory-id) (color flory))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-flory) (value ?flory-id))))
 =>
    (assert (question (question-id green-flory)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
 )
+
 
 ;; Green grey color
 (defrule COLOR::green-grey-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?grey-id) (color grey))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?grey-id) (color grey) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-grey) (value ?grey-id))))
 =>
    (assert (question (question-id green-grey)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
 )
 ;; Green pink color
 (defrule COLOR::green-pink-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?pink-id) (color pink))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?pink-id) (color pink) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-pink) (value ?pink-id))))
 =>
    (assert (question (question-id green-pink)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
 )
+
+
 ;; Green purple color
 (defrule COLOR::green-purple-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-purple) (value ?purple-id))))
 =>
    (assert (question (question-id green-purple)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
 )
+
 
 ;; Green yellow
 (defrule COLOR::green-yellow-remove
-   (furniture (id ?green-id) (color green) (function ?function))
-   (furniture (id ?yellow-id) (color yellow))
+   (furniture (id ?green-id) (color green))
+   (furniture (id ?yellow-id) (color yellow) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id green-yellow) (value ?yellow-id))))
 =>
    (assert (question (question-id green-yellow)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
 )
+
 
 ;; Yellow pink color
 (defrule COLOR::yellow-pink-remove
-   (furniture (id ?yellow-id) (color yellow) (function ?function))
-   (furniture (id ?pink-id) (color pink))
+   (furniture (id ?yellow-id) (color yellow))
+   (furniture (id ?pink-id) (color pink) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|flory|blue|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id yellow-pink) (value ?pink-id))))
 =>
    (assert (question (question-id yellow-pink)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
 )
+
 
 ;; Yellow purple color
 (defrule COLOR::yellow-purple-remove
-   (furniture (id ?yellow-id) (color yellow) (function ?function))
-   (furniture (id ?purple-id) (color purple))
+   (furniture (id ?yellow-id) (color yellow))
+   (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|flory|blue|red|white) (function ?function))
+   (not(exists(question)))
+   (not(exists(answer (question-id yellow-purple) (value ?purple-id))))
 =>
    (assert (question (question-id yellow-purple)
-      (question-type advice) (text (sym-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
-)
-
-
-
-;;; White color generally
-;;; can be used to match with any other colors.
-;;; But in duo color combination
-(defrule COLOR::black-white-selection
-	?black-white <- (furniture (color black|white))
-	=>(create$ ?black-white)
-)
-
-(defrule COLOR::blue-white-selection
-	?blue-white <- (furniture (color blue|white))
-	=>(create$ ?blue-white)
-)
-
-(defrule COLOR::red-white-selection
-	?red-white <- (furniture (color red|white))
-	=>(create$ ?red-white)
-)
-
-(defrule COLOR::green-white-selection
-	?green-white <- (furniture (color green|white))
-	=>(create$ ?green-white)
-)
-
-(defrule COLOR::beige-white-selection
-	?beige-white <- (furniture (color beige|white))
-	=>(create$ ?beige-white)
-)
-
-(defrule COLOR::brown-white-selection
-	?brown-white <- (furniture (color brown|white))
-	=>(create$ ?brown-white)
-)
-
-(defrule COLOR::dark-brown-white-selection
-	?dark-brown-white <- (furniture (color dark-brown|white))
-	=>(create$ ?dark-brown-white)
-)
-
-(defrule COLOR::pink-white-selection
-	?pink-white <- (furniture (color pink|white))
-	=>(create$ ?pink-white)
-)
-
-(defrule COLOR::purple-white-selection
-	?purple-white <- (furniture (color purple|white))
-	=>(create$ ?purple-white)
-)
-
-(defrule COLOR::flory-white-selection
-	?flory-white <- (furniture (color flory|white))
-	=>(create$ ?flory-white)
-)
-(defrule COLOR::yellow-white-selection
-	?yellow-white <- (furniture (color yellow|white))
-	=>(create$ ?yellow-white)
-)
-
-(defrule COLOR::grey-white-selection
-	?grey-white <- (furniture (color grey|white))
-	=>(create$ ?grey-white)
-)
-
-(defrule COLOR::silver-white-selection
-	?silver-white <- (furniture (color silver|white))
-	=>(create$ ?silver-white)
-)
-
-;;; Green can be matched with beige, brown, dark-brown, black,silver
-(defrule COLOR::green-selection
-	?green <- (furniture (color green|beige|brown|dark-brown|black|silver))
-	=>(create$ ?green)
-)
-
-;;;flory can be matched with beige, brown, dark-brown, silver,yellow, black
-(defrule COLOR::flory-selection
-	?flory <- (furniture (color flory|beige|brown|dark-brown|silver|yellow|black))
-	=>(create$ ?flory)
-)
-
-;;; Blue can be matched with black, beige, dark-brown, brown, silver, red, yellow
-(defrule COLOR::blue-selection
-	?blue <- (furniture (color pink|blue|beige|brown|dark-brown|black|silver|red|yellow))
-	=>(create$ ?blue)
-)
-;;; Red can be matched with beige, brown, dark-brown, silver,black, yellow, blue, pink, purple
-(defrule COLOR::red-selection
-	?red <- (furniture (color red|beige|dark-brown|brown|silver|black|yellow|blue|pink|purple))
-	=>(create$ ?red)
-)
-;;;Purple can be matched with beige, brown, dark-brown, silver, black,pink, red
-(defrule COLOR::purple-selection
-	?purple <- (furniture (color purple|beige|dark-brown|brown|silver|black|pink|red))
-	=>(create$ ?purple)
-)
-
-;;;Pink can be matched with beige, brown, dark-brown, silver, black, blue, red
-(defrule COLOR::pink-selection
-	?pink <- (furniture (color pink|purple|beige|dark-brown|brown|silver|black|blue|red))
-	=>(create$ ?pink)
-)
-
-;;;Grey can be matched with beige, dark-brown, silver, black, purple, brown, yellow
-(defrule COLOR::grey-selection
-	?grey <- (furniture (color grey|beige|dark-brown|brown|silver|black|purple|yellow))
-	=>(create$ ?grey)
-)
-
-;;; Yellow can be matched with beige, dark-brown, silver, black, brown,flory, blue, red
-(defrule COLOR::yellow-selection
-	?yellow <- (furniture (color yellow|beige|dark-brown|brown|silver|black|flory|blue|red))
-	=>(create$ ?yellow)
+      (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
 )
 
 
@@ -1500,21 +1503,21 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                   LAYOUT rules                           ;;
+;;                   FINAL-LAYOUT rules                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ask a question do display the layout
-(defrule LAYOUT::ask-layout
-   (initial-fact)
+;; Ask a question do display the final layout
+(defrule FINAL-LAYOUT::ask-final-layout
    (not(exists(question)))
+   (not (exists(answer (question-id final-layout))))
 =>
-   (assert(question (question-id layout) (question-type layout) (text "Here is the layout")))
+   (assert(question (question-id final-layout) (question-type final-layout) (text "Here is the final layout")))
 )
 
 
 ;; Answer a question about the layout
-(defrule LAYOUT::ask-layout
-   ?question <- (question (question-id layout))
-   (answer (question-id layout))
+(defrule FINAL-LAYOUT::answer-final-layout
+   ?question <- (question (question-id final-layout))
+   (answer (question-id final-layout))
 =>
    (retract ?question)
 )

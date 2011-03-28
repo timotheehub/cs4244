@@ -214,21 +214,25 @@ public class MainFrame extends javax.swing.JFrame {
             ((WindowDoorPanel)mainPanel).setQuestion(question);
         }
         
-        else if (question.getQuestionType().equals("furniture-preference"))
+        else if ((question.getQuestionType().equals("furniture-preference"))
+            || (question.getQuestionType().equals("advice")))
         {
             initPictureDisplayPanel();
             ((PictureDisplayPanel)mainPanel).setQuestion(question);
         }
      
-        else if (question.getQuestionType().equals("layout"))
+        else if ((question.getQuestionType().equals("layout"))
+            || (question.getQuestionType().equals("final-layout")))
         {
             initLayoutPanel();
+            ((FurniturePosition)mainPanel).setQuestion(question);
             ((FurniturePosition)mainPanel).setFurniture(furnitureList);
             ((FurniturePosition)mainPanel).windowX = this.windowX;
             ((FurniturePosition)mainPanel).windowY = this.windowY;
             ((FurniturePosition)mainPanel).doorX = this.doorX;
             ((FurniturePosition)mainPanel).doorY = this.doorY;
         }
+        
         else if (question.getQuestionType().equals(""))
         {
             System.out.println("Bye!");

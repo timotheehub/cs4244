@@ -11,8 +11,10 @@
 
 package dreamlivingroom;
 
+import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;
 import ClipsInteraction.Furniture;
+import ClipsInteraction.Question;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -27,6 +29,8 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -54,6 +58,8 @@ public class FurniturePosition extends javax.swing.JPanel {
     ClipsEngine clips;
     Rectangle imageDisplay;
 
+    Question currentQuestion;
+
     /** Creates new form WindowDoorPanel */
     public FurniturePosition(MainFrame mainFrame) {
         container = mainFrame;
@@ -67,9 +73,12 @@ public class FurniturePosition extends javax.swing.JPanel {
         initComponents();
         textLabel.setText("Result of Layout:");
         submitButton.setText("Submit");
+        submitButton.setActionCommand("Submit");
         submitButton.addActionListener(new ButtonListener());
-        backButton.setText("Back");
+        backButton.setText("Close");
+        backButton.setActionCommand("Close");
         backButton.addActionListener(new ButtonListener());
+
         try{
             windowImages = ImageIO.read(new File("window.jpg"));
             doorImages = ImageIO.read(new File("door.jpg"));
@@ -89,6 +98,20 @@ public class FurniturePosition extends javax.swing.JPanel {
         }
     }
 
+    public void setQuestion(Question question)
+    {
+        currentQuestion = question;
+        textLabel.setText(currentQuestion.getText());
+        if (currentQuestion.getQuestionType().equals("layout"))
+        {
+            backButton.setVisible(false);
+        }
+        else
+        {
+            submitButton.setVisible(false);
+        }
+    }
+
     public void setFurniture(ArrayList furnitureArray)
     {
         furnitureList = furnitureArray;
@@ -97,7 +120,24 @@ public class FurniturePosition extends javax.swing.JPanel {
     class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if(e.getActionCommand().equals("Submit")) {
-              
+                Answer answer = new Answer(currentQuestion.getQuestionId(),
+                        "answer-layout", "0");
+                clips.setAnswer(answer);
+                try {
+                    container.RunClips();
+                } catch (IOException ex) {
+                    Logger.getLogger(PictureDisplayPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(e.getActionCommand().equals("Close")) {
+                Answer answer = new Answer(currentQuestion.getQuestionId(),
+                        "answer-final-layout", "0");
+                clips.setAnswer(answer);
+                try {
+                    container.RunClips();
+                } catch (IOException ex) {
+                    Logger.getLogger(PictureDisplayPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

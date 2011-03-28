@@ -161,10 +161,7 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         if (currentQuestion != null){
             String sValue = "";
-            if(currentQuestion.getQuestionType().equals("furniture-preference"))
-            {
-              sValue = jButton1.getActionCommand();
-            }
+            sValue = jButton1.getActionCommand();
             Answer answer = new Answer(currentQuestion.getQuestionId(),currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
             try {
@@ -179,10 +176,7 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
          if (currentQuestion != null){
             String sValue = "";
-            if(currentQuestion.getQuestionType().equals("furniture-preference"))
-            {
-              sValue = jButton2.getActionCommand();
-            }
+            sValue = jButton2.getActionCommand();
             Answer answer = new Answer(currentQuestion.getQuestionId(),currentQuestion.getQuestionId(), sValue);
             clips.setAnswer(answer);
             try {

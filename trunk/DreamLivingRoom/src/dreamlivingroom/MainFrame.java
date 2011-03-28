@@ -185,16 +185,6 @@ public class MainFrame extends javax.swing.JFrame {
         add(mainPanel);
         repaint();
     }
-//     private void initTestingPanel() {
-//          if (mainPanel != null)
-//        {
-//            mainPanel.setVisible(false);
-//        }
-//        mainPanel = new TestingPanel(this);
-//        mainPanel.setSize(600,400);
-//        add(mainPanel);
-//        repaint();
-//    }
 
      
     public void RunClips() throws IOException
@@ -230,7 +220,7 @@ public class MainFrame extends javax.swing.JFrame {
             ((PictureDisplayPanel)mainPanel).setQuestion(question);
         }
      
-        else if (!furnitureList.isEmpty())
+        else if (question.getQuestionType().equals("layout"))
         {
             initLayoutPanel();
             ((FurniturePosition)mainPanel).setFurniture(furnitureList);

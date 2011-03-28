@@ -102,14 +102,12 @@ public class ClipsEngine {
         System.out.println(listSize);
         FactAddressValue factAddressValue;
         // Take the first question
-        if (listSize >= 1)
+        for (int i = 0; i < listSize; i++)
         {
-            for (int i = 0; i < listSize; i++) {
              factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
              Furniture furniturePos = new Furniture();
              furniturePos.setFurnitureId(factAddressValue.
                      getFactSlot("fid").toString());
-
              furniturePos.setToRight(Integer.parseInt(factAddressValue.
                      getFactSlot("toright").toString()));
              furniturePos.setToLeft(Integer.parseInt(factAddressValue.
@@ -125,8 +123,7 @@ public class ClipsEngine {
                 + furniturePos.getToTop() + ") (toBottom "
                 + furniturePos.getToBottom() + "))");
              furnitureList.add(furniturePos);
-            }
-        }
+         }
 
         
 

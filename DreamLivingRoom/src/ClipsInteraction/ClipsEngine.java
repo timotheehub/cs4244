@@ -99,6 +99,7 @@ public class ClipsEngine {
         MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
 
         int listSize = multifieldValue.listValue().size();
+        System.out.println(listSize);
         FactAddressValue factAddressValue;
         // Take the first question
         if (listSize >= 1)

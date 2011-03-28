@@ -687,16 +687,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   POSITIONING rules                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defrule POSITIONING::close
-        ?distance <- (distance (category1 ?c1) (category2 ?c2) (prefer ?p))
-        (room-size (length ?rlength) (width ?rwidth))
-=>
-        (if (eq ?p close) then
-            (modify ?distance (range 0.3 0.5))
-         else
-            (modify ?distance (range 0.6 0.8))))
-
-
 ;; rank the sides of the place to start with based on the preference of the user.
 
 (deffunction POSITIONING::rank (?distance ?wl ?wr ?wt ?wb)
@@ -778,16 +768,17 @@
     (furniture (id ?fid) (length ?length) (width ?width))
     (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth)))
 =>
+    (printout t "loop" crlf)
     (if (eq ?c c) then (switch ?d 
-        (case left then (if (< (- ?tl 1) 0) then (modify ?f (direction top)(orientation vertical)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 1)) (toright (+ ?tr 1)))))
-        (case right then (if (< (- ?tr 1) 0) then (modify ?f (direction bottom)(orientation vertical)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 1)) (toright (- ?tr 1)))))
-        (case top then (if (< (- ?tt 1) 0) then (modify ?f (direction right)(orientation horizontal)(totop 0)(tobottom (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (- ?tt 1))(tobottom (+ ?tb 1)))))
-        (case bottom then (if (< (- ?tb 1) 0) then (modify ?f (direction left)(orientation horizontal)(tobottom 0)(totop (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (+ ?tt 1)) (tobottom (- ?tb 1))))))
+        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction top)(orientation vertical)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
+        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction bottom)(orientation vertical)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
+        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction right)(orientation horizontal)(totop 0)(tobottom (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
+        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction left)(orientation horizontal)(tobottom 0)(totop (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))
     else (switch ?d
-        (case left then (if (< (- ?tl 1) 0) then (modify ?f (direction bottom)(orientation vertical)(toleft 0)(toright (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (- ?tl 1)) (toright (+ ?tr 1)))))
-        (case right then (if (< (- ?tr 1) 0) then (modify ?f (direction top)(orientation vertical)(toright 0)(toleft (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (+ ?tl 1)) (toright (- ?tr 1)))))
-        (case top then (if (< (- ?tt 1) 0) then (modify ?f (direction left)(orientation horizontal)(totop 0)(tobottom (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (- ?tt 1))(tobottom (+ ?tb 1)))))
-        (case bottom then (if (< (- ?tb 1) 0) then (modify ?f (direction right)(orientation horizontal)(tobottom 0)(totop (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (+ ?tt 1)) (tobottom (- ?tb 1))))))))
+        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction bottom)(orientation vertical)(toleft 0)(toright (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
+        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction top)(orientation vertical)(toright 0)(toleft (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
+        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction left)(orientation horizontal)(totop 0)(tobottom (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
+        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction right)(orientation horizontal)(tobottom 0)(totop (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))))
 
 
 
@@ -858,8 +849,8 @@
     (test (= ?place1 (+ ?place2 1)))
 =>
     (retract ?f ?g)
-    (assert (sort-list ?ori1 ?rank1 ?place2)
-            (sort-list ?ori2 ?rank2 ?place1)))
+    (assert (sort-list ?fid ?ori1 ?rank1 ?place2)
+            (sort-list ?fid ?ori2 ?rank2 ?place1)))
 
 
 ;; Check whether the sorting is completed
@@ -901,6 +892,7 @@
     (window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb))
     (door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db))
     (furniture (id ?tvid) (function TV))
+    (not (furniture-pos (fid ?id)))
     (furniture-pos (fid ?tvid) (toleft ?tvl) (toright ?tvr) (totop ?tvt) (tobottom ?tvb))
     (distance (category1 cupboard|window) (category2 window|cupboard) (prefer ?cbw))
     (distance (category1 cupboard|door) (category2 door|cupboard) (prefer ?cbd))
@@ -921,6 +913,7 @@
     (door (toleft ?dl)(toright ?dr)(totop ?dt)(tobottom ?db))
     (furniture (id ?cbid)(function cupboard))
     (furniture-pos (fid ?cbid))
+    (not (furniture-pos (fid ?id)))
     (distance (category1 bookshelf|window)(category2 bookshelf|window)(prefer ?bsw))
     (distance (category1 bookshelf|door)(category2 bookshelf|door)(prefer ?bsd))
 =>

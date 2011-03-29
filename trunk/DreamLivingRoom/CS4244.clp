@@ -637,7 +637,6 @@
 ;; Simple rule: Take a furniture, compare its size with room
 ;; size. If the furniture is larger, retract it from facts.
 (defrule SELECTION::eliminate-wrong-size-furniture
-	(theme)
 	(room-size (length ?room-l) (width ?room-w))
 	(test (> ?room-l 0))
 	(test (> ?room-w 0))

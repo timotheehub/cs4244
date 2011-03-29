@@ -64,8 +64,8 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         //Display valid answers for each group of furniture
         s1 = question.getValidAnswers().get(0);
         s2 = question.getValidAnswers().get(1);
-        s3 = s1 + ".jpg";
-        s4 = s2 + ".jpg";
+        s3 = "pic/" + s1 + ".jpg";
+        s4 = "pic/" + s2 + ".jpg";
         File file1 = new File(s3);
         File file2 = new File(s4);
 

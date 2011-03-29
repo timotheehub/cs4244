@@ -71,8 +71,8 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         backButton.setText("Back");
         backButton.addActionListener(new ButtonListener());
         try{
-            windowImages = ImageIO.read(new File("window.jpg"));
-            doorImages = ImageIO.read(new File("door.jpg"));
+            windowImages = ImageIO.read(new File("pic/window.jpg"));
+            doorImages = ImageIO.read(new File("pic/door.jpg"));
         } catch(IOException ex) {
             System.out.println("Unable to fetch image");
             System.exit(0);

@@ -124,7 +124,7 @@
 ;; 4 orientations.
 (deftemplate furniture-pos
 (slot fid (type SYMBOL))
-(slot orientation (allowed-values v h))
+(slot orientation (allowed-values left right top bottom vertical horizontal))
 (slot toleft (type INTEGER))
 (slot toright (type INTEGER))
 (slot totop (type INTEGER))
@@ -759,26 +759,61 @@
 )
 
 
+(deftemplate POSITIONING::range
+    (slot fid (type SYMBOL))
+    (slot toleftmin (type INTEGER))
+    (slot toleftmax (type INTEGER))
+    (slot totopmin (type INTEGER))
+    (slot totopmax (type INTEGER)))
+
 ;; loop to find the position of the furniture
 ;; needs to be modified for turning.
 (defrule POSITIONING::loop-for-position
     ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
     (room-size (length ?rlength) (width ?rwidth))
-    (furniture (id ?fid) (length ?length) (width ?width))
-    (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth)))
+    (furniture (id ?fid) (function ~sofa)(length ?length) (width ?width))
+    (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
 =>
     (printout t "loop" crlf)
     (if (eq ?c c) then (switch ?d 
-        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction top)(orientation vertical)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
-        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction bottom)(orientation vertical)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
-        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction right)(orientation horizontal)(totop 0)(tobottom (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
-        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction left)(orientation horizontal)(tobottom 0)(totop (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))
+        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction top)(orientation left)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
+        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction bottom)(orientation right)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
+        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction right)(orientation top)(totop 0)(tobottom (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
+        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction left)(orientation bottom)(tobottom 0)(totop (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))
     else (switch ?d
-        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction bottom)(orientation vertical)(toleft 0)(toright (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
-        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction top)(orientation vertical)(toright 0)(toleft (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
-        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction left)(orientation horizontal)(totop 0)(tobottom (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
-        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction right)(orientation horizontal)(tobottom 0)(totop (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))))
+        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction bottom)(orientation left)(toleft 0)(toright (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
+        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction top)(orientation right)(toright 0)(toleft (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
+        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction left)(orientation top)(totop 0)(tobottom (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
+        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction right)(orientation bottom)(tobottom 0)(totop (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))))
 
+
+(defrule POSITIONING::loop-for-position-sofa
+    ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o))
+    (room-size (length ?rlength)(width ?rwidth))
+    (range (fid ?fid)(toleftmin ?tlmin)(toleftmax ?tlmax)(totopmin ?ttmin)(totopmax ?ttmax))
+    (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
+=>
+    (switch ?d 
+        (case left then
+            (if (< (- ?tl 100) ?tlmin) then 
+                (modify ?f (direction right)(totop (+ ?tt 100))(tobottom (- ?tb 100)))
+                (if (> ?tt ?ttmax) then (modify ?f (totop ?ttmin) (tobottom (- (+ ?tb ?tt) ?ttmin))))
+            else (modify ?f (toleft (- ?tl 100))(toright (+ ?tr 100)))))
+        (case right then
+            (if (> (+ ?tl 100) ?tlmax) then
+                (modify ?f (direction left)(totop (+ ?tt 100))(tobottom (- ?tb 100)))
+                (if (> ?tt ?ttmax) then (modify ?f (totop ?ttmin)(tobottom (- (+ ?tb ?tt) ?ttmin))))
+            else (modify ?f (toleft (+ ?tl 100))(toright (- ?tr 100)))))
+        (case top then
+            (if (< (- ?tt 100) ?ttmin) then
+                (modify ?f (direction bottom)(toleft (+ ?tl 100))(toright (- ?tr 100)))
+                (if (> ?tl ?tlmax) then (modify ?f (toleft ?tlmin)(toright (- (+ ?tl ?tr) ?tlmin))))
+            else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 00)))))
+        (case bottom then
+            (if (< (+ ?tt 100) ?ttmax) then
+                (modify ?f (direction top)(toleft (+ ?tl 100))(toright (- ?tr 100)))
+                (if (> ?tl ?tlmax) then (modify ?f (toleft ?tlmin)(toright (- (+ ?tl ?tr) ?tlmin))))
+            else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100)))))))
 
 
 ;; set the position of the furniture when there is not overlapping
@@ -798,7 +833,7 @@
 (defrule POSITIONING::find-start
     ?a<-(ori-rank ?fid ?first ?second ?ori3 ?ori4)
     (room-size (length ?rlength) (width ?rwidth))
-    (furniture (id ?fid) (length ?length) (width ?width))
+    (furniture (id ?fid) (function ~sofa)(length ?length) (width ?width))
 =>
     (retract ?a)
     (bind ?totop 0)
@@ -806,7 +841,7 @@
     (bind ?toright 0)
     (bind ?tobottom 0)
     (if (or (eq ?first left) (eq ?first right)) then
-        (bind ?orientation vertical)
+        (if (eq ?first left) then (bind ?orientation left) else (bind ?orientation right))
         (bind ?totop (/ (- ?rwidth ?length) 2))
         (bind ?tobottom (- (- ?rwidth ?length) ?totop)))
     (if (eq ?first left) then
@@ -822,7 +857,7 @@
             (case top then (bind ?direction top)(bind ?cycle cc))
             (case bottom then (bind ?direction bottom)(bind ?cycle c))))
     (if (or (eq ?first top) (eq ?first bottom)) then
-        (bind ?orientation horizontal)
+        (if (eq ?first top) then (bind ?orientation top) else (bind ?orientation bottom))
         (bind ?toleft (/ (- ?rlength ?length) 2))
         (bind ?toright (- (- ?rlength ?length) ?toleft)))
     (if (eq ?first top) then
@@ -838,6 +873,63 @@
             (case right then (bind ?direction right)(bind ?cycle cc))
             (case top then (bind ?direction left)(bind ?cycle c))))
     (assert (current-pos (fid ?fid) (toleft ?toleft) (toright ?toright) (totop ?totop) (tobottom ?tobottom)(cycle ?cycle)(orientation ?orientation) (direction ?direction))))
+
+
+(defrule POSITIONING::find-start-sofa
+    ?a<-(ori-rank ?fid ?first ?second ?ori3 ?ori4)
+    (range (fid ?fid) (toleftmin ?tlmin)(toleftmax ?tlmax)(totopmin ?ttmin)(totopmax ?ttmax))
+    (furniture (id ?fid)(function sofa)(length ?length)(width ?width))
+    (room-size (length ?rlength)(width ?rwidth))
+    (furniture (id ?tvid)(function tv))
+    (furniture-pos (fid ?tvid)(toleft ?tvl)(toright ?tvr)(totop ?tvt)(tobottom ?tvb)(orientation ?tvo))
+=>
+    (bind ?orientation left)
+    (bind ?toleft 0)
+    (bind ?toright 0)
+    (bind ?totop 0)
+    (bind ?tobottom 0)
+    (bind ?direction left)
+    (switch ?tvo 
+        (case left then (bind ?orientation left))
+        (case right then (bind ?orientation right))
+        (case top then (bind ?orientation top))
+        (case bottom then (bind ?orientation bottom)))
+    (switch ?first 
+        (case left then (bind ?toleft ?tlmin)
+                        (bind ?direction right)
+                        (bind ?toright (- ?rlength ?toleft))
+                        (switch ?second 
+                            (case top then (bind ?totop ?ttmin)(bind ?tobottom (- ?rwidth ?totop)))
+                            (case bottom then (bind ?totop ?ttmax)(bind ?tobottom (- ?rwidth ?totop)))
+                            (case right then (bind ?totop (/ (+ ?ttmin ?ttmax) 2))(bind ?tobottom (- ?rwidth ?totop)))))
+        (case right then (bind ?toleft ?tlmax)
+                         (bind ?direction left)
+                         (bind ?toright (- ?rlength ?toleft))
+                         (switch ?second
+                            (case top then (bind ?totop ?ttmin)(bind ?tobottom (- ?rwidth ?totop)))
+                            (case bottom then (bind ?totop ?ttmax)(bind ?tobottom (- ?rwidth ?totop)))
+                            (case left then (bind ?totop (/ (+ ?ttmin ?ttmax) 2))(bind ?tobottom (- ?rwidth ?totop)))))
+        (case top  then (bind ?totop ?ttmin)
+                        (bind ?direction bottom)
+                        (bind ?tobottom (- ?rwidth ?totop))
+                        (switch ?second
+                            (case left then (bind ?toleft ?tlmin)(bind ?toright (- ?rlength ?toleft)))
+                            (case right then (bind ?toleft ?tlmax)(bind ?toright (- ?rlength ?toleft)))
+                            (case bottom then (bind ?toleft (/ (+ ?tlmin ?tlmax) 2))(bind ?toright (- ?rlength ?toleft)))))
+        (case bottom then (bind ?totop ?ttmax)
+                        (bind ?direction top)
+                        (bind ?tobottom (- ?rwidth ?totop))
+                        (switch ?second
+                            (case left then (bind ?toleft ?tlmin)(bind ?toright (- ?rlength ?toleft)))
+                            (case right then (bind ?toleft ?tlmax)(bind ?toright (- ?rlength ?toleft)))
+                            (case top then (bind ?toleft (/ (+ ?tlmin ?tlmax) 2)) (bind ?toright (- ?rlength ?toleft))))))
+   (if (or (eq ?orientation left) (eq ?orientation right)) then 
+        (bind ?toright (- ?toright ?width)) (bind ?tobottom (- ?tobottom ?length))
+    else (bind ?toright (- ?toright ?length))(bind ?tobottom (- ?tobottom ?width)))
+   (assert (current-pos (fid ?fid)(toleft ?toleft)(toright ?toright)(totop ?totop)(tobottom ?tobottom)(direction ?direction)(orientation ?orientation)))
+)
+
+
  
 ;; Use bubble sort to sort the rankings of the orientations
 (defrule POSITIONING::bubble-sort
@@ -899,9 +991,9 @@
     (bind ?wrank (rank ?cbw ?wl ?wr ?wt ?wb))
     (bind ?drank (rank ?cbd ?dl ?dr ?dt ?db))
     (assert (sort-list ?id left (+ (nth 1 ?wrank) (nth 1 ?drank)) 1)
-            (sort-list ?id left (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
-            (sort-list ?id left (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
-            (sort-list ?id left (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
+            (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
+            (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
+            (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
             (sort-status ?id no)))
 
 
@@ -919,11 +1011,57 @@
     (bind ?wrank (rank ?bsw ?wl ?wr ?wt ?wb))
     (bind ?drank (rank ?bsd ?dl ?dr ?dt ?db))
     (assert (sort-list ?id left (+ (nth 1 ?wrank) (nth 1 ?drank)) 1)
-            (sort-list ?id left (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
-            (sort-list ?id left (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
-            (sort-list ?id left (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
+            (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
+            (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
+            (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
             (sort-status ?id no)))
 
+
+(defrule POSITIONING::position-sofa
+    (furniture (id ?id)(function sofa)(length ?sflength)(width ?sfwidth)(height ?sfheight))
+    (room-size (length ?rlength)(width ?rwidth))
+    (window (toleft ?wl)(toright ?wr)(totop ?wt)(tobottom ?wb))
+    (door (toleft ?dl)(toright ?dr)(totop ?dt)(tobottom ?db))
+    (furniture (id ?bsid)(function bookshelf))
+    (furniture-pos (fid ?bsid)(toleft ?bsl)(toright ?bsr)(totop ?bst)(tobottom ?bsb)(orientation ?bso))
+    (furniture (id ?cbid)(function cupboard))
+    (furniture-pos (fid ?cbid)(toleft ?cbl)(toright ?cbr)(totop ?cbt)(tobottom ?cbb)(orientation ?cbo))
+    (furniture (id ?tvid)(function TV)(length ?tvlength)(width ?tvwidth))
+    (furniture-pos (fid ?tvid)(toleft ?tvl)(toright ?tvr)(totop ?tvt)(tobottom ?tvb)(orientation ?tvo))
+    (not (furniture-pos (fid ?id)))
+    (distance (category1 sofa|window)(category2 sofa|window)(prefer ?sfw))
+    (distance (category1 sofa|door)(category2 sofa|door)(prefer ?sfd))
+    (distance (category1 sofa|bookshelf)(category2 sofa|bookshelf)(prefer ?sfbs))
+    (distance (category1 sofa|cupboard)(category2 sofa|cupboard)(prefer ?sfcb))
+    (distance (category1 sofa|TV)(category2 sofa|TV)(prefer ?sftv))
+=>
+    (bind ?wrank (rank ?sfw ?wl ?wr ?wt ?wb))
+    (bind ?drank (rank ?sfd ?dl ?dr ?dt ?db))
+    (bind ?tvrank (rank ?sftv ?tvl ?tvr ?tvt ?tvb))
+    (bind ?bsrank (rank ?sfbs ?bsl ?bsr ?bst ?bsb))
+    (bind ?cbrank (rank ?sfcb ?cbl ?cbr ?cbt ?cbb))
+    (switch ?tvo
+        (case left then 
+            (bind ?totopmin (- (- ?rwidth ?tvb) ?sflength))
+            (if (< ?totopmin 0) then (bind ?totopmin 0))
+            (assert (range (fid ?id)(toleftmin (+ (+ ?tvl ?tvwidth) 1500))(toleftmax (- ?rlength ?sfwidth))(totopmin ?totopmin)(totopmax ?tvt))))
+        (case right then
+            (bind ?totopmin (- (- ?rwidth ?tvb) ?sflength))
+            (if (< ?totopmin 0) then (bind ?totopmin 0))
+            (assert (range (fid ?id)(toleftmin 0)(toleftmax (- (- (- ?rlength ?sfwidth) ?tvwidth) 1500))(totopmin ?totopmin)(totopmax ?tvt))))
+        (case top then
+            (bind ?toleftmin (- (- ?rlength ?sflength) ?tvr))
+            (if (< ?toleftmin 0) then (bind ?toleftmin 0))
+            (assert (range (fid ?id)(toleftmin ?toleftmin)(toleftmax ?tvl)(totopmin (+ (+ ?tvwidth ?tvt) 1500))(totopmax (- ?rwidth ?sfwidth)))))
+        (case bottom then
+            (bind ?toleftmin (- (- ?rlength ?sflength) ?tvr))
+            (if (< ?toleftmin 0) then (bind ?toleftmin 0))
+            (assert (range (fid ?id)(toleftmin ?toleftmin)(toleftmax ?tvl)(totopmin 0)(totopmax (- (- (- ?rwidth ?sfwidth) ?tvwidth) 1500))))))
+    (assert (sort-list ?id left (+ (+ (+ (+ (nth 1 ?wrank) (nth 1 ?drank)) (nth 1 ?tvrank)) (nth 1 ?bsrank)) (nth 1 ?cbrank)))
+            (sort-list ?id right (+ (+ (+ (+ (nth 2 ?wrank) (nth 2 ?drank)) (nth 2 ?tvrank)) (nth 2 ?bsrank)) (nth 2 ?cbrank)))
+            (sort-list ?id top (+ (+ (+ (+ (nth 3 ?wrank) (nth 3 ?drank)) (nth 3 ?tvrank)) (nth 3 ?bsrank)) (nth 3 ?cbrank)))
+            (sort-list ?id bottom (+ (+ (+ (+ (nth 4 ?wrank) (nth 4 ?drank)) (nth 4 ?tvrank)) (nth 4 ?bsrank)) (nth 4 ?cbrank)))
+            (sort-status ?id no)))
 
 
 (deffunction furniture-ratio

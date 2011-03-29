@@ -45,14 +45,9 @@ public class FurniturePosition extends javax.swing.JPanel {
     private Image doorImages;
     int windowX, windowY, doorX, doorY;
     int mouseX, mouseY;
-    int selected;
     int roomLength, roomWidth;
     MainFrame container;
     Rectangle layout;
-    final int WINDOW_LENGTH = 800; // in millimeters
-    final int WINDOW_WIDTH = 100;
-    final int DOOR_LENGTH = 800;
-    final int DOOR_WIDTH = 100;
     MediaTracker mt = new MediaTracker(this);
     ArrayList<Furniture> furnitureList;
     ClipsEngine clips;
@@ -60,16 +55,12 @@ public class FurniturePosition extends javax.swing.JPanel {
 
     Question currentQuestion;
 
-    /** Creates new form WindowDoorPanel */
+    /** Creates new form FurniturePosition */
     public FurniturePosition(MainFrame mainFrame) {
         container = mainFrame;
         this.clips = container.getClips();
         roomLength = container.getRoomLength();
         roomWidth = container.getRoomWidth();
-        windowX = 10;
-        windowY = 100;
-        doorX = 10;
-        doorY = 150;
         initComponents();
         textLabel.setText("Result of Layout:");
         submitButton.setText("Submit");
@@ -98,8 +89,7 @@ public class FurniturePosition extends javax.swing.JPanel {
         }
     }
 
-    public void setQuestion(Question question)
-    {
+    public void setQuestion(Question question) {
         currentQuestion = question;
         textLabel.setText(currentQuestion.getText());
         if (currentQuestion.getQuestionType().equals("layout"))
@@ -112,8 +102,7 @@ public class FurniturePosition extends javax.swing.JPanel {
         }
     }
 
-    public void setFurniture(ArrayList furnitureArray)
-    {
+    public void setFurniture(ArrayList furnitureArray) {
         furnitureList = furnitureArray;
     }
     
@@ -141,7 +130,8 @@ public class FurniturePosition extends javax.swing.JPanel {
             }
         }
     }
-    
+
+    //Generate a basic layout of the room
     void createLayout() {
         int plotableLength = this.getWidth() - 170;
         int plotableWidth = this.getHeight() - 70;
@@ -155,25 +145,20 @@ public class FurniturePosition extends javax.swing.JPanel {
         int plotableLength = this.getWidth() - 170;
         int plotableWidth = this.getHeight() - 70;
         double ratio = Math.max((double)roomLength/plotableLength, (double)roomWidth/plotableWidth)/2;
-        //Fetch every furniture from list to display them on the panel
+        //Fetch every furniture from clips source file to display them on the panel
         for (int i = 0; i < furnitureList.size(); ++i) {
             Furniture currentFurniture = furnitureList.get(i);
             int furnitureLength = (int)((roomLength - currentFurniture.getToRight() - currentFurniture.getToLeft())/ratio);
             int furnitureWidth = (int)((roomWidth - currentFurniture.getToTop() - currentFurniture.getToBottom())/ratio);
-            Rectangle furnitureRectangle = new Rectangle((currentFurniture.getToLeft())/1000+170,(currentFurniture.getToTop())/100+70,furnitureLength,furnitureWidth);
+            //Furniture's size is in mm, so the calculation of the position need to divided by 1000. The additional value is the distance of the layout and the panel
+            Rectangle furnitureRectangle = new Rectangle((currentFurniture.getToLeft())/1000+170,(currentFurniture.getToTop())/1000+70,furnitureLength,furnitureWidth);
             String imageName = currentFurniture.getFurnitureId() + ".jpg";
             ImageIcon img = new ImageIcon(imageName);
             JLabel furnitureLabel = new JLabel(scale(img.getImage(),0.1));
             furnitureLabel.setBounds(furnitureRectangle);
             furnitureLabel.addMouseListener(new MyMouseListener(imageName));
             this.add(furnitureLabel);
-            g2D.draw(furnitureRectangle);
-            //furnitureLabel.setText(currentFurniture.getFurnitureId());
-            //furnitureRectangle.grow(10,10);
-            //furnitureLabel.setBounds(furnitureRectangle);
-            //this.add(furnitureLabel);
-            //g2D.draw(furnitureRectangle);
-            
+            g2D.draw(furnitureRectangle);            
         }
     }
 

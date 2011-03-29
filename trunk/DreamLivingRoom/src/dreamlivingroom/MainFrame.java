@@ -12,11 +12,9 @@
 package dreamlivingroom;
 
 import ClipsInteraction.ClipsEngine;
-import ClipsInteraction.Furniture;
 import ClipsInteraction.Question;
 import ClipsInteraction.RoomSize;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -192,6 +190,7 @@ public class MainFrame extends javax.swing.JFrame {
         Question question;
         clips.runEnvironment();
         question = clips.getQuestion();
+        System.out.println(question.getQuestionId());
         // System.out.println(question.getQuestionType());
 
         if ((question.getQuestionType().equals("list"))
@@ -200,7 +199,7 @@ public class MainFrame extends javax.swing.JFrame {
             initQuestionPanel();
             ((QuestionPanel)mainPanel).setQuestion(question);
         }
-
+ 
         else if (question.getQuestionType().equals("size"))
         {
             initSizePanel();
@@ -219,10 +218,10 @@ public class MainFrame extends javax.swing.JFrame {
             initPictureDisplayPanel();
             ((PictureDisplayPanel)mainPanel).setQuestion(question);
         }
-     
+       
         else if ((question.getQuestionType().equals("layout"))
             || (question.getQuestionType().equals("final-layout")))
-        {
+        {           
             initLayoutPanel();
             ((FurniturePosition)mainPanel).setQuestion(question);
             ((FurniturePosition)mainPanel).setFurniture(clips.getFurniture());

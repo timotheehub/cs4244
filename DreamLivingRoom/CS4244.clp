@@ -1163,23 +1163,88 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                   COLORS rules                           ;;
+;;                   COLOR rules                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Calculate new vertical size
-(deffunction COLOR::new-vertical-size (?old-to-vertical ?old-length ?new-length ?old-width ?new-width ?orientation)
-   (if (= (str-compare ?orientation "vertical") 0) then
-      (return (+ ?old-to-vertical (/ (- ?new-width ?old-width) 2)))
+;; Calculate the vertical size of a new furniture that will
+;; replace an old but with new dimensions (width, length)
+(deffunction COLOR::new-vertical-size (?old-to-vertical ?old-to-other-size ?old-length ?new-length ?old-width ?new-width ?orientation)
+   ;; Horizontal orientation
+   (if (= (str-compare ?orientation "horizontal") 0) then
+      ;; if it is close to the wall, return the value of
+      ;; the previous furniture
+      (if (< (+ ?old-to-vertical (/ (- ?old-width ?new-width) 2)) 0) then
+      (return ?old-to-vertical)
+      else
+      ;; if it is close to the wall of the other side,
+      ;; move the furniture closer to the current wall
+         (if (< (+ ?old-to-other-size (/ (- ?old-width ?new-width) 2)) 0) then
+            (return (+ ?old-to-vertical (- ?old-width ?new-width)))
+      ;; else the center of the new furniture is the same
+      ;; as the center of the old furniture
+         else
+            (return (+ ?old-to-vertical (/ (- ?old-width ?new-width) 2)))
+         )
+      )
+   ;; Vertical orientation
    else
-      (return (+ ?old-to-vertical (/ (- ?new-length ?old-length) 2))))
+      ;; if it is close to the wall, return the value of
+      ;; the previous furniture
+      (if (< (+ ?old-to-vertical (/ (- ?old-length ?new-length) 2)) 0) then
+      (return ?old-to-vertical)
+      else
+      ;; if it is close to the wall of the other side,
+      ;; move the furniture closer to the current wall
+         (if (< (+ ?old-to-other-size (/ (- ?old-length ?new-length) 2)) 0) then
+            (return (+ ?old-to-vertical (- ?old-length ?new-length)))
+      ;; else the center of the new furniture is the same
+      ;; as the center of the old furniture
+         else
+            (return (+ ?old-to-vertical (/ (- ?old-length ?new-length) 2)))
+         )
+      )
+   )
+   
 )
 
 
-;; Calculate new horizontal size
-(deffunction COLOR::new-horizontal-size (?old-to-horizontal ?old-length ?new-length ?old-width ?new-width ?orientation)
+;; Calculate the horizontal size of a new furniture that will
+;; replace an old but with new dimensions (width, length)
+(deffunction COLOR::new-horizontal-size (?old-to-horizontal ?old-to-other-size ?old-length ?new-length ?old-width ?new-width ?orientation)
+   ;; Horizontal orientation
    (if (= (str-compare ?orientation "horizontal") 0) then
-      (return (+ ?old-to-horizontal (/ (- ?new-length ?old-length) 2)))
+      ;; if it is close to the wall, return the value of
+      ;; the previous furniture
+      (if (< (+ ?old-to-horizontal (/ (- ?old-length ?new-length) 2)) 0) then
+      (return ?old-to-horizontal)
+      else
+      ;; if it is close to the wall of the other side,
+      ;; move the furniture closer to the current wall
+         (if (< (+ ?old-to-other-size (/ (- ?old-length ?new-length) 2)) 0) then
+            (return (+ ?old-to-horizontal (- ?old-length ?new-length)))
+      ;; else the center of the new furniture is the same
+      ;; as the center of the old furniture
+         else
+            (return (+ ?old-to-horizontal (/ (- ?old-length ?new-length) 2)))
+         )
+      )
+   ;; Vertical orientation
    else
-      (return (+ ?old-to-horizontal (/ (- ?new-width ?old-width) 2))))
+      ;; if it is close to the wall, return the value of
+      ;; the previous furniture
+      (if (< (+ ?old-to-horizontal (/ (- ?old-width ?new-width) 2)) 0) then
+      (return ?old-to-horizontal)
+      else
+      ;; if it is close to the wall of the other side,
+      ;; move the furniture closer to the current wall
+         (if (< (+ ?old-to-other-size (/ (- ?old-width ?new-width) 2)) 0) then
+            (return (+ ?old-to-horizontal (- ?old-width ?new-width)))
+      ;; else the center of the new furniture is the same
+      ;; as the center of the old furniture
+         else
+            (return (+ ?old-to-horizontal (/ (- ?old-width ?new-width) 2)))
+         )
+      )
+   )
 )
    
 
@@ -1195,10 +1260,10 @@
    (room-size (length ?rlength) (width ?rwidth))
    (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
         (test (eq (overlap
-            (new-horizontal-size ?tlo ?old-length ?length ?old-width ?width ?orientation)
-            (new-horizontal-size ?tro ?old-length ?length ?old-width ?width ?orientation) 
-            (new-vertical-size ?tto ?old-length ?length ?old-width ?width ?orientation)
-            (new-vertical-size ?tbo ?old-length ?length ?old-width ?width ?orientation)
+            (new-horizontal-size ?tlo ?tro ?old-length ?length ?old-width ?width ?orientation)
+            (new-horizontal-size ?tro ?tlo ?old-length ?length ?old-width ?width ?orientation) 
+            (new-vertical-size ?tto ?tbo ?old-length ?length ?old-width ?width ?orientation)
+            (new-vertical-size ?tbo ?tto ?old-length ?length ?old-width ?width ?orientation)
              ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False)))
 =>
    (if (= (str-compare ?value ?new-id) 0) then
@@ -1217,19 +1282,19 @@
 (defrule COLOR::advice-answer-cannot-place
    (answer (question-id ?id) (value ?value))
    ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?old-id ?new-id))
-;;   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
-;;   (copy-furniture (id ?new-id) (function ?function)
-;;      (name ?name) (color ?color) (theme ?theme)
-;;      (length ?length) (width ?width) (height ?height))
-;;   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
-;;   (room-size (length ?rlength) (width ?rwidth))
-;;   (not (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
-;;        (test (eq (overlap
-;;            (new-horizontal-size ?tlo ?old-length ?length ?old-width ?width ?orientation)
-;;            (new-horizontal-size ?tro ?old-length ?length ?old-width ?width ?orientation) 
-;;            (new-vertical-size ?tto ?old-length ?length ?old-width ?width ?orientation)
-;;            (new-vertical-size ?tbo ?old-length ?length ?old-width ?width ?orientation)
-;;             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False))))
+   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
+   (copy-furniture (id ?new-id) (function ?function)
+      (name ?name) (color ?color) (theme ?theme)
+      (length ?length) (width ?width) (height ?height))
+   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
+   (room-size (length ?rlength) (width ?rwidth))
+   (not (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
+        (test (eq (overlap
+            (new-horizontal-size ?tlo ?tro ?old-length ?length ?old-width ?width ?orientation)
+            (new-horizontal-size ?tro ?tlo ?old-length ?length ?old-width ?width ?orientation) 
+            (new-vertical-size ?tto ?tbo ?old-length ?length ?old-width ?width ?orientation)
+            (new-vertical-size ?tbo ?tto ?old-length ?length ?old-width ?width ?orientation)
+             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False))))
 =>
    (retract ?question)
 )

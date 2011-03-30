@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -71,8 +72,10 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         backButton.setText("Back");
         backButton.addActionListener(new ButtonListener());
         try{
-            windowImages = ImageIO.read(new File("pic/window.jpg"));
-            doorImages = ImageIO.read(new File("pic/door.jpg"));
+            URL windowUrl = this.getClass().getResource("database/window.jpg");
+            URL doorUrl = this.getClass().getResource("database/door.jpg");
+            windowImages = ImageIO.read(windowUrl);
+            doorImages = ImageIO.read(doorUrl);
         } catch(IOException ex) {
             System.out.println("Unable to fetch image");
             System.exit(0);

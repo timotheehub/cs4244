@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,8 +72,10 @@ public class FurniturePosition extends javax.swing.JPanel {
         backButton.addActionListener(new ButtonListener());
 
         try{
-            windowImages = ImageIO.read(new File("pic/window.jpg"));
-            doorImages = ImageIO.read(new File("pic/door.jpg"));
+            URL windowUrl = this.getClass().getResource("database/window.jpg");
+            URL doorUrl = this.getClass().getResource("database/door.jpg");
+            windowImages = ImageIO.read(windowUrl);
+            doorImages = ImageIO.read(doorUrl);
         } catch(IOException ex) {
             System.out.println("Unable to fetch image");
             System.exit(0);
@@ -152,8 +155,9 @@ public class FurniturePosition extends javax.swing.JPanel {
             int furnitureWidth = (int)((roomWidth - currentFurniture.getToTop() - currentFurniture.getToBottom())/ratio);
             //Furniture's size is in mm, so the calculation of the position need to divided by 1000. The additional value is the distance of the layout and the panel
             Rectangle furnitureRectangle = new Rectangle((currentFurniture.getToLeft())/1000+170,(currentFurniture.getToTop())/1000+70,furnitureLength,furnitureWidth);
-            String imageName = "pic/" + currentFurniture.getFurnitureId() + ".jpg";
-            ImageIcon img = new ImageIcon(imageName);
+            String imageName = "database/" + currentFurniture.getFurnitureId() + ".jpg";
+            URL furnitureUrl = this.getClass().getResource(imageName);
+            ImageIcon img = new ImageIcon(furnitureUrl);
             JLabel furnitureLabel = new JLabel(scale(img.getImage(),0.1));
             furnitureLabel.setBounds(furnitureRectangle);
             furnitureLabel.addMouseListener(new MyMouseListener(imageName));

@@ -26,6 +26,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -64,13 +65,17 @@ public class PictureDisplayPanel extends javax.swing.JPanel {
         //Display valid answers for each group of furniture
         s1 = question.getValidAnswers().get(0);
         s2 = question.getValidAnswers().get(1);
-        s3 = "pic/" + s1 + ".jpg";
-        s4 = "pic/" + s2 + ".jpg";
-        File file1 = new File(s3);
-        File file2 = new File(s4);
 
-        img1 = ImageIO.read(file1);
-        img2 = ImageIO.read(file2);
+       
+        s3 = "database/" + s1 + ".jpg";
+        s4 = "database/" + s2 + ".jpg";
+        URL u1 = this.getClass().getResource(s3);
+        URL u2 = this.getClass().getResource(s4);
+        //File file1 = new File(s3);
+        //File file2 = new File(s4);
+
+        img1 = ImageIO.read(u1);
+        img2 = ImageIO.read(u2);
 
         sm1 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);
         sm2 = new BufferedImage(248,248,BufferedImage.TYPE_INT_RGB);

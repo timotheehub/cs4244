@@ -131,6 +131,12 @@
 (slot tobottom (type INTEGER))
 )
 
+;; Debug message to debug with ClipsJNI
+(deftemplate MAIN::debug-message
+   (slot message)
+)
+
+
 
 
 
@@ -340,6 +346,7 @@
 (defrule MAIN::focus-layout
    (forall (furniture (id ?id1) (function ?function))
       (not(exists(furniture (id ?id2&~?id1) (function ?function)))))
+   (not(exists(furniture-pos)))
    =>
    (focus POSITIONING LAYOUT))
    ;;(focus LAYOUT)) ;; for debugging without positioning
@@ -644,10 +651,112 @@
 	;;roomarea = (* ?room-l ?room-w)
 	;;furniturearea = (* ?l ?w)
 	;;if roomarea is smaller than the furniturearea, remove the furniture from the facts
-	(test (<= (* ?room-l ?room-w) (* ?l ?w)))
+	(test (<= (* ?room-l ?room-w) (* 4 ?l ?w)))
 =>
 	(retract ?largefurniture)
 )
+
+
+;; Create a default distance preference between TV and door 
+;; if no distance preference has been chosen
+(defrule SELECTION::create-preference-TV-door
+   (not (exists (distance (category1 TV|door) (category2 TV|door))))
+=>
+   (assert (distance (category1 TV) (category2 door) (prefer far)))
+)
+
+
+;; Create a default distance preference between TV and window
+;; if no distance preference has been chosen
+(defrule SELECTION::create-preference-TV-window
+   (not (exists (distance (category1 TV|window) (category2 TV|window))))
+=>
+   (assert (distance (category1 TV) (category2 window) (prefer far)))
+)
+
+;; Create a default distance preference between cupboard and 
+;; door if no distance preference has been chosen
+(defrule SELECTION::create-preference-cupboard-door
+   (not (exists (distance (category1 cupboard|door) (category2 cupboard|door))))
+=>
+   (assert (distance (category1 cupboard) (category2 door) (prefer far)))
+)
+
+
+;; Create a default distance preference between cupboard and 
+;; window if no distance preference has been chosen
+(defrule SELECTION::create-preference-cupboard-window
+   (not (exists (distance (category1 cupboard|window) (category2 cupboard|window))))
+=>
+   (assert (distance (category1 cupboard) (category2 window) (prefer far)))
+)
+
+
+;; Create a default distance preference between bookshelf and 
+;; door if no distance preference has been chosen
+(defrule SELECTION::create-preference-bookshelf-door
+   (not (exists (distance (category1 bookshelf|door) (category2 bookshelf|door))))
+=>
+   (assert (distance (category1 bookshelf) (category2 door) (prefer far)))
+)
+
+
+;; Create a default distance preference between bookshelf and 
+;; window if no distance preference has been chosen
+(defrule SELECTION::create-preference-bookshelf-window
+   (not (exists (distance (category1 bookshelf|window) (category2 bookshelf|window))))
+=>
+   (assert (distance (category1 bookshelf) (category2 window) (prefer far)))
+)
+
+
+;; Create a default distance preference between sofa and 
+;; door if no distance preference has been chosen
+(defrule SELECTION::create-preference-sofa-door
+   (not (exists (distance (category1 sofa|door) (category2 sofa|door))))
+=>
+   (assert (distance (category1 sofa) (category2 door) (prefer far)))
+)
+
+
+;; Create a default distance preference between sofa and 
+;; window if no distance preference has been chosen
+(defrule SELECTION::create-preference-sofa-window
+   (not (exists (distance (category1 sofa|window) (category2 sofa|window))))
+=>
+   (assert (distance (category1 sofa) (category2 window) (prefer far)))
+)
+
+
+;; Create a default distance preference between sofa and 
+;; bookshelf if no distance preference has been chosen
+(defrule SELECTION::create-preference-sofa-bookshelf
+   (not (exists (distance (category1 sofa|bookshelf) (category2 sofa|bookshelf))))
+=>
+   (assert (distance (category1 sofa) (category2 bookshelf) (prefer far)))
+)
+
+
+;; Create a default distance preference between sofa and 
+;; cupboard if no distance preference has been chosen
+(defrule SELECTION::create-preference-sofa-cupboard
+   (not (exists (distance (category1 sofa|cupboard) (category2 sofa|cupboard))))
+=>
+   (assert (distance (category1 sofa) (category2 cupboard) (prefer far)))
+)
+
+
+;; Create a default distance preference between sofa and TV
+;; if no distance preference has been chosen
+(defrule SELECTION::create-preference-sofa-TV
+   (not (exists (distance (category1 sofa|TV) (category2 sofa|TV))))
+=>
+   (assert (distance (category1 sofa) (category2 TV) (prefer far)))
+)
+
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;               SELECTION-QUESTION rules                   ;;
@@ -679,6 +788,8 @@
 )
 
 
+
+
 	 
 
 
@@ -687,7 +798,6 @@
 ;;                   POSITIONING rules                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; rank the sides of the place to start with based on the preference of the user.
-
 (deffunction POSITIONING::rank (?distance ?wl ?wr ?wt ?wb)
     (bind ?rankleft 0)
     (bind ?rankright 0)
@@ -745,6 +855,7 @@
             (bind ?rankbottom (+ ?rankbottom 1))))
     (return (create$ ?rankleft ?rankright ?ranktop ?rankbottom)))
 
+
 ;; a template to store the start position of the furniture
 (deftemplate POSITIONING::current-pos 
     (slot fid (type SYMBOL))
@@ -759,6 +870,8 @@
 )
 
 
+;; a template define in which range (rectangle) a furniture
+;; can be put
 (deftemplate POSITIONING::range
     (slot fid (type SYMBOL))
     (slot toleftmin (type INTEGER))
@@ -766,10 +879,11 @@
     (slot totopmin (type INTEGER))
     (slot totopmax (type INTEGER)))
 
+
 ;; loop to find the position of the furniture
 ;; needs to be modified for turning.
 (defrule POSITIONING::loop-for-position
-    ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
+    ?f <- (current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
     (room-size (length ?rlength) (width ?rwidth))
     (furniture (id ?fid) (function ~sofa)(length ?length) (width ?width))
     (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
@@ -788,7 +902,7 @@
 
 
 (defrule POSITIONING::loop-for-position-sofa
-    ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o))
+    ?f <- (current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o))
     (room-size (length ?rlength)(width ?rwidth))
     (range (fid ?fid)(toleftmin ?tlmin)(toleftmax ?tlmax)(totopmin ?ttmin)(totopmax ?ttmax))
     (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
@@ -818,20 +932,17 @@
 
 ;; set the position of the furniture when there is not overlapping
 (defrule POSITIONING::set-position
-    ?f<-(current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
+    ?f <- (current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o)(cycle ?c))
     (room-size (length ?rlength) (width ?rwidth))
     (forall (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False)))
 =>
     (retract ?f)
     (assert (furniture-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(orientation ?o))))
-                
-
-
 
 
 ;; find the starting position of the furniture.
 (defrule POSITIONING::find-start
-    ?a<-(ori-rank ?fid ?first ?second ?ori3 ?ori4)
+    ?a <- (ori-rank ?fid ?first ?second ?ori3 ?ori4)
     (room-size (length ?rlength) (width ?rwidth))
     (furniture (id ?fid) (function ~sofa)(length ?length) (width ?width))
 =>
@@ -875,6 +986,7 @@
     (assert (current-pos (fid ?fid) (toleft ?toleft) (toright ?toright) (totop ?totop) (tobottom ?tobottom)(cycle ?cycle)(orientation ?orientation) (direction ?direction))))
 
 
+;; find the starting position of the sofa
 (defrule POSITIONING::find-start-sofa
     ?a<-(ori-rank ?fid ?first ?second ?ori3 ?ori4)
     (range (fid ?fid) (toleftmin ?tlmin)(toleftmax ?tlmax)(totopmin ?ttmin)(totopmax ?ttmax))
@@ -974,7 +1086,9 @@
                 (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
                 (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
                 (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
-                (sort-status ?id no)))
+                (sort-status ?id no))
+        (assert (debug-message (message (str-cat "position-TV " ?id))))
+)
 
 
 (defrule POSITIONING::position-cupboard
@@ -994,7 +1108,9 @@
             (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
             (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
             (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
-            (sort-status ?id no)))
+            (sort-status ?id no))
+     (assert (debug-message (message (str-cat "position-cupboard " ?id))))
+)
 
 
 (defrule POSITIONING::position-bookshelf
@@ -1014,7 +1130,9 @@
             (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
             (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
             (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
-            (sort-status ?id no)))
+            (sort-status ?id no))
+    (assert (debug-message (message (str-cat "position-bookshelf " ?id))))
+)
 
 
 (defrule POSITIONING::position-sofa
@@ -1033,7 +1151,7 @@
     (distance (category1 sofa|door)(category2 sofa|door)(prefer ?sfd))
     (distance (category1 sofa|bookshelf)(category2 sofa|bookshelf)(prefer ?sfbs))
     (distance (category1 sofa|cupboard)(category2 sofa|cupboard)(prefer ?sfcb))
-    (distance (category1 sofa|TV)(category2 sofa|TV)(prefer ?sftv))
+    (distance (category1 sofa|TV) (category2 sofa|TV) (prefer ?sftv))
 =>
     (bind ?wrank (rank ?sfw ?wl ?wr ?wt ?wb))
     (bind ?drank (rank ?sfd ?dl ?dr ?dt ?db))
@@ -1061,7 +1179,9 @@
             (sort-list ?id right (+ (+ (+ (+ (nth 2 ?wrank) (nth 2 ?drank)) (nth 2 ?tvrank)) (nth 2 ?bsrank)) (nth 2 ?cbrank)))
             (sort-list ?id top (+ (+ (+ (+ (nth 3 ?wrank) (nth 3 ?drank)) (nth 3 ?tvrank)) (nth 3 ?bsrank)) (nth 3 ?cbrank)))
             (sort-list ?id bottom (+ (+ (+ (+ (nth 4 ?wrank) (nth 4 ?drank)) (nth 4 ?tvrank)) (nth 4 ?bsrank)) (nth 4 ?cbrank)))
-            (sort-status ?id no)))
+            (sort-status ?id no))
+    (assert (debug-message (message (str-cat "position-sofa " ?id))))
+)
 
 
 (deffunction furniture-ratio
@@ -1072,67 +1192,68 @@
 ;;My rules is that taking the ratio of the sofa compared with the room in terms of area
 ;;Using the ratio to determine the range of distance between  the sofa and the window,door
 ;;Also considering the orientation of the window and door
-(defrule POSITIONING::position-sofa
-	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
-	(room-size (length ?rlength) (width ?rwidth))
-	(window (orientation ?wo))
-	(door (orientation ?do))
-	(distance (category1 sofa|window) (category2 sofa|window) (range ?sws ?swl))
-	(distance (category1 sofa|door) (category2 sofa|door) (range ?sds ?sdl))
-	(bind ?tl 0)
-	(bind ?tr 0)
-	(bind ?tt 0)
-	(bind ?tb 0)
-=>
-(if (and (or (eq ?wo left) (eq ?wo right)) (or (eq ?do bottom) (eq ?do top))) then
-	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
-		(bind ?tl (* ?rlength ?sws))
-		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
-		(bind ?tt (* ?rwidth ?sds))
-		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-	else 
-		(bind ?tl (* ?rlength ?swl))
-		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
-
-		(bind ?tt (* ?rwidth ?sdl))
-		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth))) 
-
-	)
-)
-(if (and (or (eq ?do left) (eq ?do right)) (or (eq ?wo bottom) (eq ?wo top))) then
-	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
-		(bind ?tl (* ?rlength ?sds))
-		(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-		(bind ?tt (* ?rwidth ?sws))
-		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-	else 
-		(bind ?tl (* ?rlength ?sdl))
-		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
-		(bind ?tt (* ?rwidth ?swl))
-		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-	)
-)
-
-(if (or (and (eq ?wo top) (eq ?do bottom)) (and (eq ?wo bottom) (eq ?do top)))  then
-	(bind ?tl (* ?rlength 0.4))
-	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-	(bind ?tt (* ?rwidth 0.4))
-	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-)
-(if (and (eq ?wo top) (eq ?do top))  then
-	(bind ?tl (* ?rlength ?swl))
-	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-	(bind ?tt (* ?rwidth ?swl))
-	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-)
-(if (and (eq ?wo bottom) (eq ?do bottom))  then
-	(bind ?tl (* ?rlength ?sws))
-	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-	(bind ?tt (* ?rwidth ?sws))
-	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-)
-	(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
-)
+;;(defrule POSITIONING::position-sofa
+;;	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
+;;	(room-size (length ?rlength) (width ?rwidth))
+;;	(window (orientation ?wo))
+;;	(door (orientation ?do))
+;;	(distance (category1 sofa|window) (category2 sofa|window) (range ?sws ?swl))
+;;	(distance (category1 sofa|door) (category2 sofa|door) (range ?sds ?sdl))
+;;	(bind ?tl 0)
+;;	(bind ?tr 0)
+;;	(bind ?tt 0)
+;;	(bind ?tb 0)
+;;=>
+;;(if (and (or (eq ?wo left) (eq ?wo right)) (or (eq ?do bottom) (eq ?do top))) then
+;;	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
+;;		(bind ?tl (* ?rlength ?sws))
+;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
+;;		(bind ?tt (* ?rwidth ?sds))
+;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
+;;	else 
+;;		(bind ?tl (* ?rlength ?swl))
+;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
+;;
+;;		(bind ?tt (* ?rwidth ?sdl))
+;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth))) 
+;;
+;;	)
+;;)
+;;(if (and (or (eq ?do left) (eq ?do right)) (or (eq ?wo bottom) (eq ?wo top))) then
+;;	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
+;;		(bind ?tl (* ?rlength ?sds))
+;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
+;;		(bind ?tt (* ?rwidth ?sws))
+;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
+;;	else 
+;;		(bind ?tl (* ?rlength ?sdl))
+;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
+;;		(bind ?tt (* ?rwidth ?swl))
+;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
+;;	)
+;;)
+;;
+;;(if (or (and (eq ?wo top) (eq ?do bottom)) (and (eq ?wo bottom) (eq ?do top)))  then
+;;	(bind ?tl (* ?rlength 0.4))
+;;	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
+;;	(bind ?tt (* ?rwidth 0.4))
+;;	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
+;;)
+;;(if (and (eq ?wo top) (eq ?do top))  then
+;;	(bind ?tl (* ?rlength ?swl))
+;;	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
+;;	(bind ?tt (* ?rwidth ?swl))
+;;	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
+;;)
+;;(if (and (eq ?wo bottom) (eq ?do bottom))  then
+;;	(bind ?tl (* ?rlength ?sws))
+;;	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
+;;	(bind ?tt (* ?rwidth ?sws))
+;;	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
+;;)
+;;	(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
+;;    (assert (debug-message (message (str-cat "position-sofa-2 " ?id))))
+;;)
 
 
 
@@ -1202,8 +1323,7 @@
             (return (+ ?old-to-vertical (/ (- ?old-length ?new-length) 2)))
          )
       )
-   )
-   
+   ) 
 )
 
 

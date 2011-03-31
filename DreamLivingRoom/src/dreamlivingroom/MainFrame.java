@@ -224,8 +224,10 @@ public class MainFrame extends javax.swing.JFrame {
             || (question.getQuestionType().equals("final-layout")))
         {           
             initLayoutPanel();
+            clips.displayFurnitureList();
+            clips.displayDebugMessages();
             ((FurniturePosition)mainPanel).setQuestion(question);
-            ((FurniturePosition)mainPanel).setFurniture(clips.getFurniture());
+            ((FurniturePosition)mainPanel).setFurniture(clips.getFurniturePos());
             ((FurniturePosition)mainPanel).windowX = this.windowX;
             ((FurniturePosition)mainPanel).windowY = this.windowY;
             ((FurniturePosition)mainPanel).doorX = this.doorX;

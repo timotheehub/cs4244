@@ -13,7 +13,7 @@ package dreamlivingroom;
 
 import ClipsInteraction.Answer;
 import ClipsInteraction.ClipsEngine;
-import ClipsInteraction.Furniture;
+import ClipsInteraction.FurniturePos;
 import ClipsInteraction.Question;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -50,7 +50,7 @@ public class FurniturePosition extends javax.swing.JPanel {
     MainFrame container;
     Rectangle layout;
     MediaTracker mt = new MediaTracker(this);
-    ArrayList<Furniture> furnitureList;
+    ArrayList<FurniturePos> furnitureList;
     ClipsEngine clips;
     Rectangle imageDisplay;
 
@@ -152,7 +152,7 @@ public class FurniturePosition extends javax.swing.JPanel {
         double ratio = Math.max((double)roomLength/plotableLength, (double)roomWidth/plotableWidth);
         //Fetch every furniture from clips source file to display them on the panel
         for (int i = 0; i < furnitureList.size(); ++i) {
-            Furniture currentFurniture = furnitureList.get(i);
+            FurniturePos currentFurniture = furnitureList.get(i);
             int furnitureLength = (int)((roomLength - currentFurniture.getToRight() - currentFurniture.getToLeft())/ratio);
             int furnitureWidth = (int)((roomWidth - currentFurniture.getToTop() - currentFurniture.getToBottom())/ratio);
             //Furniture's size is in mm, so the calculation of the position need to divided by 1000. The additional value is the distance of the layout and the panel

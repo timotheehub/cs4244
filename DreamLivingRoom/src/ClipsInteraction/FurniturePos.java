@@ -9,19 +9,21 @@ package ClipsInteraction;
  *
  * @author ZandyJack
  */
-public class Furniture {
+public class FurniturePos {
     private String furnitureId;
     private int toLeft;
     private int toRight;
     private int toBottom;
     private int toTop;
+    private String orientation;
 
-    public Furniture() {
+    public FurniturePos() {
         furnitureId = "";
         toLeft = 0;
         toRight = 0;
         toBottom = 0;
         toTop = 0;
+        orientation = "";
     }
 
     public String getFurnitureId() {
@@ -62,5 +64,13 @@ public class Furniture {
 
     public void setToTop(int value) {
         toTop = value;
+    }
+
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
     }
 }

@@ -91,9 +91,50 @@ public class ClipsEngine {
         return size;
     }
 
-    public ArrayList getFurniture()
+    public void displayFurnitureList()
     {
-        ArrayList<Furniture> furnitureList = new ArrayList();
+        String factsRequest = "(find-all-facts ((?f furniture)) TRUE)";
+        MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
+
+        int listSize = multifieldValue.listValue().size();
+        System.out.println(listSize);
+        FactAddressValue factAddressValue;
+        // Take the first question
+        for (int i = 0; i < listSize; i++)
+        {
+             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
+             try {
+                  System.out.println("(furniture (id "
+                + factAddressValue.getFactSlot("id").toString() + "))");
+             }
+             catch (Exception e) { }
+         }
+    }
+    
+    public void displayDebugMessages()
+    {
+        String factsRequest = "(find-all-facts ((?f debug-message)) TRUE)";
+        MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
+
+        int listSize = multifieldValue.listValue().size();
+        System.out.println(listSize);
+        FactAddressValue factAddressValue;
+        // Take the first question
+        for (int i = 0; i < listSize; i++)
+        {
+             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
+             try {
+                  System.out.println("(debug-message (message "
+                + factAddressValue.getFactSlot("message").toString() + "))");
+             }
+             catch (Exception e) { }
+         }
+    }
+
+
+    public ArrayList getFurniturePos()
+    {
+        ArrayList<FurniturePos> furnitureList = new ArrayList();
 
         String factsRequest = "(find-all-facts ((?f furniture-pos)) TRUE)";
         MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
@@ -105,27 +146,31 @@ public class ClipsEngine {
         for (int i = 0; i < listSize; i++)
         {
              factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
-             Furniture furniturePos = new Furniture();
-             furniturePos.setFurnitureId(factAddressValue.
-                     getFactSlot("fid").toString());
-             furniturePos.setToRight(Integer.parseInt(factAddressValue.
-                     getFactSlot("toright").toString()));
-             furniturePos.setToLeft(Integer.parseInt(factAddressValue.
-                     getFactSlot("toleft").toString()));
-             furniturePos.setToTop(Integer.parseInt(factAddressValue.
-                     getFactSlot("totop").toString()));
-             furniturePos.setToBottom(Integer.parseInt(factAddressValue.
-                     getFactSlot("tobottom").toString()));
+             FurniturePos furniturePos = new FurniturePos();
+             try {
+                 furniturePos.setFurnitureId(factAddressValue.
+                         getFactSlot("fid").toString());
+                 furniturePos.setToRight(Integer.parseInt(factAddressValue.
+                         getFactSlot("toright").toString()));
+                 furniturePos.setToLeft(Integer.parseInt(factAddressValue.
+                         getFactSlot("toleft").toString()));
+                 furniturePos.setToTop(Integer.parseInt(factAddressValue.
+                         getFactSlot("totop").toString()));
+                 furniturePos.setToBottom(Integer.parseInt(factAddressValue.
+                         getFactSlot("tobottom").toString()));
+                 furniturePos.setOrientation(factAddressValue.
+                         getFactSlot("orientation").toString());
+             }
+             catch (Exception e) { }
              System.out.println("(furniture-pos (fid "
                 + furniturePos.getFurnitureId() + ") (toRight "
                 + furniturePos.getToRight() + ") (toLeft "
                 + furniturePos.getToLeft() + ") (toTop "
                 + furniturePos.getToTop() + ") (toBottom "
-                + furniturePos.getToBottom() + "))");
+                + furniturePos.getToBottom() + ") (orientation "
+                + furniturePos.getOrientation() + "))");
              furnitureList.add(furniturePos);
          }
-
-        
 
         return furnitureList;
     }

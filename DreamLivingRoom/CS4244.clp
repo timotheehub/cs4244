@@ -953,7 +953,7 @@
     (bind ?tobottom 0)
     (if (or (eq ?first left) (eq ?first right)) then
         (if (eq ?first left) then (bind ?orientation left) else (bind ?orientation right))
-        (bind ?totop (/ (- ?rwidth ?length) 2))
+        (bind ?totop (integer (/ (- ?rwidth ?length) 2)))
         (bind ?tobottom (- (- ?rwidth ?length) ?totop)))
     (if (eq ?first left) then
         (bind ?toright (- ?rlength ?width))
@@ -969,7 +969,7 @@
             (case bottom then (bind ?direction bottom)(bind ?cycle c))))
     (if (or (eq ?first top) (eq ?first bottom)) then
         (if (eq ?first top) then (bind ?orientation top) else (bind ?orientation bottom))
-        (bind ?toleft (/ (- ?rlength ?length) 2))
+        (bind ?toleft (integer (/ (- ?rlength ?length) 2)))
         (bind ?toright (- (- ?rlength ?length) ?toleft)))
     (if (eq ?first top) then
         (bind ?tobottom (- ?rwidth ?width))
@@ -1013,28 +1013,28 @@
                         (switch ?second 
                             (case top then (bind ?totop ?ttmin)(bind ?tobottom (- ?rwidth ?totop)))
                             (case bottom then (bind ?totop ?ttmax)(bind ?tobottom (- ?rwidth ?totop)))
-                            (case right then (bind ?totop (/ (+ ?ttmin ?ttmax) 2))(bind ?tobottom (- ?rwidth ?totop)))))
+                            (case right then (bind ?totop (integer (/ (+ ?ttmin ?ttmax) 2)))(bind ?tobottom (- ?rwidth ?totop)))))
         (case right then (bind ?toleft ?tlmax)
                          (bind ?direction left)
                          (bind ?toright (- ?rlength ?toleft))
                          (switch ?second
                             (case top then (bind ?totop ?ttmin)(bind ?tobottom (- ?rwidth ?totop)))
                             (case bottom then (bind ?totop ?ttmax)(bind ?tobottom (- ?rwidth ?totop)))
-                            (case left then (bind ?totop (/ (+ ?ttmin ?ttmax) 2))(bind ?tobottom (- ?rwidth ?totop)))))
+                            (case left then (bind ?totop (integer (/ (+ ?ttmin ?ttmax) 2)))(bind ?tobottom (- ?rwidth ?totop)))))
         (case top  then (bind ?totop ?ttmin)
                         (bind ?direction bottom)
                         (bind ?tobottom (- ?rwidth ?totop))
                         (switch ?second
                             (case left then (bind ?toleft ?tlmin)(bind ?toright (- ?rlength ?toleft)))
                             (case right then (bind ?toleft ?tlmax)(bind ?toright (- ?rlength ?toleft)))
-                            (case bottom then (bind ?toleft (/ (+ ?tlmin ?tlmax) 2))(bind ?toright (- ?rlength ?toleft)))))
+                            (case bottom then (bind ?toleft (integer (/ (+ ?tlmin ?tlmax) 2)))(bind ?toright (- ?rlength ?toleft)))))
         (case bottom then (bind ?totop ?ttmax)
                         (bind ?direction top)
                         (bind ?tobottom (- ?rwidth ?totop))
                         (switch ?second
                             (case left then (bind ?toleft ?tlmin)(bind ?toright (- ?rlength ?toleft)))
                             (case right then (bind ?toleft ?tlmax)(bind ?toright (- ?rlength ?toleft)))
-                            (case top then (bind ?toleft (/ (+ ?tlmin ?tlmax) 2)) (bind ?toright (- ?rlength ?toleft))))))
+                            (case top then (bind ?toleft (integer (/ (+ ?tlmin ?tlmax) 2))) (bind ?toright (- ?rlength ?toleft))))))
    (if (or (eq ?orientation left) (eq ?orientation right)) then 
         (bind ?toright (- ?toright ?width)) (bind ?tobottom (- ?tobottom ?length))
     else (bind ?toright (- ?toright ?length))(bind ?tobottom (- ?tobottom ?width)))
@@ -1184,9 +1184,9 @@
 )
 
 
-(deffunction furniture-ratio
-	(?furniture-length ?furniture-width ?room-length ?room-width)
-	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
+;;(deffunction furniture-ratio
+;;	(?furniture-length ?furniture-width ?room-length ?room-width)
+;;	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
 
 ;;This is quite complicated
 ;;My rules is that taking the ratio of the sofa compared with the room in terms of area

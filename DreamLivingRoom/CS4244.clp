@@ -872,7 +872,7 @@
 
 ;; a template define in which range (rectangle) a furniture
 ;; can be put
-(deftemplate POSITIONING::range
+(deftemplate MAIN::range
     (slot fid (type SYMBOL))
     (slot toleftmin (type INTEGER))
     (slot toleftmax (type INTEGER))
@@ -889,6 +889,7 @@
     (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
 =>
     (printout t "loop" crlf)
+    (printout t ?tr crlf)
     (if (eq ?c c) then (switch ?d 
         (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction top)(orientation left)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
         (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction bottom)(orientation right)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
@@ -992,9 +993,11 @@
     (range (fid ?fid) (toleftmin ?tlmin)(toleftmax ?tlmax)(totopmin ?ttmin)(totopmax ?ttmax))
     (furniture (id ?fid)(function sofa)(length ?length)(width ?width))
     (room-size (length ?rlength)(width ?rwidth))
-    (furniture (id ?tvid)(function tv))
+    (furniture (id ?tvid)(function TV))
     (furniture-pos (fid ?tvid)(toleft ?tvl)(toright ?tvr)(totop ?tvt)(tobottom ?tvb)(orientation ?tvo))
 =>
+     (assert (debug-message (message (str-cat "position-sofa find-start-sofa " ?fid))))
+     (retract ?a)
     (bind ?orientation left)
     (bind ?toleft 0)
     (bind ?toright 0)
@@ -1006,6 +1009,7 @@
         (case right then (bind ?orientation right))
         (case top then (bind ?orientation top))
         (case bottom then (bind ?orientation bottom)))
+     (assert (debug-message (message (str-cat "position-sofa orientation " ?orientation))))
     (switch ?first 
         (case left then (bind ?toleft ?tlmin)
                         (bind ?direction right)
@@ -1050,13 +1054,14 @@
     ?g<-(sort-list ?fid ?ori2 ?rank2 ?place2)
     (test (> ?rank1 ?rank2))
     (test (= ?place1 (+ ?place2 1)))
-=>
+=> 
+    (assert (debug-message (message (str-cat "position-sofa " ?fid))))
     (retract ?f ?g)
     (assert (sort-list ?fid ?ori1 ?rank1 ?place2)
-            (sort-list ?fid ?ori2 ?rank2 ?place1)))
+            (sort-list ?fid ?ori2 ?rank2 ?place1))) 
 
 
-;; Check whether the sorting is completed
+;; Check whether the sorting is completed (assert (debug-message (message (str-cat "position-sofa " ?id)
 (defrule POSITIONING::check-sort-status
     ?a<-(sort-list ?fid ?ori1 ?rank1 ?place1)
     ?b<-(sort-list ?fid ?ori2 ?rank2 ?place2)
@@ -1067,7 +1072,8 @@
     (test (< ?place1 ?place2 ?place3 ?place4))
 =>
     (retract ?a ?b ?c ?d ?e)
-    (assert (ori-rank ?fid ?ori1 ?ori2 ?ori3 ?ori4)))
+    (assert (ori-rank ?fid ?ori1 ?ori2 ?ori3 ?ori4))
+     (assert (debug-message (message (str-cat "position-sofa , sorted " ?fid)))))
 
 
 ;; Position TV first.
@@ -1175,10 +1181,10 @@
             (bind ?toleftmin (- (- ?rlength ?sflength) ?tvr))
             (if (< ?toleftmin 0) then (bind ?toleftmin 0))
             (assert (range (fid ?id)(toleftmin ?toleftmin)(toleftmax ?tvl)(totopmin 0)(totopmax (- (- (- ?rwidth ?sfwidth) ?tvwidth) 1500))))))
-    (assert (sort-list ?id left (+ (+ (+ (+ (nth 1 ?wrank) (nth 1 ?drank)) (nth 1 ?tvrank)) (nth 1 ?bsrank)) (nth 1 ?cbrank)))
-            (sort-list ?id right (+ (+ (+ (+ (nth 2 ?wrank) (nth 2 ?drank)) (nth 2 ?tvrank)) (nth 2 ?bsrank)) (nth 2 ?cbrank)))
-            (sort-list ?id top (+ (+ (+ (+ (nth 3 ?wrank) (nth 3 ?drank)) (nth 3 ?tvrank)) (nth 3 ?bsrank)) (nth 3 ?cbrank)))
-            (sort-list ?id bottom (+ (+ (+ (+ (nth 4 ?wrank) (nth 4 ?drank)) (nth 4 ?tvrank)) (nth 4 ?bsrank)) (nth 4 ?cbrank)))
+    (assert (sort-list ?id left (+ (+ (+ (+ (nth 1 ?wrank) (nth 1 ?drank)) (nth 1 ?tvrank)) (nth 1 ?bsrank)) (nth 1 ?cbrank)) 1)
+            (sort-list ?id right (+ (+ (+ (+ (nth 2 ?wrank) (nth 2 ?drank)) (nth 2 ?tvrank)) (nth 2 ?bsrank)) (nth 2 ?cbrank)) 2)
+            (sort-list ?id top (+ (+ (+ (+ (nth 3 ?wrank) (nth 3 ?drank)) (nth 3 ?tvrank)) (nth 3 ?bsrank)) (nth 3 ?cbrank)) 3)
+            (sort-list ?id bottom (+ (+ (+ (+ (nth 4 ?wrank) (nth 4 ?drank)) (nth 4 ?tvrank)) (nth 4 ?bsrank)) (nth 4 ?cbrank)) 4)
             (sort-status ?id no))
     (assert (debug-message (message (str-cat "position-sofa " ?id))))
 )

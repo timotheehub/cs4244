@@ -131,11 +131,6 @@
 (slot tobottom (type INTEGER))
 )
 
-;; Debug message to debug with ClipsJNI
-(deftemplate MAIN::debug-message
-   (slot message)
-)
-
 
 
 
@@ -210,25 +205,6 @@
 (furniture (id SOFA0044) (function sofa) (name DYNAMIC-VINO-3-seater-sofa) (color flory) (theme cozy nature warm) (length 2200)(width 850) (height 840))
 (furniture (id SOFA0045) (function sofa) (name DYNAMIC-VINO-2-seater-sofa) (color flory) (theme cozy nature warm) (length 1450)(width 850) (height 840))
 
-(furniture (id CT0001) (function coffee-table) (name EXPEDIT-coffee-table) (color white) (theme modern cozy nature warm) (length 1180)(width 590) (height 380))
-(furniture (id CT0002) (function coffee-table) (name EXPEDIT-coffee-table) (color brown) (theme cozy nature warm) (length 1180)(width 590) (height 380))
-(furniture (id CT0003) (function coffee-table) (name EXPEDIT-coffee-table) (color black) (theme modern cozy) (length 1180)(width 590) (height 380))
-(furniture (id CT0004) (function coffee-table) (name EXPEDIT-S-coffee-table) (color black) (theme modern cozy) (length 780)(width 780) (height 380))
-(furniture (id CT0005) (function coffee-table) (name EXPEDIT-S-coffee-table) (color white) (theme modern cozy nature warm) (length 780)(width 780) (height 380))
-(furniture (id CT0006) (function coffee-table) (name EXPEDIT-S-coffee-table) (color brown) (theme cozy nature warm) (length 780)(width 780) (height 380))
-(furniture (id CT0007) (function coffee-table) (name HOL-storage-coffee-table) (color brown) (theme cozy nature warm) (length 980)(width 500) (height 500))
-(furniture (id CT0008) (function coffee-table) (name KLUBBO-coffee-table) (color brown) (theme cozy nature warm) (length 780)(width 780) (height 370))
-(furniture (id CT0009) (function coffee-table) (name VEJMON-coffee-table) (color black) (theme modern cozy) (length 1400)(width 660) (height 470))
-(furniture (id CT0010) (function coffee-table) (name LIATORP-coffee-table) (color white) (theme modern cozy nature warm) (length 1180)(width 780) (height 500))
-(furniture (id CT0011) (function coffee-table) (name VEJMON-coffee-table) (color brown) (theme cozy nature warm) (length 1400)(width 660) (height 470))
-(furniture (id CT0012) (function coffee-table) (name BRADSHAW-coffee-table) (color dark-brown) (theme cozy nature warm) (length 1185)(width 600) (height 450))
-(furniture (id CT0013) (function coffee-table) (name SILENTNIGHT-SOMERTON-coffee-table) (color black) (theme modern cozy nature warm) (length 1200)(width 550) (height 400))
-(furniture (id CT0014) (function coffee-table) (name GADINA-coffee-table) (color white) (theme modern cozy nature) (length 1000)(width 1000) (height 350))
-(furniture (id CT0015) (function coffee-table) (name ROCKALL-coffee-table) (color black) (theme modern cozy) (length 1200)(width 700) (height 330))
-(furniture (id CT0016) (function coffee-table) (name AVOLA-coffee-table) (color brown) (theme cozy nature warm) (length 900)(width 900) (height 250))
-(furniture (id CT0017) (function coffee-table) (name LACK-coffee-table) (color black) (theme cozy) (length 900)(width 550) (height 450))
-(furniture (id CT0018) (function coffee-table) (name STRIND-coffee-table) (color black) (theme modern ozy) (length 750)(width 750) (height 450))
-
 (furniture (id CB0001) (function cupboard) (name IKEA-STOCKHOLM-BENCH) (color black) (theme modern cozy) (length 1650) (width 1650) (height 1000))
 (furniture (id CB0002) (function cupboard) (name BATON-BUFFET) (color black) (theme cozy nature) (length 1200) (width 420) (height 830))
 (furniture (id CB0003) (function cupboard) (name NEW_ASHBOURNE_BUFFET_UNITRICOLO_OAK) (color brown) (theme cozy nature warm) (length 1150) (width 440) (height 830))
@@ -244,14 +220,6 @@
 (furniture (id CB0013) (function cupboard) (name SILENTNIGHT-TALBOT) (color white) (theme cozy nature warm) (length 1000) (width 350) (height 750))
 (furniture (id CB0014) (function cupboard) (name SILENTNIGHT-SOMERTON-SIDEBOARD) (color black) (theme modern cozy nature warm) (length 1000) (width 350) (height 750))
 (furniture (id CB0015) (function cupboard) (name HEMNES-glass-door-cabinet) (color brown) (theme cozy nature warm) (length 900) (width 370) (height 1970))
-
-(furniture (id MS0001) (function media-system) (name PHILIPS-DCM580-DOCKING-ENTERTAINMENT-SYSTEM) (color black) (theme modern cozy) (length 300) (width 300) (height 1022))
-(furniture (id MS0002) (function media-system) (name LG-FBD103-DVD-MICROSYSTEM) (color black) (theme modern cozy) (length 658) (width 262) (height 341))
-(furniture (id MS0003) (function media-system) (name PHILIPS-HTS7140-BLURAY-SOUNDBAR) (color black) (theme modern cozy) (length 1040) (width 390) (height 400))
-(furniture (id MS0004) (function media-system) (name PHILIPS-MCD170-DVD-MICROSYSTEM) (color black) (theme modern cozy) (length 415) (width 209) (height 233))
-(furniture (id MS0005) (function media-system) (name SONY-CMTMX500I-CD-MICROSYTEM) (color black) (theme modern cozy) (length 609) (width 247) (height 240))
-(furniture (id MS0006) (function media-system) (name PHILIPS-HTS2500) (color black) (theme modern cozy) (length 960) (width 331) (height 100))
-(furniture (id MS0007) (function media-system) (name PHILIPS-HTS7540) (color black) (theme modern cozy) (length 1380) (width 358) (height 1199))
 
 (furniture (id PIANO0001) (function piano) (name KAWAI-K15-E) (color black) (theme cozy nature warm) (length 1490) (width 590) (height 1100))
 (furniture (id PIANO0002) (function piano) (name YAMAHA-YUS1) (color black) (theme modern cozy warm) (length 1520) (width 610) (height 1210))
@@ -276,22 +244,6 @@
 (furniture (id BS0013) (function bookshelf) (name KILBY-Bookcase) (color beige) (theme cozy nature warm) (length 670) (width 240) (height 1940))
 (furniture (id BS0014) (function bookshelf) (name LACK-Bookcase) (color red) (theme cozy nature warm) (length 1050) (width 380) (height 1900))
 (furniture (id BS0015) (function bookshelf) (name LAVIA-Bookcase) (color black) (theme modern cozy) (length 620) (width 240) (height 1650))
-
-(furniture (id ST0001) (function small-table) (name DALOM-pedestal-table) (color brown) (theme cozy nature warm) (length 490) (width 490) (height 500))
-(furniture (id ST0002) (function small-table) (name HATTEN-side-table) (color white) (theme modern) (length 400) (width 400) (height 500))
-(furniture (id ST0003) (function small-table) (name TROLLSTA-side-table) (color yellow) (theme cozy nature warm) (length 380) (width 380) (height 400))
-(furniture (id ST0004) (function small-table) (name LACK-side-table) (color red) (theme cozy nature warm) (length 550) (width 550) (height 450))
-(furniture (id ST0005) (function small-table) (name IKEA-STOCKHOLM-side-table) (color white) (theme modern cozy nature warm) (length 360) (width 360) (height 500))
-(furniture (id ST0006) (function small-table) (name IKEA-STOCKHOLM-side-table) (color black) (theme modern cozy) (length 360) (width 360) (height 500))
-(furniture (id ST0007) (function small-table) (name IKEA-PS-KARLJOHAN-side-table) (color brown) (theme cozy nature warm) (length 470) (width 470) (height 270))
-(furniture (id ST0008) (function small-table) (name LINDVED-side-table) (color white) (theme cozy nature warm) (length 500) (width 500) (height 500))
-(furniture (id ST0009) (function small-table) (name VEJMON-side-table) (color beige) (theme cozy nature warm) (length 600) (width 600) (height 600))
-(furniture (id ST0010) (function small-table) (name RAMVIK-side-table) (color dark-brown) (theme modern cozy) (length 430) (width 450) (height 500))
-(furniture (id ST0011) (function small-table) (name SILENTNIGHT-SOMERTON-side-table) (color dark-brown) (theme modern cozy nature warm) (length 500) (width 400) (height 500))
-(furniture (id ST0012) (function small-table) (name BRADSHAW-side-table) (color brown) (theme cozy nature warm) (length 585) (width 600) (height 450))
-(furniture (id ST0013) (function small-table) (name GERACE-side-table) (color brown) (theme cozy nature warm) (length 450) (width 450) (height 450))
-(furniture (id ST0014) (function small-table) (name LORENZO-HAMPSHIRE-side-table) (color black) (theme modern cozy nature) (length 600) (width 600) (height 600))
-
 )
 
 
@@ -338,7 +290,7 @@
    (question (question-id ?id)
       (question-type advice))
    =>
-   (focus COLOR FINAL-LAYOUT))
+   (focus COLOR POSITIONING FINAL-LAYOUT))
 
 
 ;; If there is at most one furniture of each type, we place
@@ -349,8 +301,7 @@
    (not(exists(furniture-pos)))
    =>
    (focus POSITIONING LAYOUT))
-   ;;(focus LAYOUT)) ;; for debugging without positioning
-
+  
 
 ;; If there is an answer for a layout, we retract the question
 ;; and show the advices
@@ -496,29 +447,6 @@
    (theme (theme modern|nature))
 =>
    (assert (preference-question (category1 sofa) (category2 cupboard))))
-
-
-;; Ask the prefered distance between the sofa and the piano
-(defrule QUESTION::distance-sofa-piano
-   (theme (theme nature|warm))
-=>
-   (assert (preference-question (category1 sofa) (category2 piano))))
-
-
-;; Ask the prefered distance between the bookshelf and the
-;; piano
-(defrule QUESTION::distance-bookshelf-piano
-   (theme (theme warm))
-=>
-   (assert (preference-question (category1 bookshelf) (category2 piano))))
-
-
-;; Ask the prefered distance between the cupboard and the
-;; piano
-(defrule QUESTION::distance-cupboard-piano
-   (theme (theme nature))
-=>
-   (assert (preference-question (category1 cupboard) (category2 piano))))
 
 
 ;; Ask the prefered distance between the window and the piano
@@ -710,6 +638,24 @@
 )
 
 
+;; Create a default distance preference between piano and 
+;; door if no distance preference has been chosen
+(defrule SELECTION::create-preference-piano-door
+   (not (exists (distance (category1 piano|door) (category2 piano|door))))
+=>
+   (assert (distance (category1 piano) (category2 door) (prefer far)))
+)
+
+
+;; Create a default distance preference between piano and 
+;; window if no distance preference has been chosen
+(defrule SELECTION::create-preference-piano-window
+   (not (exists (distance (category1 piano|window) (category2 piano|window))))
+=>
+   (assert (distance (category1 piano) (category2 window) (prefer far)))
+)
+
+
 ;; Create a default distance preference between sofa and 
 ;; door if no distance preference has been chosen
 (defrule SELECTION::create-preference-sofa-door
@@ -888,8 +834,6 @@
     (furniture (id ?fid) (function ~sofa)(length ?length) (width ?width))
     (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
 =>
-    (printout t "loop" crlf)
-    (printout t ?tr crlf)
     (if (eq ?c c) then (switch ?d 
         (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction top)(orientation left)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
         (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction bottom)(orientation right)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
@@ -996,8 +940,7 @@
     (furniture (id ?tvid)(function TV))
     (furniture-pos (fid ?tvid)(toleft ?tvl)(toright ?tvr)(totop ?tvt)(tobottom ?tvb)(orientation ?tvo))
 =>
-     (assert (debug-message (message (str-cat "position-sofa find-start-sofa " ?fid))))
-     (retract ?a)
+    (retract ?a)
     (bind ?orientation left)
     (bind ?toleft 0)
     (bind ?toright 0)
@@ -1009,7 +952,6 @@
         (case right then (bind ?orientation right))
         (case top then (bind ?orientation top))
         (case bottom then (bind ?orientation bottom)))
-     (assert (debug-message (message (str-cat "position-sofa orientation " ?orientation))))
     (switch ?first 
         (case left then (bind ?toleft ?tlmin)
                         (bind ?direction right)
@@ -1055,13 +997,12 @@
     (test (> ?rank1 ?rank2))
     (test (= ?place1 (+ ?place2 1)))
 => 
-    (assert (debug-message (message (str-cat "position-sofa " ?fid))))
     (retract ?f ?g)
     (assert (sort-list ?fid ?ori1 ?rank1 ?place2)
             (sort-list ?fid ?ori2 ?rank2 ?place1))) 
 
 
-;; Check whether the sorting is completed (assert (debug-message (message (str-cat "position-sofa " ?id)
+;; Check whether the sorting is completed
 (defrule POSITIONING::check-sort-status
     ?a<-(sort-list ?fid ?ori1 ?rank1 ?place1)
     ?b<-(sort-list ?fid ?ori2 ?rank2 ?place2)
@@ -1073,7 +1014,7 @@
 =>
     (retract ?a ?b ?c ?d ?e)
     (assert (ori-rank ?fid ?ori1 ?ori2 ?ori3 ?ori4))
-     (assert (debug-message (message (str-cat "position-sofa , sorted " ?fid)))))
+)
 
 
 ;; Position TV first.
@@ -1082,7 +1023,7 @@
         (room-size (length ?rlength) (width ?rwidth))
         (window (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb))
         (door (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db))
-        (not (furniture-pos))
+        (not (furniture-pos (fid ?id)))
         (distance (category1 TV|window) (category2 TV|window) (prefer ?tw))
         (distance (category1 TV|door) (category2 TV|door) (prefer ?td))
 =>
@@ -1093,7 +1034,6 @@
                 (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
                 (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
                 (sort-status ?id no))
-        (assert (debug-message (message (str-cat "position-TV " ?id))))
 )
 
 
@@ -1115,7 +1055,6 @@
             (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
             (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
             (sort-status ?id no))
-     (assert (debug-message (message (str-cat "position-cupboard " ?id))))
 )
 
 
@@ -1137,7 +1076,27 @@
             (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
             (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
             (sort-status ?id no))
-    (assert (debug-message (message (str-cat "position-bookshelf " ?id))))
+)
+
+
+(defrule POSITIONING::position-piano
+    (furniture (id ?id)(function piano)(length ?bslength)(width ?bswidth)(height ?bsheight))
+    (room-size (length ?rlength)(width ?rwidth))
+    (window (toleft ?wl)(toright ?wr)(totop ?wt)(tobottom ?wb))
+    (door (toleft ?dl)(toright ?dr)(totop ?dt)(tobottom ?db))
+    (furniture (id ?cbid)(function bookshelf))
+    (furniture-pos (fid ?cbid))
+    (not (furniture-pos (fid ?id)))
+    (distance (category1 bookshelf|window)(category2 piano|window)(prefer ?bsw))
+    (distance (category1 bookshelf|door)(category2 piano|door)(prefer ?bsd))
+=>
+    (bind ?wrank (rank ?bsw ?wl ?wr ?wt ?wb))
+    (bind ?drank (rank ?bsd ?dl ?dr ?dt ?db))
+    (assert (sort-list ?id left (+ (nth 1 ?wrank) (nth 1 ?drank)) 1)
+            (sort-list ?id right (+ (nth 2 ?wrank) (nth 2 ?drank)) 2)
+            (sort-list ?id top (+ (nth 3 ?wrank) (nth 3 ?drank)) 3)
+            (sort-list ?id bottom (+ (nth 4 ?wrank) (nth 4 ?drank)) 4)
+            (sort-status ?id no))
 )
 
 
@@ -1186,80 +1145,7 @@
             (sort-list ?id top (+ (+ (+ (+ (nth 3 ?wrank) (nth 3 ?drank)) (nth 3 ?tvrank)) (nth 3 ?bsrank)) (nth 3 ?cbrank)) 3)
             (sort-list ?id bottom (+ (+ (+ (+ (nth 4 ?wrank) (nth 4 ?drank)) (nth 4 ?tvrank)) (nth 4 ?bsrank)) (nth 4 ?cbrank)) 4)
             (sort-status ?id no))
-    (assert (debug-message (message (str-cat "position-sofa " ?id))))
 )
-
-
-;;(deffunction furniture-ratio
-;;	(?furniture-length ?furniture-width ?room-length ?room-width)
-;;	(/ (* ?furniture-length ?furniture-width) (* ?room-length ?room-width)))
-
-;;This is quite complicated
-;;My rules is that taking the ratio of the sofa compared with the room in terms of area
-;;Using the ratio to determine the range of distance between  the sofa and the window,door
-;;Also considering the orientation of the window and door
-;;(defrule POSITIONING::position-sofa
-;;	(furniture (id ?id) (function sofa) (length ?sofalength) (width ?sofawidth))
-;;	(room-size (length ?rlength) (width ?rwidth))
-;;	(window (orientation ?wo))
-;;	(door (orientation ?do))
-;;	(distance (category1 sofa|window) (category2 sofa|window) (range ?sws ?swl))
-;;	(distance (category1 sofa|door) (category2 sofa|door) (range ?sds ?sdl))
-;;	(bind ?tl 0)
-;;	(bind ?tr 0)
-;;	(bind ?tt 0)
-;;	(bind ?tb 0)
-;;=>
-;;(if (and (or (eq ?wo left) (eq ?wo right)) (or (eq ?do bottom) (eq ?do top))) then
-;;	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
-;;		(bind ?tl (* ?rlength ?sws))
-;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
-;;		(bind ?tt (* ?rwidth ?sds))
-;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-;;	else 
-;;		(bind ?tl (* ?rlength ?swl))
-;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
-;;
-;;		(bind ?tt (* ?rwidth ?sdl))
-;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth))) 
-;;
-;;	)
-;;)
-;;(if (and (or (eq ?do left) (eq ?do right)) (or (eq ?wo bottom) (eq ?wo top))) then
-;;	(if (> (furniture-ratio ?sofalength ?sofawidth ?rlength ?rwidth) 0.5) then
-;;		(bind ?tl (* ?rlength ?sds))
-;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-;;		(bind ?tt (* ?rwidth ?sws))
-;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-;;	else 
-;;		(bind ?tl (* ?rlength ?sdl))
-;;		(bind ?tr (- ?rlength (+ ?tl ?sofalength))) 
-;;		(bind ?tt (* ?rwidth ?swl))
-;;		(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-;;	)
-;;)
-;;
-;;(if (or (and (eq ?wo top) (eq ?do bottom)) (and (eq ?wo bottom) (eq ?do top)))  then
-;;	(bind ?tl (* ?rlength 0.4))
-;;	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-;;	(bind ?tt (* ?rwidth 0.4))
-;;	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-;;)
-;;(if (and (eq ?wo top) (eq ?do top))  then
-;;	(bind ?tl (* ?rlength ?swl))
-;;	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-;;	(bind ?tt (* ?rwidth ?swl))
-;;	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-;;)
-;;(if (and (eq ?wo bottom) (eq ?do bottom))  then
-;;	(bind ?tl (* ?rlength ?sws))
-;;	(bind ?tr (- ?rlength (+ ?tl ?sofalength)))
-;;	(bind ?tt (* ?rwidth ?sws))
-;;	(bind ?tb (- ?rwidth (+ ?tt ?sofawidth)))
-;;)
-;;	(assert (furniture-pos (fid ?id) (toleft ?tl) (toright ?tr) (totop ?tt) (tobottom ?tb)))
-;;    (assert (debug-message (message (str-cat "position-sofa-2 " ?id))))
-;;)
 
 
 
@@ -1290,140 +1176,32 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                   COLOR rules                           ;;
+;;                   COLOR rules                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Calculate the vertical size of a new furniture that will
-;; replace an old but with new dimensions (width, length)
-(deffunction COLOR::new-vertical-size (?old-to-vertical ?old-to-other-size ?old-length ?new-length ?old-width ?new-width ?orientation)
-   ;; Horizontal orientation
-   (if (= (str-compare ?orientation "horizontal") 0) then
-      ;; if it is close to the wall, return the value of
-      ;; the previous furniture
-      (if (< (+ ?old-to-vertical (/ (- ?old-width ?new-width) 2)) 0) then
-      (return ?old-to-vertical)
-      else
-      ;; if it is close to the wall of the other side,
-      ;; move the furniture closer to the current wall
-         (if (< (+ ?old-to-other-size (/ (- ?old-width ?new-width) 2)) 0) then
-            (return (+ ?old-to-vertical (- ?old-width ?new-width)))
-      ;; else the center of the new furniture is the same
-      ;; as the center of the old furniture
-         else
-            (return (+ ?old-to-vertical (/ (- ?old-width ?new-width) 2)))
-         )
-      )
-   ;; Vertical orientation
-   else
-      ;; if it is close to the wall, return the value of
-      ;; the previous furniture
-      (if (< (+ ?old-to-vertical (/ (- ?old-length ?new-length) 2)) 0) then
-      (return ?old-to-vertical)
-      else
-      ;; if it is close to the wall of the other side,
-      ;; move the furniture closer to the current wall
-         (if (< (+ ?old-to-other-size (/ (- ?old-length ?new-length) 2)) 0) then
-            (return (+ ?old-to-vertical (- ?old-length ?new-length)))
-      ;; else the center of the new furniture is the same
-      ;; as the center of the old furniture
-         else
-            (return (+ ?old-to-vertical (/ (- ?old-length ?new-length) 2)))
-         )
-      )
-   ) 
-)
-
-
-;; Calculate the horizontal size of a new furniture that will
-;; replace an old but with new dimensions (width, length)
-(deffunction COLOR::new-horizontal-size (?old-to-horizontal ?old-to-other-size ?old-length ?new-length ?old-width ?new-width ?orientation)
-   ;; Horizontal orientation
-   (if (= (str-compare ?orientation "horizontal") 0) then
-      ;; if it is close to the wall, return the value of
-      ;; the previous furniture
-      (if (< (+ ?old-to-horizontal (/ (- ?old-length ?new-length) 2)) 0) then
-      (return ?old-to-horizontal)
-      else
-      ;; if it is close to the wall of the other side,
-      ;; move the furniture closer to the current wall
-         (if (< (+ ?old-to-other-size (/ (- ?old-length ?new-length) 2)) 0) then
-            (return (+ ?old-to-horizontal (- ?old-length ?new-length)))
-      ;; else the center of the new furniture is the same
-      ;; as the center of the old furniture
-         else
-            (return (+ ?old-to-horizontal (/ (- ?old-length ?new-length) 2)))
-         )
-      )
-   ;; Vertical orientation
-   else
-      ;; if it is close to the wall, return the value of
-      ;; the previous furniture
-      (if (< (+ ?old-to-horizontal (/ (- ?old-width ?new-width) 2)) 0) then
-      (return ?old-to-horizontal)
-      else
-      ;; if it is close to the wall of the other side,
-      ;; move the furniture closer to the current wall
-         (if (< (+ ?old-to-other-size (/ (- ?old-width ?new-width) 2)) 0) then
-            (return (+ ?old-to-horizontal (- ?old-width ?new-width)))
-      ;; else the center of the new furniture is the same
-      ;; as the center of the old furniture
-         else
-            (return (+ ?old-to-horizontal (/ (- ?old-width ?new-width) 2)))
-         )
-      )
-   )
-)
-   
-
-;; Answer color advice
+;; Answer from color advice
+;; Add the new furniture that will be placed by the
+;; positioning rules.
 (defrule COLOR::advice-answer-can-place
    (answer (question-id ?id) (value ?value))
-   ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?old-id ?new-id))
+   ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?new-id ?old-id))
    ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
    (copy-furniture (id ?new-id) (function ?function)
-      (name ?name) (color ?color) (theme ?theme)
+      (name ?name) (color ?color) (theme $?theme)
       (length ?length) (width ?width) (height ?height))
    ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
    (room-size (length ?rlength) (width ?rwidth))
-   (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
-        (test (eq (overlap
-            (new-horizontal-size ?tlo ?tro ?old-length ?length ?old-width ?width ?orientation)
-            (new-horizontal-size ?tro ?tlo ?old-length ?length ?old-width ?width ?orientation) 
-            (new-vertical-size ?tto ?tbo ?old-length ?length ?old-width ?width ?orientation)
-            (new-vertical-size ?tbo ?tto ?old-length ?length ?old-width ?width ?orientation)
-             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False)))
-=>
+ =>
    (if (= (str-compare ?value ?new-id) 0) then
-      (modify ?furniture-pos (fid ?new-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo))
+      (retract ?furniture-pos)
       (assert (furniture (id ?new-id)
          (function ?function) (name ?name) (color ?color)
-         (theme ?theme) (length ?length) (width ?width)
+         (theme $?theme) (length ?length) (width ?width)
          (height ?height)))
       (retract ?old-fact)
    )
    (retract ?question)
 )
 
-
-;; Answer color advice
-(defrule COLOR::advice-answer-cannot-place
-   (answer (question-id ?id) (value ?value))
-   ?question <- (question (question-id ?id) (question-type advice) (valid-answers ?old-id ?new-id))
-   ?old-fact <- (furniture (id ?old-id) (width ?old-width) (length ?old-length))
-   (copy-furniture (id ?new-id) (function ?function)
-      (name ?name) (color ?color) (theme ?theme)
-      (length ?length) (width ?width) (height ?height))
-   ?furniture-pos <- (furniture-pos (fid ?old-id) (toleft ?tlo) (toright ?tro) (totop ?tto) (tobottom ?tbo) (orientation ?orientation))
-   (room-size (length ?rlength) (width ?rwidth))
-   (not (forall (furniture-pos (fid ~?old-id) (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1))
-        (test (eq (overlap
-            (new-horizontal-size ?tlo ?tro ?old-length ?length ?old-width ?width ?orientation)
-            (new-horizontal-size ?tro ?tlo ?old-length ?length ?old-width ?width ?orientation) 
-            (new-vertical-size ?tto ?tbo ?old-length ?length ?old-width ?width ?orientation)
-            (new-vertical-size ?tbo ?tto ?old-length ?length ?old-width ?width ?orientation)
-             ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) False))))
-=>
-   (retract ?question)
-)
 
 
 ;; Red green color
@@ -1432,7 +1210,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|yellow|blue|pink|purple|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id red-green) (value ?green-id))))
+   (not(exists(answer (question-id red-green))))
 =>
    (assert (question (question-id red-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
@@ -1445,7 +1223,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id blue-green) (value ?green-id))))
+   (not(exists(answer (question-id blue-green))))
 =>
    (assert (question (question-id blue-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
@@ -1458,7 +1236,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id purple-green) (value ?green-id))))
+   (not(exists(answer (question-id purple-green))))
 =>
    (assert (question (question-id purple-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
@@ -1471,7 +1249,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id yellow-green) (value ?green-id))))
+   (not(exists(answer (question-id yellow-green))))
 =>
    (assert (question (question-id yellow-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
@@ -1484,7 +1262,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id pink-green) (value ?green-id))))
+   (not(exists(answer (question-id pink-green))))
 =>
    (assert (question (question-id pink-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
@@ -1497,7 +1275,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id grey-green) (value ?green-id))))
+   (not(exists(answer (question-id grey-green))))
 =>
    (assert (question (question-id grey-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
@@ -1510,7 +1288,7 @@
    (furniture (id ?green-id) (color green) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id flory-green) (value ?green-id))))
+   (not(exists(answer (question-id flory-green))))
 =>
    (assert (question (question-id flory-green)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?green-id)))
@@ -1523,7 +1301,7 @@
    (furniture (id ?red-id) (color red) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id flory-red) (value ?red-id))))
+   (not(exists(answer (question-id flory-red))))
 =>
    (assert (question (question-id flory-red)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
@@ -1536,7 +1314,7 @@
    (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id flory-blue) (value ?blue-id))))
+   (not(exists(answer (question-id flory-blue))))
 =>
    (assert (question (question-id flory-blue)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
@@ -1548,7 +1326,7 @@
    (furniture (id ?grey-id) (color grey) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id flory-grey) (value ?grey-id))))
+   (not(exists(answer (question-id flory-grey))))
 =>
    (assert (question (question-id flory-grey)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
@@ -1560,7 +1338,7 @@
    (furniture (id ?pink-id) (color pink) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id flory-pink) (value ?pink-id))))
+   (not(exists(answer (question-id flory-pink))))
 =>
    (assert (question (question-id flory-pink)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
@@ -1572,7 +1350,7 @@
    (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id flory-purple) (value ?purple-id))))
+   (not(exists(answer (question-id flory-purple))))
 =>
    (assert (question (question-id flory-purple)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
@@ -1584,7 +1362,7 @@
    (furniture (id ?grey-id) (color grey) (function ?function))
    (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id blue-grey) (value ?grey-id))))
+   (not(exists(answer (question-id blue-grey))))
 =>
    (assert (question (question-id blue-grey)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
@@ -1596,7 +1374,7 @@
    (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color pink|beige|brown|dark-brown|black|silver|red|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id blue-purple) (value ?purple-id))))
+   (not(exists(answer (question-id blue-purple))))
 =>
    (assert (question (question-id blue-purple)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
@@ -1608,7 +1386,7 @@
    (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id purple-blue) (value ?blue-id))))
+   (not(exists(answer (question-id purple-blue))))
 =>
    (assert (question (question-id purple-blue)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
@@ -1620,7 +1398,7 @@
    (furniture (id ?yellow-id) (color yellow) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|pink|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id purple-yellow) (value ?yellow-id))))
+   (not(exists(answer (question-id purple-yellow))))
 =>
    (assert (question (question-id purple-yellow)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
@@ -1633,7 +1411,7 @@
    (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|yellow|blue|pink|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id red-flory) (value ?flory-id))))
+   (not(exists(answer (question-id red-flory))))
 =>
    (assert (question (question-id red-flory)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
@@ -1646,7 +1424,7 @@
    (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id grey-flory) (value ?flory-id))))
+   (not(exists(answer (question-id grey-flory))))
 =>
    (assert (question (question-id grey-flory)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
@@ -1659,7 +1437,7 @@
    (furniture (id ?red-id) (color red) (function ?function))
    (copy-furniture (id ?new-id) (color bbeige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id grey-red) (value ?red-id))))
+   (not(exists(answer (question-id grey-red))))
 =>
    (assert (question (question-id grey-red)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
@@ -1672,7 +1450,7 @@
    (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|purple|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id grey-blue) (value ?blue-id))))
+   (not(exists(answer (question-id grey-blue))))
 =>
    (assert (question (question-id grey-blue)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
@@ -1685,7 +1463,7 @@
    (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id pink-flory) (value ?flory-id))))
+   (not(exists(answer (question-id pink-flory))))
 =>
    (assert (question (question-id pink-flory)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
@@ -1698,7 +1476,7 @@
    (furniture (id ?yellow-id) (color yellow) (function ?function))
    (copy-furniture (id ?new-id) (color purple|beige|dark-brown|brown|silver|black|blue|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id pink-yellow) (value ?yellow-id))))
+   (not(exists(answer (question-id pink-yellow))))
 =>
    (assert (question (question-id pink-yellow)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
@@ -1711,7 +1489,7 @@
    (furniture (id ?red-id) (color red) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-red) (value ?red-id))))
+   (not(exists(answer (question-id green-red))))
 =>
    (assert (question (question-id green-red)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?red-id)))
@@ -1724,7 +1502,7 @@
    (furniture (id ?blue-id) (color blue) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|yellow|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-blue) (value ?blue-id))))
+   (not(exists(answer (question-id green-blue))))
 =>
    (assert (question (question-id green-blue)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?blue-id)))
@@ -1737,7 +1515,7 @@
    (furniture (id ?flory-id) (color flory) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-flory) (value ?flory-id))))
+   (not(exists(answer (question-id green-flory))))
 =>
    (assert (question (question-id green-flory)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?flory-id)))
@@ -1750,7 +1528,7 @@
    (furniture (id ?grey-id) (color grey) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-grey) (value ?grey-id))))
+   (not(exists(answer (question-id green-grey))))
 =>
    (assert (question (question-id green-grey)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?grey-id)))
@@ -1761,7 +1539,7 @@
    (furniture (id ?pink-id) (color pink) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-pink) (value ?pink-id))))
+   (not(exists(answer (question-id green-pink))))
 =>
    (assert (question (question-id green-pink)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
@@ -1774,7 +1552,7 @@
    (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-purple) (value ?purple-id))))
+   (not(exists(answer (question-id green-purple))))
 =>
    (assert (question (question-id green-purple)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))
@@ -1787,7 +1565,7 @@
    (furniture (id ?yellow-id) (color yellow) (function ?function))
    (copy-furniture (id ?new-id) (color beige|brown|dark-brown|black|silver|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id green-yellow) (value ?yellow-id))))
+   (not(exists(answer (question-id green-yellow))))
 =>
    (assert (question (question-id green-yellow)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?yellow-id)))
@@ -1800,7 +1578,7 @@
    (furniture (id ?pink-id) (color pink) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|flory|blue|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id yellow-pink) (value ?pink-id))))
+   (not(exists(answer (question-id yellow-pink))))
 =>
    (assert (question (question-id yellow-pink)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?pink-id)))
@@ -1813,7 +1591,7 @@
    (furniture (id ?purple-id) (color purple) (function ?function))
    (copy-furniture (id ?new-id) (color beige|dark-brown|brown|silver|black|flory|blue|red|white) (function ?function))
    (not(exists(question)))
-   (not(exists(answer (question-id yellow-purple) (value ?purple-id))))
+   (not(exists(answer (question-id yellow-purple))))
 =>
    (assert (question (question-id yellow-purple)
       (question-type advice) (text (str-cat "We recommend you the first " ?function " instead of the second one. Which one do you prefer?")) (valid-answers ?new-id ?purple-id)))

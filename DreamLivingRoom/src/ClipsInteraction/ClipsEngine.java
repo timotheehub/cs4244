@@ -97,7 +97,7 @@ public class ClipsEngine {
         MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
 
         int listSize = multifieldValue.listValue().size();
-        System.out.println(listSize);
+        //System.out.println(listSize);
         FactAddressValue factAddressValue;
         // Take the first question
         for (int i = 0; i < listSize; i++)
@@ -110,41 +110,7 @@ public class ClipsEngine {
              catch (Exception e) { }
          }
     }
-    
-    public void displayDebugMessages()
-    {
-        String factsRequest = "(find-all-facts ((?f debug-message)) TRUE)";
-        
-        MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
-        
 
-        int listSize = multifieldValue.listValue().size();
-        
-        System.out.println(listSize);
-        FactAddressValue factAddressValue;
-        // Take the first question
-        for (int i = 0; i < listSize; i++)
-        {
-             factAddressValue = (FactAddressValue) multifieldValue.listValue().get(i);
-             try {
-                  System.out.println("(debug-message (message "
-                + factAddressValue.getFactSlot("message").toString() + "))");
-             }
-             catch (Exception e) { }
-         }
-        String factsRequest1 = "(find-all-facts ((?f range)) TRUE)";
-        MultifieldValue multifieldValue1 = (MultifieldValue) clipsEnvironment.eval(factsRequest1);
-        int listSize1 = multifieldValue1.listValue().size();
-        for (int i = 0; i < listSize1; i++)
-        {
-             factAddressValue = (FactAddressValue) multifieldValue1.listValue().get(i);
-             try {
-                  System.out.println("(range (message "+factAddressValue.getFactSlot("fid").toString() + " "
-                + factAddressValue.getFactSlot("toleftmin").toString() + " " + factAddressValue.getFactSlot("toleftmax").toString()+ factAddressValue.getFactSlot("totopmin").toString() + " " +"))");
-             }
-             catch (Exception e) { }
-         }
-    }
 
 
     public ArrayList getFurniturePos()
@@ -155,7 +121,7 @@ public class ClipsEngine {
         MultifieldValue multifieldValue = (MultifieldValue) clipsEnvironment.eval(factsRequest);
 
         int listSize = multifieldValue.listValue().size();
-        System.out.println(listSize);
+        //System.out.println(listSize);
         FactAddressValue factAddressValue;
         // Take the first question
         for (int i = 0; i < listSize; i++)

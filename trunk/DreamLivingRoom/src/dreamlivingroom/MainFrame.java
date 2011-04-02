@@ -191,8 +191,6 @@ public class MainFrame extends javax.swing.JFrame {
         Question question;
         clips.runEnvironment();
         question = clips.getQuestion();
-        System.out.println(question.getQuestionId());
-        // System.out.println(question.getQuestionType());
 
         if ((question.getQuestionType().equals("list"))
             || (question.getQuestionType().equals("preference")))
@@ -222,10 +220,9 @@ public class MainFrame extends javax.swing.JFrame {
        
         else if ((question.getQuestionType().equals("layout"))
             || (question.getQuestionType().equals("final-layout")))
-        {           
-            initLayoutPanel();
+        {
             clips.displayFurnitureList();
-            clips.displayDebugMessages();
+            initLayoutPanel();
             ((FurniturePosition)mainPanel).setQuestion(question);
             ((FurniturePosition)mainPanel).setFurniture(clips.getFurniturePos());
             ((FurniturePosition)mainPanel).windowX = this.windowX;

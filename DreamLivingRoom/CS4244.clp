@@ -339,21 +339,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                     MAIN functions                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Tests if the two furnitures will overlap.
-(deffunction MAIN::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
-    (if (and (< (+ (max ?tl1 ?tl2) (max ?tr1 ?tr2)) ?rlength) (< (+ (max ?tt1 ?tt2) (max ?tb1 ?tb2)) ?rwidth)) then
-        (return True)
-     else
-        (return False))
-    (return False))
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                      QUESTION rules                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; If there is an answer for the size of the room, we retract
@@ -579,7 +564,7 @@
 	;;roomarea = (* ?room-l ?room-w)
 	;;furniturearea = (* ?l ?w)
 	;;if roomarea is smaller than the furniturearea, remove the furniture from the facts
-	(test (<= (* ?room-l ?room-w) (* 4 ?l ?w)))
+	(test (<= (* ?room-l ?room-w) (* 8 ?l ?w)))
 =>
 	(retract ?largefurniture)
 )
@@ -824,6 +809,15 @@
     (slot toleftmax (type INTEGER))
     (slot totopmin (type INTEGER))
     (slot totopmax (type INTEGER)))
+
+
+;; Tests if the two furnitures will overlap.
+(deffunction POSITIONING::overlap (?tl1 ?tr1 ?tt1 ?tb1 ?tl2 ?tr2 ?tt2 ?tb2 ?rlength ?rwidth)
+    (if (and (< (+ (max ?tl1 ?tl2) (max ?tr1 ?tr2)) ?rlength) (< (+ (max ?tt1 ?tt2) (max ?tb1 ?tb2)) ?rwidth)) then
+        (return True)
+     else
+        (return False))
+    (return False))
 
 
 ;; loop to find the position of the furniture

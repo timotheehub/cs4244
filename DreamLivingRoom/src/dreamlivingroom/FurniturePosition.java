@@ -149,15 +149,44 @@ public class FurniturePosition extends javax.swing.JPanel {
     void drawFurniture(Graphics2D g2D) {
         int plotableLength = this.getWidth() - 170;
         int plotableWidth = this.getHeight() - 70;
+        //double ratioWidth = roomLength/plotableLength;
+        //double ratioLength = roomWidth/plotableWidth;
         double ratio = Math.max((double)roomLength/plotableLength, (double)roomWidth/plotableWidth);
         //Fetch every furniture from clips source file to display them on the panel
         for (int i = 0; i < furnitureList.size(); ++i) {
             FurniturePos currentFurniture = furnitureList.get(i);
             int furnitureLength = (int)((roomLength - currentFurniture.getToRight() - currentFurniture.getToLeft())/ratio);
             int furnitureWidth = (int)((roomWidth - currentFurniture.getToTop() - currentFurniture.getToBottom())/ratio);
-            int furnitureX = (int)((currentFurniture.getToLeft()/ratio + 110));
-            int furnitureY = (int)((currentFurniture.getToTop()/ratio + 60));
-            //System.out.println(ratio);
+            int furnitureX;
+            int furnitureY;
+            if (roomLength == roomWidth) {
+                furnitureX = (int)(currentFurniture.getToLeft()/ratio + 110);
+                furnitureY = (int)(currentFurniture.getToTop()/ratio + 50);
+            } else if (roomLength > roomWidth) {
+                //firstValue is the length of original square
+                int firstValue = (int)(300 - roomWidth/ratio);
+                //secondValue is the length of rectangle that we are using now(So, it will be larget then firstValue)
+                int secondValue = (int)(300 - roomLength/ratio);
+                //certainValue is the difference between firstValue and secondValue divided by 2
+                int extraValue = 0;
+                int certainValue = (int)((secondValue-firstValue)/2);
+                if ((((roomLength-roomWidth)/1000) % 2) == 0) {
+                    extraValue += 10;
+                }
+                furnitureX = (int)(currentFurniture.getToLeft()/ratio + 110 + certainValue + extraValue);
+                furnitureY = (int)(currentFurniture.getToTop()/ratio + 50 + extraValue);
+            } else {
+                //firstValue is the length of original square
+                int firstValue = (int)(300 - roomLength/ratio);
+                //secondValue is the length of rectangle that we are using now(So, it will be smaller then firstValue)
+                int secondValue = (int)(300 - roomWidth/ratio);
+                //certainValue is the difference between firstValue and secondValue divided by 2
+                int certainValue = (int)((firstValue-secondValue)/2);
+                furnitureX = (int)(currentFurniture.getToLeft()/ratio + 110 + certainValue);
+                furnitureY = (int)(currentFurniture.getToTop()/ratio + 50);
+            }
+            
+            //System.out.println(ratioLength);
             //System.out.println(furnitureX);
             //System.out.println(furnitureY);
             //Furniture's size is in mm, so the calculation of the position need to divided by 1000. The additional value is the distance of the layout and the panel

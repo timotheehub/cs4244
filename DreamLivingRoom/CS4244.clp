@@ -298,7 +298,7 @@
 (defrule MAIN::focus-layout
    (forall (furniture (id ?id1) (function ?function))
       (not(exists(furniture (id ?id2&~?id1) (function ?function)))))
-   (not(exists(furniture-pos)))
+   (not(exists(furniture-pos (fid ~door&~window))))
    =>
    (focus POSITIONING LAYOUT))
   
@@ -374,6 +374,8 @@
 (tobottom ?wb) (orientation ?wo)))
    (assert (door (toleft ?dl) (toright ?dr) (totop ?dt)
 (tobottom ?db) (orientation ?do)))
+   (assert (furniture-pos (fid door) (toleft ?dl) (toright ?dr) (totop ?dt) (tobottom ?db) (orientation ?do)))
+   (assert (furniture-pos (fid window) (toleft ?wl) (toright ?wr) (totop ?wt) (tobottom ?wb) (orientation ?wo)))
    (assert (question (question-id theme) (question-type list) (text "Please select your favorite theme(s) for the living room design: ") (valid-answers modern cozy nature warm))))
 
 
@@ -728,13 +730,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                   POSITIONING rules                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; rank the sides of the place to start with based on the preference of the user.
+;; rank the sides of the place to start with based on the
+;; distance preference of the user.
 (deffunction POSITIONING::rank (?distance ?wl ?wr ?wt ?wb)
     (bind ?rankleft 0)
     (bind ?rankright 0)
     (bind ?ranktop 0)
     (bind ?rankbottom 0)
+    ;; Far distance
     (if (eq ?distance far) then 
+        ;; if the first furniture is more on the right
+        ;; then the left rank is preferred
         (if (> ?wl ?wr) then
             (bind ?rankleft (+ ?rankleft 1))
          else
@@ -759,6 +765,7 @@
             (bind ?rankright (+ ?rankright 1))
          else
             (bind ?rankbottom (+ ?rankbottom 1)))
+     ;; Close distance
      else
         (if (< ?wl ?wr) then
             (bind ?rankleft (+ ?rankleft 1))
@@ -803,7 +810,7 @@
 
 ;; a template define in which range (rectangle) a furniture
 ;; can be put
-(deftemplate MAIN::range
+(deftemplate POSITIONING::range
     (slot fid (type SYMBOL))
     (slot toleftmin (type INTEGER))
     (slot toleftmax (type INTEGER))
@@ -828,18 +835,76 @@
     (furniture (id ?fid) (function ~sofa)(length ?length) (width ?width))
     (exists (and (furniture-pos (toleft ?tl1) (toright ?tr1) (totop ?tt1) (tobottom ?tb1)) (test (eq (overlap ?tl ?tr ?tt ?tb ?tl1 ?tr1 ?tt1 ?tb1 ?rlength ?rwidth) True))))
 =>
-    (if (eq ?c c) then (switch ?d 
-        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction top)(orientation left)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
-        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction bottom)(orientation right)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
-        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction right)(orientation top)(totop 0)(tobottom (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
-        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction left)(orientation bottom)(tobottom 0)(totop (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))
-    else (switch ?d
-        (case left then (if (< (- ?tl 100) 0) then (modify ?f (direction bottom)(orientation left)(toleft 0)(toright (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) else (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))))
-        (case right then (if (< (- ?tr 100) 0) then (modify ?f (direction top)(orientation right)(toright 0)(toleft (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) else (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))))
-        (case top then (if (< (- ?tt 100) 0) then (modify ?f (direction left)(orientation top)(totop 0)(tobottom (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) else (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))))
-        (case bottom then (if (< (- ?tb 100) 0) then (modify ?f (direction right)(orientation bottom)(tobottom 0)(totop (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl))) else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100))))))))
+    ;; If it is clockwise 
+    (if (eq ?c c) then
+       (switch ?d 
+          (case left then
+             (if (< (- ?tl 100) 0) then
+                (modify ?f (direction top)(orientation left)(toleft 0)(toright (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb)))
+             else
+                (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))
+             )
+          )
+          (case right then
+             (if (< (- ?tr 100) 0) then
+                (modify ?f (direction bottom)(orientation right)(toright 0)(toleft (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt))) 
+             else
+                (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))
+             )
+          )
+          (case top then
+             (if (< (- ?tt 100) 0) then
+                (modify ?f (direction right)(orientation top)(totop 0)(tobottom (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl)))
+             else
+                (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))
+             )
+          )
+          (case bottom then
+             (if (< (- ?tb 100) 0) then
+                (modify ?f (direction left)(orientation bottom)(tobottom 0)(totop (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr)))
+             else
+                (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100)))
+             )
+          )
+       )
+    ;; If it is counter-clockwise 
+    else
+       (switch ?d
+          (case left then
+             (if (< (- ?tl 100) 0) then
+                (modify ?f (direction bottom)(orientation left)(toleft 0)(toright (- ?rlength ?width))(tobottom (- (- ?rwidth ?length) ?tt)))
+             else
+                (modify ?f (toleft (- ?tl 100)) (toright (+ ?tr 100)))
+             )
+          )
+          (case right then
+             (if (< (- ?tr 100) 0) then
+                (modify ?f (direction top)(orientation right)(toright 0)(toleft (- ?rlength ?width))(totop (- (- ?rwidth ?length) ?tb))) 
+             else
+                (modify ?f (toleft (+ ?tl 100)) (toright (- ?tr 100)))
+             )
+          )
+          (case top then
+             (if (< (- ?tt 100) 0) then
+                (modify ?f (direction left)(orientation top)(totop 0)(tobottom (- ?rwidth ?width))(toleft (- (- ?rlength ?length) ?tr))) 
+             else
+                (modify ?f (totop (- ?tt 100))(tobottom (+ ?tb 100)))
+             )
+          )
+          (case bottom then
+             (if (< (- ?tb 100) 0) then
+                (modify ?f (direction right)(orientation bottom)(tobottom 0)(totop (- ?rwidth ?width))(toright (- (- ?rlength ?length) ?tl)))
+             else (modify ?f (totop (+ ?tt 100)) (tobottom (- ?tb 100)))
+             )
+          )
+       )
+    )
+)
 
 
+;; Loop to find the position of the sofa
+;; This function use a range because the sofa must be in front
+;; of the TV.
 (defrule POSITIONING::loop-for-position-sofa
     ?f <- (current-pos (fid ?fid)(toleft ?tl)(toright ?tr)(totop ?tt)(tobottom ?tb)(direction ?d)(orientation ?o))
     (room-size (length ?rlength)(width ?rwidth))
@@ -880,6 +945,10 @@
 
 
 ;; find the starting position of the furniture.
+;; This starting position will be tested.
+;; If no furniture overlaps with this position, this position
+;; will be selected (loop-for-position).
+;; Else another position will be tested (set-position).
 (defrule POSITIONING::find-start
     ?a <- (ori-rank ?fid ?first ?second ?ori3 ?ori4)
     (room-size (length ?rlength) (width ?rwidth))
@@ -925,7 +994,11 @@
     (assert (current-pos (fid ?fid) (toleft ?toleft) (toright ?toright) (totop ?totop) (tobottom ?tobottom)(cycle ?cycle)(orientation ?orientation) (direction ?direction))))
 
 
-;; find the starting position of the sofa
+;; Find the starting position of the sofa
+;; This starting position will be tested.
+;; If no furniture overlaps with this position, this position
+;; will be selected (loop-for-position-sofa).
+;; Else another position will be tested (set-position).
 (defrule POSITIONING::find-start-sofa
     ?a<-(ori-rank ?fid ?first ?second ?ori3 ?ori4)
     (range (fid ?fid) (toleftmin ?tlmin)(toleftmax ?tlmax)(totopmin ?ttmin)(totopmax ?ttmax))
@@ -981,7 +1054,6 @@
    (assert (current-pos (fid ?fid)(toleft ?toleft)(toright ?toright)(totop ?totop)(tobottom ?tobottom)(direction ?direction)(orientation ?orientation)))
 )
 
-
  
 ;; Use bubble sort to sort the rankings of the orientations
 (defrule POSITIONING::bubble-sort
@@ -1012,6 +1084,9 @@
 
 
 ;; Position TV first.
+;; Create a list of the preferred sides (left, right, bottom,
+;; top) to place the TV.
+;; This list has to be sorted.
 (defrule POSITIONING::position-TV
         (furniture  (id ?id) (function TV) (length ?tvlength) (width ?tvwidth) (height ?tvheight))
         (room-size (length ?rlength) (width ?rwidth))
@@ -1031,6 +1106,10 @@
 )
 
 
+;; Position the cupboard once the TV is placed.
+;; Create a list of the preferred sides (left, right, bottom,
+;; top) to place the cupboard.
+;; This list has to be sorted.
 (defrule POSITIONING::position-cupboard
     (furniture (id ?id) (function cupboard) (length ?cblength) (width ?cbwidth) (height ?cbheight))
     (room-size (length ?rlength) (width ?rwidth))
@@ -1052,6 +1131,10 @@
 )
 
 
+;; Position the bookshelf once the cupboard is placed.
+;; Create a list of the preferred sides (left, right, bottom,
+;; top) to place the bookshelf.
+;; This list has to be sorted.
 (defrule POSITIONING::position-bookshelf
     (furniture (id ?id)(function bookshelf)(length ?bslength)(width ?bswidth)(height ?bsheight))
     (room-size (length ?rlength)(width ?rwidth))
@@ -1073,6 +1156,10 @@
 )
 
 
+;; Position the piano once the bookshelft is placed.
+;; Create a list of the preferred sides (left, right, bottom,
+;; top) to place the piano.
+;; This list has to be sorted.
 (defrule POSITIONING::position-piano
     (furniture (id ?id)(function piano)(length ?bslength)(width ?bswidth)(height ?bsheight))
     (room-size (length ?rlength)(width ?rwidth))
@@ -1094,6 +1181,11 @@
 )
 
 
+;; Position the sofa once the bookshelf, the cupboard and the TV
+;; are placed.
+;; Create a list of the preferred sides (left, right, bottom,
+;; top) to place the sofa.
+;; This list has to be sorted.
 (defrule POSITIONING::position-sofa
     (furniture (id ?id)(function sofa)(length ?sflength)(width ?sfwidth)(height ?sfheight))
     (room-size (length ?rlength)(width ?rwidth))

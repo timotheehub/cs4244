@@ -150,7 +150,11 @@ public class ClipsEngine {
                 + furniturePos.getToTop() + ") (toBottom "
                 + furniturePos.getToBottom() + ") (orientation "
                 + furniturePos.getOrientation() + "))");
-             furnitureList.add(furniturePos);
+             if ((furniturePos.getFurnitureId().equals("door") == false)
+                 && (furniturePos.getFurnitureId().equals("window") == false))
+             {
+                furnitureList.add(furniturePos);
+             }
          }
 
         return furnitureList;

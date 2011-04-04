@@ -170,11 +170,13 @@ public class FurniturePosition extends javax.swing.JPanel {
                 //certainValue is the difference between firstValue and secondValue divided by 2
                 int extraValue = 0;
                 int certainValue = (int)((secondValue-firstValue)/2);
-                if ((((roomLength-roomWidth)/1000) % 2) == 0) {
+                if ((((roomLength-roomWidth)/1000) % 2) == 0 && (roomLength - roomWidth) /1000 < 3) {
                     extraValue += 10;
+                }  else if ((roomLength - roomWidth) /1000 >= 3) {
+                    extraValue = 35 + 10 * ((roomLength - roomWidth)/1000 - 3);
                 }
                 furnitureX = (int)(currentFurniture.getToLeft()/ratio + 110 + certainValue + extraValue);
-                furnitureY = (int)(currentFurniture.getToTop()/ratio + 50 + extraValue);
+                furnitureY = (int)(currentFurniture.getToTop()/ratio + 50 + extraValue);              
             } else {
                 //firstValue is the length of original square
                 int firstValue = (int)(300 - roomLength/ratio);

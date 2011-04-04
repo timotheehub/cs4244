@@ -48,7 +48,7 @@ public class WindowDoorPanel extends javax.swing.JPanel {
     final int WINDOW_LENGTH = 800; // in millimeters
     final int WINDOW_WIDTH = 100;
     final int DOOR_LENGTH = 800;
-    final int DOOR_WIDTH = 100;
+    final int DOOR_WIDTH = 1000;
 
     Question currentQuestion;
     ClipsEngine clips;
@@ -183,31 +183,31 @@ public class WindowDoorPanel extends javax.swing.JPanel {
 
                     // Write the answers in CLIPS.
                     Answer answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-toleft", getToLeft(windowX, windowSizeX));
+                        "window-toleft", getToLeft(windowX, windowSizeX, windowOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-toright", getToRight(windowX, windowSizeX));
+                        "window-toright", getToRight(windowX, windowSizeX, windowOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-totop", getToTop(windowY, windowSizeY));
+                        "window-totop", getToTop(windowY, windowSizeY, windowOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "window-tobottom", getToBottom(windowY, windowSizeY));
+                        "window-tobottom", getToBottom(windowY, windowSizeY, windowOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
                         "window-orientation", windowOrientation);
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-toleft", getToLeft(doorX, doorSizeX));
+                        "door-toleft", getToLeft(doorX, doorSizeX, doorOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-toright", getToRight(doorX, doorSizeX));
+                        "door-toright", getToRight(doorX, doorSizeX, doorOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-totop", getToTop(doorY, doorSizeY));
+                        "door-totop", getToTop(doorY, doorSizeY, doorOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
-                        "door-tobottom", getToBottom(doorY, doorSizeY));
+                        "door-tobottom", getToBottom(doorY, doorSizeY, doorOrientation));
                     clips.setAnswer(answer);
                     answer = new Answer(currentQuestion.getQuestionId(),
                         "door-orientation", doorOrientation);
@@ -320,36 +320,100 @@ public class WindowDoorPanel extends javax.swing.JPanel {
         return s;
     }
 
-    String getToLeft(int x, int size)
+    String getToLeft(int x, int size, String orientation)
     {
-        return Integer.toString(
-                (int)((x - layout.getMinX() + 20)
-                    *roomLength/(layout.getMaxX() - layout.getMinX()))
-                    - size/2);
+        if (orientation.equals("left"))
+        {
+            return Integer.toString(
+                    (int)((x - layout.getMinX() + 20)
+                        *roomLength/(layout.getMaxX() - layout.getMinX())));
+        }
+        else if (orientation.equals("right"))
+        {
+            return Integer.toString(
+                    (int)((x - layout.getMinX() + 20)
+                        *roomLength/(layout.getMaxX() - layout.getMinX()))
+                        - size);
+        }
+        else
+        {
+            return Integer.toString(
+                    (int)((x - layout.getMinX() + 20)
+                        *roomLength/(layout.getMaxX() - layout.getMinX()))
+                        - size/2);
+        }
     }
 
-    String getToRight(int x, int size)
+    String getToRight(int x, int size, String orientation)
     {
-        return Integer.toString(
-                (int)((layout.getMaxX() - x - 20)
-                    *roomLength/(layout.getMaxX() - layout.getMinX()))
-                    - size/2);
+        if (orientation.equals("right"))
+        {
+            return Integer.toString(
+                    (int)((layout.getMaxX() - x - 20)
+                        *roomLength/(layout.getMaxX() - layout.getMinX())));
+        }
+        else if (orientation.equals("left"))
+        {
+            return Integer.toString(
+                    (int)((layout.getMaxX() - x - 20)
+                        *roomLength/(layout.getMaxX() - layout.getMinX()))
+                        - size);
+        }
+        else
+        {
+            return Integer.toString(
+                    (int)((layout.getMaxX() - x - 20)
+                        *roomLength/(layout.getMaxX() - layout.getMinX()))
+                        - size/2);
+        }
     }
 
-    String getToTop(int y, int size)
+    String getToTop(int y, int size, String orientation)
     {
-        return Integer.toString(
+        if (orientation.equals("top"))
+        {
+            return Integer.toString(
+                (int)((y - layout.getMinY() + 20)
+                    *roomLength/(layout.getMaxY() - layout.getMinY())));
+        }
+        else if (orientation.equals("bottom"))
+        {
+            return Integer.toString(
+                (int)((y - layout.getMinY() + 20)
+                    *roomLength/(layout.getMaxY() - layout.getMinY()))
+                    - size);
+        }
+        else
+        {
+            return Integer.toString(
                 (int)((y - layout.getMinY() + 20)
                     *roomLength/(layout.getMaxY() - layout.getMinY()))
                     - size/2);
+        }
     }
 
-    String getToBottom(int y, int size)
+    String getToBottom(int y, int size, String orientation)
     {
-        return Integer.toString(
-                (int)((layout.getMaxY() - y - 20)
-                    *roomLength/(layout.getMaxY() - layout.getMinY()))
-                    - size/2);
+        if (orientation.equals("bottom"))
+        {
+            return Integer.toString(
+                    (int)((layout.getMaxY() - y - 20)
+                        *roomLength/(layout.getMaxY() - layout.getMinY())));
+        }
+        else if (orientation.equals("top"))
+        {
+            return Integer.toString(
+                    (int)((layout.getMaxY() - y - 20)
+                        *roomLength/(layout.getMaxY() - layout.getMinY()))
+                     - size);
+        }
+        else
+        {
+            return Integer.toString(
+                    (int)((layout.getMaxY() - y - 20)
+                        *roomLength/(layout.getMaxY() - layout.getMinY()))
+                     - size/2);
+        }
     }
     
     void createLayout() {
